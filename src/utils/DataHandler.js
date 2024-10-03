@@ -39,6 +39,6 @@ if (!getApps().length) {
   app = initializeApp(firebaseConfig);
   firebaseAuth = getAuth(app);
 }
-const db = initializeFirestore(app,{useFetchStreams :false},"default")
+const db = initializeFirestore(app,{useFetchStreams :false,experimentalForceLongPolling:true},"(default)")
 
 export {firebaseAuth,app,db}

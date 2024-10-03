@@ -20,7 +20,7 @@ const Login = () => {
   const meow = async()=>{
     try {
       const docRef = await addDoc(collection(db, "users"), {
-        uid: 1,
+        uid: 2,
         name: "meow",
         email: "CHECK",
       });
