@@ -6,11 +6,6 @@ import "firebase/compat/firestore";
 // REACT
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Animated,
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text,
   View,
 } from "react-native";
 

@@ -39,6 +39,8 @@ yarn-error.*
 #vscode
 .vs
 
+node_modules
+
 
 #random
 binding.sln
@@ -60,3 +62,4 @@ link.read.1.tlog
 link.write.1.tlog
 link.secondary.tlog
 binding.exp
+node_modules
