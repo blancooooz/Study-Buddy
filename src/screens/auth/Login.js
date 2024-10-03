@@ -4,7 +4,6 @@ import { firebaseAuth, db } from "../../utils/DataHandler";
 import { TextInput } from "react-native";
 import { colors } from "../../theme/colors";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
 
 const Login = () => {
   onSignUp = async () => {
@@ -16,18 +15,6 @@ const Login = () => {
         console.log("Error signing up user: ", e);
       });
   };
-
-  const meow = async()=>{
-    try {
-      const docRef = await addDoc(collection(db, "users"), {
-        uid: 2,
-        name: "meow",
-        email: "CHECK",
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -83,7 +70,7 @@ const Login = () => {
             />
           </View>
           <View>
-            <Button title="Sign In" onPress={meow} />
+            <Button title="Sign In" onPress={onSignUp} />
           </View>
         </View>
       </ScrollView>
