@@ -17,17 +17,18 @@ const Login = () => {
       });
   };
 
-  const addDocument = async (result) => {
+  const meow = async()=>{
     try {
       const docRef = await addDoc(collection(db, "users"), {
-        uid: result.user.uid,
-        name: name,
-        email: email,
+        uid: 1,
+        name: "meow",
+        email: "CHECK",
       });
     } catch (e) {
       console.log(e);
     }
-  };
+  }
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return (
@@ -82,7 +83,7 @@ const Login = () => {
             />
           </View>
           <View>
-            <Button title="Sign In" onPress={onSignUp} />
+            <Button title="Sign In" onPress={meow} />
           </View>
         </View>
       </ScrollView>
