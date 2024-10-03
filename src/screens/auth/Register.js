@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { View, ScrollView, Button, Text } from "react-native";
-import { firebaseAuth, app, db } from "../../utils/DataHandler";
+import { firebaseAuth, db } from "../../utils/DataHandler";
 import { TextInput } from "react-native";
 import { colors } from "../../theme/colors";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import firebase from "firebase/compat";
 import { collection, addDoc } from "firebase/firestore";
 
 const Register = () => {
@@ -22,6 +21,7 @@ const Register = () => {
   const addDocument = async (result) => {
     try {
       const docRef = await addDoc(collection(db, "users"), {
+        uid: result.user.uid,
         name: name,
         email: email,
       });
@@ -29,9 +29,9 @@ const Register = () => {
       console.log(e);
     }
   };
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>

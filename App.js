@@ -16,6 +16,9 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });
 
+// FIREBASE
+import { firebaseAuth } from './src/utils/DataHandler';
+
 // NAVIGATION
 import { NavigationContainer } from "@react-navigation/native";
 import {
@@ -40,15 +43,13 @@ export default function App() {
 
 
   // Handle user state changes
-  function onAuthStateChanged(user) {
+  function onUserStateChanged(user) {
     setUser(user);
-    if (initializing && !user) {
-      setInitializing(false);
-    }
+    setInitializing(false)
   }
 
   useEffect(()=>{
-    return subscriber = onAuthStateChanged(onAuthStateChanged); //checks for user state changes, using the onAuthStateChanged as the callback function
+    return subscriber = onAuthStateChanged(firebaseAuth,onUserStateChanged); //checks for user state changes, using the onAuthStateChanged as the callback function
   },[])
 
   //checks for firebase initializing
@@ -104,7 +105,7 @@ export default function App() {
               <Stack.Screen
                 name="Main"
                 component={Main}
-                options
+                options={{headerShown:false}}
               />
 
               </Stack.Navigator>
