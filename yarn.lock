@@ -765,7 +765,7 @@
 
 "@egjs/hammerjs@^2.0.17":
   version "2.0.17"
-  resolved "https://registry.yarnpkg.com/@egjs/hammerjs/-/hammerjs-2.0.17.tgz#5dc02af75a6a06e4c2db0202cae38c9263895124"
+  resolved "https://registry.npmjs.org/@egjs/hammerjs/-/hammerjs-2.0.17.tgz"
   integrity sha512-XQsZgjm2EcVUiZQf11UBJQfmZeEmOW8DpI1gsFeln6w0ae0ii4dMQEQ0kjl6DspdWX1aGY1/loyXnP0JS06e/A==
   dependencies:
     "@types/hammerjs" "^2.0.36"
@@ -1144,7 +1144,7 @@
 
 "@firebase/app-compat@0.2.42":
   version "0.2.42"
-  resolved "https://registry.npmjs.org/@firebase/app-compat/-/app-compat-0.2.42.tgz"
+  resolved "https://registry.yarnpkg.com/@firebase/app-compat/-/app-compat-0.2.42.tgz#1823c32c359a49ebab94b0c18d8a0ce624e75745"
   integrity sha512-vPI0Aksk8ZuHywigyTxrx/oWbuD41kHxajfxRly7urHOFRiXKxf/q2ftgmcMVPfIeg0K02LzYNBmoh2PWzERpg==
   dependencies:
     "@firebase/app" "0.10.12"
@@ -1160,7 +1160,7 @@
 
 "@firebase/app@0.10.12":
   version "0.10.12"
-  resolved "https://registry.npmjs.org/@firebase/app/-/app-0.10.12.tgz"
+  resolved "https://registry.yarnpkg.com/@firebase/app/-/app-0.10.12.tgz#55c03fe06306bdeb3a81a936aa53d569ceecb9b6"
   integrity sha512-fgBqe5j7GKv7/eMfyU4N1FdiW6O1EyrrVbMa8rJOT5MYNpCXqdL/5NNcLDStS1l6CN7h65a7jUNXmMnMSWo0sw==
   dependencies:
     "@firebase/component" "0.6.9"
@@ -1212,7 +1212,7 @@
 
 "@firebase/data-connect@0.1.0":
   version "0.1.0"
-  resolved "https://registry.npmjs.org/@firebase/data-connect/-/data-connect-0.1.0.tgz"
+  resolved "https://registry.yarnpkg.com/@firebase/data-connect/-/data-connect-0.1.0.tgz#fb6f52615fd5580b2b4707f0e416bdaf1eb6e626"
   integrity sha512-vSe5s8dY13ilhLnfY0eYRmQsdTbH7PUFZtBbqU6JVX/j8Qp9A6G5gG6//ulbX9/1JFOF1IWNOne9c8S/DOCJaQ==
   dependencies:
     "@firebase/auth-interop-types" "0.2.3"
@@ -1256,7 +1256,7 @@
 
 "@firebase/firestore-compat@0.3.38":
   version "0.3.38"
-  resolved "https://registry.npmjs.org/@firebase/firestore-compat/-/firestore-compat-0.3.38.tgz"
+  resolved "https://registry.yarnpkg.com/@firebase/firestore-compat/-/firestore-compat-0.3.38.tgz#cc83cd38b75952e7049fc1318069129e1ff736ef"
   integrity sha512-GoS0bIMMkjpLni6StSwRJarpu2+S5m346Na7gr9YZ/BZ/W3/8iHGNr9PxC+f0rNZXqS4fGRn88pICjrZEgbkqQ==
   dependencies:
     "@firebase/component" "0.6.9"
@@ -1272,7 +1272,7 @@
 
 "@firebase/firestore@4.7.3":
   version "4.7.3"
-  resolved "https://registry.npmjs.org/@firebase/firestore/-/firestore-4.7.3.tgz"
+  resolved "https://registry.yarnpkg.com/@firebase/firestore/-/firestore-4.7.3.tgz#24c6e1b028767faa225fe64660bdb1287042d530"
   integrity sha512-NwVU+JPZ/3bhvNSJMCSzfcBZZg8SUGyzZ2T0EW3/bkUeefCyzMISSt/TTIfEHc8cdyXGlMqfGe3/62u9s74UEg==
   dependencies:
     "@firebase/component" "0.6.9"
@@ -1726,7 +1726,7 @@
 
 "@react-native-async-storage/async-storage@^2.0.0":
   version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-2.0.0.tgz#22373f7f83132547701637fc574ddb83b83b384e"
+  resolved "https://registry.npmjs.org/@react-native-async-storage/async-storage/-/async-storage-2.0.0.tgz"
   integrity sha512-af6H9JjfL6G/PktBfUivvexoiFKQTJGQCtSWxMdivLzNIY94mu9DdiY0JqCSg/LyPCLGKhHPUlRQhNvpu3/KVA==
   dependencies:
     merge-options "^3.0.4"
@@ -2191,7 +2191,7 @@
 
 "@types/hammerjs@^2.0.36":
   version "2.0.45"
-  resolved "https://registry.yarnpkg.com/@types/hammerjs/-/hammerjs-2.0.45.tgz#ffa764bb68a66c08db6efb9c816eb7be850577b1"
+  resolved "https://registry.npmjs.org/@types/hammerjs/-/hammerjs-2.0.45.tgz"
   integrity sha512-qkcUlZmX6c4J8q45taBKTL3p+LbITgyx7qhlPYOdOHZB7B31K0mXbP5YA7i7SgDeEGuI9MnumiKPEMrxg8j3KQ==
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
@@ -3721,7 +3721,7 @@ find-yarn-workspace-root@~2.0.0:
 
 firebase@^10.14.0:
   version "10.14.0"
-  resolved "https://registry.npmjs.org/firebase/-/firebase-10.14.0.tgz"
+  resolved "https://registry.yarnpkg.com/firebase/-/firebase-10.14.0.tgz#65fd256a48ef56db6761ec6bc9460ce1eb601a56"
   integrity sha512-/yB/OE4bfBbmtfku0DCdW6nWMHYVayN6xWKw68ztedxqGevfYDoPoygBXiLmvBHdWdBa+IlhJDkdUUiEEpcAUw==
   dependencies:
     "@firebase/analytics" "0.10.8"
@@ -4098,7 +4098,7 @@ hermes-profile-transformer@^0.0.6:
 
 hoist-non-react-statics@^3.3.0:
   version "3.3.2"
-  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
+  resolved "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz"
   integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
   dependencies:
     react-is "^16.7.0"
@@ -5904,14 +5904,14 @@ react-is@^18.0.0:
 
 react-native-dotenv@^3.4.11:
   version "3.4.11"
-  resolved "https://registry.npmjs.org/react-native-dotenv/-/react-native-dotenv-3.4.11.tgz"
+  resolved "https://registry.yarnpkg.com/react-native-dotenv/-/react-native-dotenv-3.4.11.tgz#2e6c4eabd55d5f1bf109b3dd9141dadf9c55cdd4"
   integrity sha512-6vnIE+WHABSeHCaYP6l3O1BOEhWxKH6nHAdV7n/wKn/sciZ64zPPp2NUdEUf1m7g4uuzlLbjgr+6uDt89q2DOg==
   dependencies:
     dotenv "^16.4.5"
 
 react-native-gesture-handler@^2.20.0:
   version "2.20.0"
-  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.20.0.tgz#2d9ec4e9bd22619ebe36269dda3ecb1173928276"
+  resolved "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.20.0.tgz"
   integrity sha512-rFKqgHRfxQ7uSAivk8vxCiW4SB3G0U7jnv7kZD4Y90K5kp6YrU8Q3tWhxe3Rx55BIvSd3mBe9ZWbWVJ0FsSHPA==
   dependencies:
     "@egjs/hammerjs" "^2.0.17"
@@ -5921,7 +5921,7 @@ react-native-gesture-handler@^2.20.0:
 
 react-native-safe-area-context@^4.11.0:
   version "4.11.0"
-  resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-4.11.0.tgz#d45271363672dc1923ddb0ce5a6ad588e210c85d"
+  resolved "https://registry.npmjs.org/react-native-safe-area-context/-/react-native-safe-area-context-4.11.0.tgz"
   integrity sha512-Bg7bozxEB+ZS+H3tVYs5yY1cvxNXgR6nRQwpSMkYR9IN5CbxohLnSprrOPG/ostTCd4F6iCk0c51pExEhifSKQ==
 
 react-native@*, react-native@0.74.5:
