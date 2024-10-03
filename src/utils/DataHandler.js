@@ -11,12 +11,18 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getApps } from "@firebase/app";
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { initializeFirestore } from "firebase/firestore";
 // FIREBASE INITIALIZAITIONN
 
 // Firebase Import
 const firebaseConfig = {
-  // DONT COMMIT THE ACTUAL CONFIG LOLOLOLOLOLOL
+  apiKey: "AIzaSyCq4BF6OciC4FVEZ_F10QmrmoLGkWeFXqE",
+  authDomain: "study-app-bc788.firebaseapp.com",
+  projectId: "study-app-bc788",
+  storageBucket: "study-app-bc788.appspot.com",
+  messagingSenderId: "214203925511",
+  appId: "1:214203925511:web:5b3bfc05b4ede20e99d6a2",
+  measurementId: "G-ZLQ79S8Y48"
 };
 // Initialize app and auth
 let app, firebaseAuth;
@@ -33,6 +39,6 @@ if (!getApps().length) {
   app = initializeApp(firebaseConfig);
   firebaseAuth = getAuth(app);
 }
-const db = getFirestore(app)
+const db = initializeFirestore(app,{useFetchStreams :false,experimentalForceLongPolling:true},"(default)")
 
 export {firebaseAuth,app,db}

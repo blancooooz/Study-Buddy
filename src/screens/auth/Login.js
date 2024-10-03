@@ -4,7 +4,6 @@ import { firebaseAuth, db } from "../../utils/DataHandler";
 import { TextInput } from "react-native";
 import { colors } from "../../theme/colors";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
 
 const Login = () => {
   onSignUp = async () => {
@@ -17,17 +16,6 @@ const Login = () => {
       });
   };
 
-  const addDocument = async (result) => {
-    try {
-      const docRef = await addDoc(collection(db, "users"), {
-        uid: result.user.uid,
-        name: name,
-        email: email,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return (
