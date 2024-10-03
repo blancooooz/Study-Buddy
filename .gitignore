@@ -1,0 +1,65 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+.env
+
+# typescript
+*.tsbuildinfo
+
+
+#vscode
+.vs
+
+node_modules
+
+
+#random
+binding.sln
+binding.vcxproj
+binding.vcxproj.filters
+binding.vcxproj.user
+config.gypi
+binding.iobj
+binding.ipdb
+binding.node
+binding.pdb
+binding.node.recipe
+win_delay_load_hook.obj
+binding.lastbulidstate
+CL.read.1.tlog
+CL.write.1.tlog
+link.command.1.tlog
+link.read.1.tlog
+link.write.1.tlog
+link.secondary.tlog
+binding.exp
+node_modules
