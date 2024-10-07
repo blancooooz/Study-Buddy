@@ -47,12 +47,11 @@ const Main = ({ navigation }) => {
   // Main tab navigation
   return (
     <>
-      {/* Bottom tab navigator with four screens */}
       <Tab.Navigator>
-        <Tab.Screen name="Daily" component={Daily} /> {/* Daily tab */}
-        <Tab.Screen name="Tasks" component={Tasks} /> {/* Tasks tab */}
-        <Tab.Screen name="Calendar" component={Calendar} /> {/* Calendar tab */}
-        <Tab.Screen name="Account" component={Account}/> {/* Account tab */}
+        <Tab.Screen name="Daily" component={Daily} /> 
+        <Tab.Screen name="Tasks" component={Tasks} />
+        <Tab.Screen name="Calendar" component={Calendar} />
+        <Tab.Screen name="Account" component={Account}/>
       </Tab.Navigator>
     </>
   );
