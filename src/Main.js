@@ -22,7 +22,7 @@ import { colors } from './theme/colors'; // Import theme colors
 import Daily from "./screens/daily/Daily"; // Import Daily screen component
 import Tasks from "./screens/tasks/Tasks"; // Import Tasks screen component
 import Calendar from "./screens/calendar/Calender"; // Import Calendar screen component
-import Account from "./screens/account/Account"; // Import Account screen component
+import StudyPlan from "./screens/study/StudyPlan"; // Import Account screen component
 
 // Create a bottom tab navigator
 const Tab = createBottomTabNavigator();
@@ -51,7 +51,7 @@ const Main = ({ navigation }) => {
         <Tab.Screen name="Daily" component={Daily} /> 
         <Tab.Screen name="Tasks" component={Tasks} />
         <Tab.Screen name="Calendar" component={Calendar} />
-        <Tab.Screen name="Account" component={Account}/>
+        <Tab.Screen name="Study" component={StudyPlan}/>
       </Tab.Navigator>
     </>
   );
