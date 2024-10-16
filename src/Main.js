@@ -2,6 +2,7 @@
 import firebase from "firebase/compat/app"; // Import Firebase app
 import "firebase/compat/auth"; // Import Firebase authentication
 import "firebase/compat/firestore"; // Import Firebase Firestore
+import { db } from "./utils/DataHandler";
 
 // REACT
 import React, { useEffect, useRef, useState } from "react"; // Import React hooks
@@ -16,7 +17,7 @@ import { bindActionCreators } from "redux"; // Import bindActionCreators to disp
 import { fetchUser } from "./redux/actions/index"; // Import fetchUser action
 
 // THEME
-import { colors } from './theme/colors'; // Import theme colors
+import { colors } from "./theme/colors"; // Import theme colors
 
 // SCREEN IMPORTS
 import Daily from "./screens/daily/Daily"; // Import Daily screen component
@@ -28,6 +29,10 @@ import StudyPlan from "./screens/study/StudyPlan"; // Import Account screen comp
 const Tab = createBottomTabNavigator();
 
 const Main = ({ navigation }) => {
+  useEffect(() => {
+
+  });
+
   // Local state to handle loading state
   const [isLoading, setIsLoading] = useState(false);
 
@@ -48,10 +53,10 @@ const Main = ({ navigation }) => {
   return (
     <>
       <Tab.Navigator>
-        <Tab.Screen name="Daily" component={Daily} /> 
+        <Tab.Screen name="Daily" component={Daily} />
         <Tab.Screen name="Tasks" component={Tasks} />
         <Tab.Screen name="Calendar" component={Calendar} />
-        <Tab.Screen name="Study" component={StudyPlan}/>
+        <Tab.Screen name="Study" component={StudyPlan} />
       </Tab.Navigator>
     </>
   );
