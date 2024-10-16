@@ -31,7 +31,7 @@ const Main = ({ navigation }) => {
   // Local state to handle loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  // Conditionally render a loading screen if the app is in loading state
+  // Conditionally render a loading screen if the app is in loading stateeeee
   if (isLoading) {
     return (
       <View
