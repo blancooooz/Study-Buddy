@@ -1,5 +1,11 @@
+import { View,Text,Button } from "react-native";
+
 const Settings = ()=>{
 
-    return(<></>)
+    return(
+        <View>
+        
+        </View>
+    )
 }
 export default Settings;

@@ -8,6 +8,9 @@ const Daily = ({navigation}) => {
     onPress={()=>{navigation.navigate("Preferences")}}>
 
     </Button>
+    <Button
+    title="Settings"
+    onPress={()=>{navigation.navigate("Settings")}}></Button>
   </View>;
 };
 

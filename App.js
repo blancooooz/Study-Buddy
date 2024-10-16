@@ -37,6 +37,8 @@ import Register from './src/screens/auth/Register'; // Import Register screen
 import Landing from './src/screens/auth/Landing'; // Import Landing screen
 import Preferences from './src/screens/account/Preferences';
 import Settings from './src/screens/account/Settings';
+import Username from './src/screens/account/Username';
+import ChangePassword from './src/screens/account/ChangePassword';
 
 export default function App() {
   // Local state to track whether Firebase is initializing
@@ -119,6 +121,14 @@ export default function App() {
               <Stack.Screen 
               name="Settings"
               component={Settings}
+              />
+              <Stack.Screen
+                name="ChangePassword"
+                component={ChangePassword}
+              />
+              <Stack.Screen
+                name="Username"
+                component={Username}
               />
             </Stack.Navigator>
           </NavigationContainer>
