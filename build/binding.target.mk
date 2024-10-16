@@ -11,6 +11,8 @@ DEFS_Debug := \
 	'-D_DARWIN_USE_64_BIT_INODE=1' \
 	'-D_LARGEFILE_SOURCE' \
 	'-D_FILE_OFFSET_BITS=64' \
+	'-DOPENSSL_NO_PINSHARED' \
+	'-DOPENSSL_THREADS' \
 	'-DBUILDING_NODE_EXTENSION' \
 	'-DDEBUG' \
 	'-D_DEBUG'
@@ -19,7 +21,7 @@ DEFS_Debug := \
 CFLAGS_Debug := \
 	-O0 \
 	-gdwarf-2 \
-	-mmacosx-version-min=11.0 \
+	-mmacosx-version-min=10.15 \
 	-arch arm64 \
 	-Wall \
 	-Wendif-labels \
@@ -45,13 +47,13 @@ CFLAGS_OBJC_Debug :=
 CFLAGS_OBJCC_Debug :=
 
 INCS_Debug := \
-	-I/Users/joseblanco/Library/Caches/node-gyp/21.7.1/include/node \
-	-I/Users/joseblanco/Library/Caches/node-gyp/21.7.1/src \
-	-I/Users/joseblanco/Library/Caches/node-gyp/21.7.1/deps/openssl/config \
-	-I/Users/joseblanco/Library/Caches/node-gyp/21.7.1/deps/openssl/openssl/include \
-	-I/Users/joseblanco/Library/Caches/node-gyp/21.7.1/deps/uv/include \
-	-I/Users/joseblanco/Library/Caches/node-gyp/21.7.1/deps/zlib \
-	-I/Users/joseblanco/Library/Caches/node-gyp/21.7.1/deps/v8/include
+	-I/Users/lauraforero/Library/Caches/node-gyp/20.17.0/include/node \
+	-I/Users/lauraforero/Library/Caches/node-gyp/20.17.0/src \
+	-I/Users/lauraforero/Library/Caches/node-gyp/20.17.0/deps/openssl/config \
+	-I/Users/lauraforero/Library/Caches/node-gyp/20.17.0/deps/openssl/openssl/include \
+	-I/Users/lauraforero/Library/Caches/node-gyp/20.17.0/deps/uv/include \
+	-I/Users/lauraforero/Library/Caches/node-gyp/20.17.0/deps/zlib \
+	-I/Users/lauraforero/Library/Caches/node-gyp/20.17.0/deps/v8/include
 
 DEFS_Release := \
 	'-DNODE_GYP_MODULE_NAME=binding' \
@@ -62,14 +64,15 @@ DEFS_Release := \
 	'-D_DARWIN_USE_64_BIT_INODE=1' \
 	'-D_LARGEFILE_SOURCE' \
 	'-D_FILE_OFFSET_BITS=64' \
+	'-DOPENSSL_NO_PINSHARED' \
+	'-DOPENSSL_THREADS' \
 	'-DBUILDING_NODE_EXTENSION'
 
 # Flags passed to all source files.
 CFLAGS_Release := \
 	-O3 \
 	-gdwarf-2 \
-	-flto \
-	-mmacosx-version-min=11.0 \
+	-mmacosx-version-min=10.15 \
 	-arch arm64 \
 	-Wall \
 	-Wendif-labels \
@@ -95,13 +98,13 @@ CFLAGS_OBJC_Release :=
 CFLAGS_OBJCC_Release :=
 
 INCS_Release := \
-	-I/Users/joseblanco/Library/Caches/node-gyp/21.7.1/include/node \
-	-I/Users/joseblanco/Library/Caches/node-gyp/21.7.1/src \
-	-I/Users/joseblanco/Library/Caches/node-gyp/21.7.1/deps/openssl/config \
-	-I/Users/joseblanco/Library/Caches/node-gyp/21.7.1/deps/openssl/openssl/include \
-	-I/Users/joseblanco/Library/Caches/node-gyp/21.7.1/deps/uv/include \
-	-I/Users/joseblanco/Library/Caches/node-gyp/21.7.1/deps/zlib \
-	-I/Users/joseblanco/Library/Caches/node-gyp/21.7.1/deps/v8/include
+	-I/Users/lauraforero/Library/Caches/node-gyp/20.17.0/include/node \
+	-I/Users/lauraforero/Library/Caches/node-gyp/20.17.0/src \
+	-I/Users/lauraforero/Library/Caches/node-gyp/20.17.0/deps/openssl/config \
+	-I/Users/lauraforero/Library/Caches/node-gyp/20.17.0/deps/openssl/openssl/include \
+	-I/Users/lauraforero/Library/Caches/node-gyp/20.17.0/deps/uv/include \
+	-I/Users/lauraforero/Library/Caches/node-gyp/20.17.0/deps/zlib \
+	-I/Users/lauraforero/Library/Caches/node-gyp/20.17.0/deps/v8/include
 
 OBJS :=
 
@@ -113,7 +116,7 @@ all_deps += $(OBJS)
 LDFLAGS_Debug := \
 	-undefined dynamic_lookup \
 	-Wl,-search_paths_first \
-	-mmacosx-version-min=11.0 \
+	-mmacosx-version-min=10.15 \
 	-arch arm64 \
 	-L$(builddir) \
 	-stdlib=libc++
@@ -125,7 +128,7 @@ LIBTOOLFLAGS_Debug := \
 LDFLAGS_Release := \
 	-undefined dynamic_lookup \
 	-Wl,-search_paths_first \
-	-mmacosx-version-min=11.0 \
+	-mmacosx-version-min=10.15 \
 	-arch arm64 \
 	-L$(builddir) \
 	-stdlib=libc++
