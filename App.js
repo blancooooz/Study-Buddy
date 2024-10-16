@@ -99,7 +99,7 @@ export default function App() {
       </NavigationContainer>
     );
   }
-
+//moew
   // If user is logged in, render the Main screen
   if (user) {
     return (
