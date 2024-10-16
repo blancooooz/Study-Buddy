@@ -129,6 +129,7 @@ export default function App() {
               <Stack.Screen
                 name="Username"
                 component={Username}
+                options={{ headerShown: false }} // Hide the header
               />
             </Stack.Navigator>
           </NavigationContainer>
