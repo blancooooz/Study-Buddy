@@ -1,7 +1,14 @@
-import { View } from "react-native";
+import { Button, View } from "react-native";
 
-const Daily = () => {
-  return <View></View>;
+const Daily = ({navigation}) => {
+  return <View>
+
+    <Button
+    title="Prefs"
+    onPress={()=>{navigation.navigate("Preferences")}}>
+
+    </Button>
+  </View>;
 };
 
 export default Daily;

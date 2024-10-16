@@ -35,6 +35,8 @@ import Main from './src/Main'; // Import Main screen
 import Login from './src/screens/auth/Login'; // Import Login screen
 import Register from './src/screens/auth/Register'; // Import Register screen
 import Landing from './src/screens/auth/Landing'; // Import Landing screen
+import Preferences from './src/screens/account/Preferences';
+import Settings from './src/screens/account/Settings';
 
 export default function App() {
   // Local state to track whether Firebase is initializing
@@ -109,6 +111,14 @@ export default function App() {
                 name="Main"
                 component={Main}
                 options={{ headerShown: false }} // Hide the header
+              />
+              <Stack.Screen 
+              name="Preferences"
+              component={Preferences}
+              />
+              <Stack.Screen 
+              name="Settings"
+              component={Settings}
               />
             </Stack.Navigator>
           </NavigationContainer>
