@@ -10,7 +10,7 @@ const Settings = ({ navigation }) => {
         }}
       ></Button>
       <Button
-        title="Username"
+        title="Change username"
         onPress={() => {
           navigation.navigate("Username");
         }}
