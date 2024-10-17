@@ -1,24 +1,21 @@
-import { View,Text,Button } from "react-native";
+import { View, Text, Button } from "react-native";
 
-const Settings = ({navigation})=>{
-
-    return(
-        <View>
-        <Button
+const Settings = ({ navigation }) => {
+  return (
+    <View>
+      <Button
         title="Change password"
         onPress={() => {
-            navigation.navigate("ChangePassword");
+          navigation.navigate("ChangePassword");
         }}
-        ></Button>
-         <Button
+      ></Button>
+      <Button
         title="Username"
         onPress={() => {
-            navigation.navigate("Username");
+          navigation.navigate("Username");
         }}
-        ></Button>
- 
-
-        </View>
-    )
-}
+      ></Button>
+    </View>
+  );
+};
 export default Settings;

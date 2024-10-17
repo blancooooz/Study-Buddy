@@ -1,75 +1,180 @@
-// FIREBASE
+import React, { useEffect, useState } from "react";
+import { View } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { fetchUser } from "./redux/actions/index";
 import firebase from "firebase/compat/app"; // Import Firebase app
 import "firebase/compat/auth"; // Import Firebase authentication
 import "firebase/compat/firestore"; // Import Firebase Firestore
-import { db } from "./utils/DataHandler";
 
-// REACT
-import React, { useEffect, useRef, useState } from "react"; // Import React hooks
-import { View } from "react-native"; // Import View component from React Native
+// Screens
+import Daily from "./screens/daily/Daily";
+import Tasks from "./screens/tasks/Tasks";
+import Calendar from "./screens/calendar/Calender";
+import StudyPlan from "./screens/study/StudyPlan";
+import Settings from "./screens/account/Settings"; // Drawer screen
+import Preferences from "./screens/account/Preferences"; // Drawer screen
+import Username from "./screens/account/Username";
+import ChangePassword from "./screens/account/ChangePassword";
 
-// NAVIGATION
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"; // Import bottom tab navigator from React Navigation
+// Redux/State
+import { colors } from "./theme/colors"; // Theme colors
 
-// REDUX/STATE MANAGEMENT
-import { connect } from "react-redux"; // Import Redux connect for connecting component to the store
-import { bindActionCreators } from "redux"; // Import bindActionCreators to dispatch actions
-import { fetchUser } from "./redux/actions/index"; // Import fetchUser action
-
-// THEME
-import { colors } from "./theme/colors"; // Import theme colors
-
-// SCREEN IMPORTS
-import Daily from "./screens/daily/Daily"; // Import Daily screen component
-import Tasks from "./screens/tasks/Tasks"; // Import Tasks screen component
-import Calendar from "./screens/calendar/Calender"; // Import Calendar screen component
-import StudyPlan from "./screens/study/StudyPlan"; // Import Account screen component
-
-// Create a bottom tab navigator
+// Navigators
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
-const Main = ({ navigation }) => {
-  useEffect(() => {
+const DailyStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Daily"
+      component={Daily}
+      options={{ headerShown: false }}
+    />
+    {/* Add other screens related to Daily */}
+  </Stack.Navigator>
+);
 
-  });
+const TasksStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Tasks"
+      component={Tasks}
+      options={{ headerShown: false }}
+    />
+    {/* Add other screens related to Tasks */}
+  </Stack.Navigator>
+);
 
-  // Local state to handle loading state
+const CalendarStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Calendar"
+      component={Calendar}
+      options={{ headerShown: false }}
+    />
+    {/* Add other screens related to Calendar */}
+  </Stack.Navigator>
+);
+
+const StudyPlanStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Study Plan"
+      component={StudyPlan}
+      options={{ headerShown: false }}
+    />
+    {/* Add other screens related to Study Plan */}
+  </Stack.Navigator>
+);
+const SettingsStack = () => {
+  return (
+    <Stack.Navigator initialRouteName="Settings">
+      <Stack.Screen
+        name="SettingsScreen"
+        component={Settings}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Username"
+        component={Username}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ChangePassword"
+        component={ChangePassword}
+        options={{ headerShown: false }}
+      />
+      {/* Add other screens related to Settings */}
+    </Stack.Navigator>
+  );
+};
+
+// Bottom Tab Navigator with the 4 stack navigators
+const BottomTabNavigator = () => (
+  <Tab.Navigator>
+    <Tab.Screen
+      name="DailyStack"
+      component={DailyStack}
+      options={{ title: "Daily", headerShown: false }}
+    />
+    <Tab.Screen
+      name="TasksStack"
+      component={TasksStack}
+      options={{ title: "Tasks", headerShown: false }}
+    />
+    <Tab.Screen
+      name="CalendarStack"
+      component={CalendarStack}
+      options={{ title: "Calendar", headerShown: false }}
+    />
+    <Tab.Screen
+      name="StudyPlanStack"
+      component={StudyPlanStack}
+      options={{ title: "Study Plan", headerShown: false }}
+    />
+  </Tab.Navigator>
+);
+
+// Drawer Navigator wrapping the Bottom Tab Navigator
+const DrawerNavigator = ({ isDarkTheme, toggleTheme }) => (
+  <Drawer.Navigator initialRouteName="Home">
+    <Drawer.Screen
+      name="Home"
+      component={BottomTabNavigator}
+      options={{ title: "Home" }}
+    />
+    <Drawer.Screen
+      name="Settings"
+      component={SettingsStack}
+      options={{ title: "Settings"}}
+    />
+    <Drawer.Screen name="Preferences">
+      {() => (
+        <Preferences toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
+      )}
+    </Drawer.Screen>
+  </Drawer.Navigator>
+);
+
+// Main component that initializes everything
+const Main = ({ navigation, isDarkTheme, toggleTheme }) => {
+  useEffect(() => {}, []);
+
   const [isLoading, setIsLoading] = useState(false);
 
-  // Conditionally render a loading screen if the app is in loading state
   if (isLoading) {
     return (
       <View
         style={{
-          flex: 1, // Make the view take up the entire screen
-          justifyContent: "center", // Center the content vertically
-          backgroundColor: theme.colors.white, // Set background color to white
+          flex: 1,
+          justifyContent: "center",
+          backgroundColor: colors.white,
         }}
-      ></View>
-    ); // Return an empty view or replace with any other loading indicator
+      >
+        {/* Show loading indicator */}
+      </View>
+    );
   }
 
-  // Main tab navigation
+  // Drawer Navigator is the main navigator
   return (
-    <>
-      <Tab.Navigator>
-        <Tab.Screen name="Daily" component={Daily} />
-        <Tab.Screen name="Tasks" component={Tasks} />
-        <Tab.Screen name="Calendar" component={Calendar} />
-        <Tab.Screen name="Study" component={StudyPlan} />
-      </Tab.Navigator>
-    </>
+    <DrawerNavigator isDarkTheme={isDarkTheme} toggleTheme={toggleTheme} />
   );
 };
 
 // Map Redux state to component props
 const mapStateToProps = (store) => ({
-  currentUser: store.userState.currentUser, // Current user data from Redux state
+  currentUser: store.userState.currentUser,
 });
 
 // Map dispatch actions to props
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ fetchUser }, dispatch); // Bind fetchUser action to dispatch
+  bindActionCreators({ fetchUser }, dispatch);
 
 // Connect component to Redux store and export
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

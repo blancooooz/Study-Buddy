@@ -2,14 +2,16 @@ import { useState } from "react";
 import { Text, View, TextInput, Button } from "react-native";
 
 const Username = ({ navigation }) => {
-  function SaveUsername() {
+    //get users username.
+  async function SaveUsername() {
+    // add functionality with firestore
     console.log("Pressed");
   }
   const [Username, setUsername] = useState("");
 
   return (
     <View style={{ marginTop: 40 }}>
-      <Text style={{ fontSize: 20,marginBottom:20 }}>Current Username:</Text>
+      <Text style={{ fontSize: 20, marginBottom: 20 }}>Current Username:</Text>
 
       <Text>Enter new Username</Text>
       <TextInput

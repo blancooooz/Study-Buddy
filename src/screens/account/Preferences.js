@@ -1,14 +1,19 @@
-import { ThemeProvider } from "@react-navigation/native";
-import { Switch, View, Text } from "react-native";
-import { colors } from "../../theme/colors";
+import React from 'react';
+import { Switch, View, Text, SafeAreaView } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 
-const Preferences = () => {
+const Preferences = ({ toggleTheme, isDarkTheme }) => {
+  const theme = useTheme();
+
   return (
-    <View style={{ flexDirection: "row", marginTop:12, backgroundColor:colors.blueViolet }}>
-      <Text style={{ fontSize: 32 }}>Light</Text>
-      <Switch></Switch>
-      <Text style={({fontSize:32})}>Dark</Text>
-    </View>
+    <SafeAreaView style={{ flexDirection: 'row', marginTop: 12, backgroundColor: theme.colors.background }}>
+      <Text style={{ fontSize: 32, color: theme.colors.text }}>Light</Text>
+      <Switch
+        value={isDarkTheme}
+        onValueChange={toggleTheme} // Toggle the theme
+      />
+      <Text style={{ fontSize: 32, color: theme.colors.text }}>Dark</Text>
+    </SafeAreaView>
   );
 };
 
