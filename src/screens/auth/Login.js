@@ -2,7 +2,6 @@ import { useState } from "react"; // Import useState hook for managing state
 import { View, ScrollView, Button, Text } from "react-native"; // Import basic UI components from React Native
 import { firebaseAuth, db } from "../../utils/DataHandler"; // Import Firebase authentication and Firestore database utilities
 import { TextInput } from "react-native"; // Import TextInput for form input fields
-import { colors } from "../../theme/colors"; // Import theme colors for styling
 import { signInWithEmailAndPassword } from "firebase/auth"; // Import Firebase function to sign in users with email and password
 
 const Login = () => {
@@ -23,14 +22,13 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={{ flex: 1 }}>
       {/* Header Section */}
       <View
         style={{
           flex: 1,
           justifyContent: "center",
           alignSelf: "center",
-          backgroundColor: colors.background,
         }}
       >
         <Text>Header</Text>
@@ -41,7 +39,6 @@ const Login = () => {
         style={{
           flex: 1,
           width: "100%",
-          backgroundColor: colors.background,
           borderTopRightRadius: 25,
           borderTopLeftRadius: 25,
           padding: 16,
@@ -57,8 +54,6 @@ const Login = () => {
                 setEmail(text); // Update email state on text change
               }}
               style={{
-                backgroundColor: colors.white,
-                borderColor: colors.black,
                 borderWidth: 1,
               }}
             />
@@ -73,8 +68,6 @@ const Login = () => {
                 setPassword(text); // Update password state on text change
               }}
               style={{
-                backgroundColor: colors.white,
-                borderColor: colors.black,
                 borderWidth: 1,
               }}
             />

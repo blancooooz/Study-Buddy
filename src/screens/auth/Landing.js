@@ -3,7 +3,12 @@ import { Button, View } from "react-native";
 const Landing = ({ navigation }) => {
   return (
     // Main container for the Landing screen with centered content
-    <View style={{ flex: 1, justifyContent: "center" }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+      }}
+    >
       {/* Button to navigate to the Register screen */}
       <Button
         title="Register"

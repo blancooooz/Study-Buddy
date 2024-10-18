@@ -19,7 +19,6 @@ import Preferences from "./screens/account/Preferences";
 import Username from "./screens/account/Username";
 import ChangePassword from "./screens/account/ChangePassword";
 
-import { colors } from "./theme/colors"; // App-wide theme colors
 
 // Navigators for tabs, stacks, and drawers
 const Tab = createBottomTabNavigator(); // Bottom Tab Navigator
@@ -173,7 +172,6 @@ const Main = ({ isDarkTheme, toggleTheme }) => {
         style={{
           flex: 1,
           justifyContent: "center",
-          backgroundColor: colors.white, // Set background color from the theme
         }}
       >
         {/* Add a loading indicator component here */}

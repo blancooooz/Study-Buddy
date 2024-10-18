@@ -2,7 +2,6 @@ import { useState } from "react"; // Import useState hook from React for managin
 import { View, ScrollView, Button, Text } from "react-native"; // Import components from React Native
 import { firebaseAuth, db } from "../../utils/DataHandler"; // Import Firebase authentication and Firestore database
 import { TextInput } from "react-native"; // Import TextInput component for input fields
-import { colors } from "../../theme/colors"; // Import theme colors
 import { createUserWithEmailAndPassword } from "firebase/auth"; // Import function to create a new user with email and password from Firebase Auth
 import { collection, doc, setDoc } from "firebase/firestore"; // Import Firestore functions for working with collections and documents
 
@@ -41,14 +40,13 @@ const Register = () => {
   const [password, setPassword] = useState("");
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={{ flex: 1 }}>
       {/* Header Section */}
       <View
         style={{
           flex: 1,
           justifyContent: "center",
           alignSelf: "center",
-          backgroundColor: colors.background,
         }}
       >
         <Text>Header</Text>
@@ -59,7 +57,6 @@ const Register = () => {
         style={{
           flex: 1,
           width: "100%",
-          backgroundColor: colors.background,
           borderTopRightRadius: 25,
           borderTopLeftRadius: 25,
           padding: 16,
@@ -75,8 +72,6 @@ const Register = () => {
                 setName(text); // Update the state with the new name
               }}
               style={{
-                backgroundColor: colors.white,
-                borderColor: colors.black,
                 borderWidth: 1,
               }}
             />
@@ -91,8 +86,6 @@ const Register = () => {
                 setEmail(text); // Update the state with the new email
               }}
               style={{
-                backgroundColor: colors.white,
-                borderColor: colors.black,
                 borderWidth: 1,
               }}
             />
@@ -107,8 +100,6 @@ const Register = () => {
                 setPassword(text); // Update the state with the new password
               }}
               style={{
-                backgroundColor: colors.white,
-                borderColor: colors.black,
                 borderWidth: 1,
               }}
             />
