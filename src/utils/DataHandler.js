@@ -16,7 +16,6 @@ import { initializeFirestore } from "firebase/firestore"; // Import function to 
 
 // Firebase configuration object containing project-specific keys and IDs
 const firebaseConfig = {
-  // YOUR FIREBASE CONFIGURATION OBJECT HERE
 };
 
 // Initialize app and auth
