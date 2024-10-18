@@ -1,25 +1,32 @@
 import { useState } from "react";
 import { Text, View, TextInput, Button } from "react-native";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { db,firebaseAuth } from "../../utils/DataHandler";
 
 const Username = ({ navigation }) => {
-    //get users username.
+  //get users username.
   async function SaveUsername() {
-    // add functionality with firestore
-    console.log("Pressed");
+    const uid =firebaseAuth.currentUser.uid;
+    const userRef = doc(db, "users",uid);
+    await updateDoc(userRef,{
+      Username:username
+    })
   }
-  const [Username, setUsername] = useState("");
 
+  
+
+  const [username, setUsername] = useState("");
   return (
     <View style={{ marginTop: 40 }}>
       <Text style={{ fontSize: 20, marginBottom: 20 }}>Current Username:</Text>
 
       <Text>Enter new Username</Text>
       <TextInput
-        value={Username}
+        value={username}
         onChangeText={(text) => {
           setUsername(text);
-          console.log(Username);
         }}
+        style={{borderWidth:1}}
       ></TextInput>
       <Button
         title="Save"

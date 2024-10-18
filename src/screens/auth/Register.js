@@ -4,7 +4,7 @@ import { firebaseAuth, db } from "../../utils/DataHandler"; // Import Firebase a
 import { TextInput } from "react-native"; // Import TextInput component for input fields
 import { colors } from "../../theme/colors"; // Import theme colors
 import { createUserWithEmailAndPassword } from "firebase/auth"; // Import function to create a new user with email and password from Firebase Auth
-import { collection, addDoc } from "firebase/firestore"; // Import Firestore functions for working with collections and documents
+import { collection, doc, setDoc } from "firebase/firestore"; // Import Firestore functions for working with collections and documents
 
 const Register = () => {
   // Function to handle sign-up action
@@ -12,8 +12,9 @@ const Register = () => {
     // Use Firebase auth to create a user with email and password
     createUserWithEmailAndPassword(firebaseAuth, email, password)
       .then((result) => {
+        uid = result.user.uid;
         console.log("User signed up with email"); // Log success message
-        addDocument(result); // Call function to add user details to Firestore
+        addDocument(uid); // Call function to add user details to Firestore
       })
       .catch((e) => {
         console.log("Error signing up user: ", e); // Log any errors during sign-up
@@ -21,11 +22,11 @@ const Register = () => {
   };
 
   // Function to add user information to Firestore after successful sign-up
-  const addDocument = async (result) => {
+  const addDocument = async (uid) => {
     try {
       // Add a new document with user details in the 'users' collection
-      const docRef = await addDoc(collection(db, "users"), {
-        uid: result.user.uid, // Store user ID from the result
+      await setDoc(doc(db, "users", `${uid}`), {
+        uid: uid, // Store user ID from the result
         name: name, // Store user's name
         email: email, // Store user's email
       });
