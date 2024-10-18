@@ -1,13 +1,8 @@
-import { firebaseAuth, db } from "../../utils/DataHandler";
-import { onSnapshot,doc, updateDoc } from "firebase/firestore";
-// redux/actions/index.js
+import { doc, updateDoc, onSnapshot } from 'firebase/firestore';
+import { db, firebaseAuth } from '../../utils/DataHandler';
 
-export const FETCH_USER = "FETCH_USER";
-export const SET_TASKS = "SET_TASKS";
-export const SET_TAGS = "SET_TAGS";
-export const SET_EVENTS = "SET_EVENTS";
+// Action type
 export const UPDATE_USERNAME = 'UPDATE_USERNAME';
-
 
 // Action creator to update the Redux store
 export const updateUsernameRedux = (username) => {
@@ -16,16 +11,6 @@ export const updateUsernameRedux = (username) => {
     payload: username,
   };
 };
-
-// Fetch user data
-export const fetchUser = () => async (dispatch) => {
-  const uid = firebaseAuth.currentUser.uid;
-  const userSnapshot = await onSnapshot(doc(db, "users", uid), (doc)=>{
-
-    dispatch({ type: FETCH_USER, payload: doc.data() });
-  });
-};
-
 
 // Action to update Firebase and Redux
 export const updateUsername = (username) => {
@@ -44,6 +29,3 @@ export const updateUsername = (username) => {
     }
   };
 };
-
-
-// Set tasks, tags, and events similarly
