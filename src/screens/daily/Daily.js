@@ -1,9 +1,10 @@
-import { Button, View } from "react-native";
+import { Button, View,Text } from "react-native";
 
-const Daily = ({ navigation }) => {
+const Daily = ({ userData }) => {
   return (
     <View>
-      <View></View>
+      <Text>Welcome {userData?.name}</Text>
+      {/* Use userData here */}
     </View>
   );
 };
