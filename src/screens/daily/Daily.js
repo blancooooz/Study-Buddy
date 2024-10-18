@@ -1,10 +1,20 @@
-import { Button, View,Text } from "react-native";
+import React from "react";
+import { View, Text } from "react-native";
+import { useSelector } from "react-redux"; // Import useSelector hook
 
-const Daily = ({ userData }) => {
+const Daily = () => {
+
+  let name = "";
+  try {
+    name = useSelector((state) => state.userData.name);
+  } catch (e) {
+    console.log(e);
+  }
+
   return (
     <View>
-      <Text>Welcome {userData?.name}</Text>
-      {/* Use userData here */}
+      <Text>Welcome, {name}!</Text>
+      {/* Your screen content */}
     </View>
   );
 };

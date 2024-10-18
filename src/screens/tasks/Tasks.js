@@ -1,6 +1,6 @@
 import { View,Text } from "react-native";
 
-const Tasks = ({ userData }) => {
+const Tasks = ({ }) => {
   return (
     <View>
       <Text>This is the Tasks Scrrem</Text>

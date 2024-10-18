@@ -1,196 +1,188 @@
+// Importing necessary libraries and components
 import React, { useEffect, useState } from "react";
-import { View, Button } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUser } from "./redux/actions";
-import { onSnapshot, doc } from "firebase/firestore";
-import { db, firebaseAuth } from "./utils/DataHandler";
-import firebase from "firebase/compat/app"; // Import Firebase app
-import "firebase/compat/auth"; // Import Firebase authentication
-import "firebase/compat/firestore"; // Import Firebase Firestore
-import {
-  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerItem,
-} from "@react-navigation/drawer";
-import { signOut } from "firebase/auth";
+import { View, Button } from "react-native"; 
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"; // For bottom tab navigation
+import { createStackNavigator } from "@react-navigation/stack"; // For stack navigation within tabs
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from "@react-navigation/drawer"; // For drawer navigation
+import { useDispatch, useSelector } from "react-redux"; // Redux hooks to dispatch actions and select state
+import { fetchUserData } from "./redux/actions"; // Redux action to fetch user data
+import { firebaseAuth } from "./utils/DataHandler"; // Firebase authentication utilities
+import { signOut } from "firebase/auth"; // Firebase signOut method
 
-// Screens
+// Importing screens for each part of the app
 import Daily from "./screens/daily/Daily";
 import Tasks from "./screens/tasks/Tasks";
 import Calendar from "./screens/calendar/Calender";
 import StudyPlan from "./screens/study/StudyPlan";
-import Settings from "./screens/account/Settings"; // Drawer screen
-import Preferences from "./screens/account/Preferences"; // Drawer screen
+import Settings from "./screens/account/Settings";
+import Preferences from "./screens/account/Preferences";
 import Username from "./screens/account/Username";
 import ChangePassword from "./screens/account/ChangePassword";
 
-// Redux/State
-import { colors } from "./theme/colors"; // Theme colors
+import { colors } from "./theme/colors"; // App-wide theme colors
 
-// Navigators
-const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
+// Navigators for tabs, stacks, and drawers
+const Tab = createBottomTabNavigator(); // Bottom Tab Navigator
+const Stack = createStackNavigator(); // Stack Navigator
+const Drawer = createDrawerNavigator(); // Drawer Navigator
 
-// Example of passing userData in one of the stacks
-const DailyStack = ({ userData }) => (
+/**
+ * Stack Navigator for the "Daily" screen.
+ */
+const DailyStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Daily" options={{ headerShown: false }}>
-      {() => <Daily userData={userData} />}
+      {() => <Daily />} 
     </Stack.Screen>
-    {/* Add other screens and pass userData similarly */}
   </Stack.Navigator>
 );
 
-const TasksStack = ({ userData }) => (
+/**
+ * Stack Navigator for the "Tasks" screen and its related screens.
+ */
+const TasksStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Tasks" options={{ headerShown: false }}>
-      {() => <Tasks userData={userData} />}
+      {() => <Tasks />} 
     </Stack.Screen>
-    {/* Add other screens related to Tasks */}
+    {/* Add other screens related to Tasks here */}
   </Stack.Navigator>
 );
 
-const CalendarStack = ({ userData }) => (
+/**
+ * Stack Navigator for the "Calendar" screen.
+ */
+const CalendarStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Calendar" options={{ headerShown: false }}>
-      {() => <Calendar userData={userData} />}
+      {() => <Calendar />} 
     </Stack.Screen>
-    {/* Add other screens related to Tasks */}
   </Stack.Navigator>
 );
 
-const StudyPlanStack = ({ userData }) => (
+/**
+ * Stack Navigator for the "Study Plan" screen.
+ */
+const StudyPlanStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Study Plan" options={{ headerShown: false }}>
-      {() => <StudyPlan userData={userData} />}
+      {() => <StudyPlan />} 
     </Stack.Screen>
-    {/* Add other screens related to Tasks */}
   </Stack.Navigator>
 );
-const SettingsStack = ({ userData }) => {
+
+/**
+ * Stack Navigator for the "Settings" and related screens.
+ */
+const SettingsStack = () => {
   return (
     <Stack.Navigator initialRouteName="Settings">
       <Stack.Screen name="SettingsScreen" options={{ headerShown: false }}>
-        {({ navigation }) => (
-          <Settings userData={userData} navigation={navigation} />
-        )}
+        {({ navigation }) => <Settings navigation={navigation} />} 
       </Stack.Screen>
       <Stack.Screen name="Username" options={{ headerShown: false }}>
-        {({ navigation }) => (
-          <Username navigation={navigation} userData={userData} />
-        )}
+        {({ navigation }) => <Username navigation={navigation} />} 
       </Stack.Screen>
       <Stack.Screen name="ChangePassword" options={{ headerShown: false }}>
-        {({ navigation }) => (
-          <ChangePassword navigation={navigation} userData={userData} />
-        )}
+        {({ navigation }) => <ChangePassword navigation={navigation} />} 
       </Stack.Screen>
     </Stack.Navigator>
   );
 };
 
-// Drawer Navigator wrapping the Bottom Tab Navigator
-const DrawerNavigator = ({ isDarkTheme, toggleTheme, userData }) => (
+/**
+ * Drawer Navigator that wraps around the Bottom Tab Navigator.
+ * Contains the "Settings" and "Preferences" options as drawer items.
+ */
+const DrawerNavigator = ({ isDarkTheme, toggleTheme }) => (
   <Drawer.Navigator
     initialRouteName="Home"
     drawerContent={(props) => {
       return (
         <DrawerContentScrollView {...props}>
           <DrawerItemList {...props} />
-          <DrawerItem label="Logout" onPress={() => signOut(firebaseAuth)} />
+          {/* Logout button */}
+          <DrawerItem label="Logout" onPress={() => signOut(firebaseAuth)} /> 
         </DrawerContentScrollView>
       );
     }}
   >
     <Drawer.Screen name="Home" options={{ title: "Home" }}>
-      {() => <BottomTabNavigator userData={userData} />}
+      {() => <BottomTabNavigator />} 
     </Drawer.Screen>
     <Drawer.Screen name="Settings" options={{ title: "Settings" }}>
-      {() => <SettingsStack userData={userData} />}
+      {() => <SettingsStack />} 
     </Drawer.Screen>
     <Drawer.Screen name="Preferences">
-      {() => (
-        <Preferences
-          toggleTheme={toggleTheme}
-          isDarkTheme={isDarkTheme}
-          userData={userData} // Passing user data here as well
-        />
-      )}
+      {() => <Preferences toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />} 
     </Drawer.Screen>
   </Drawer.Navigator>
 );
 
-// Bottom Tab Navigator with the 4 stack navigators
-const BottomTabNavigator = ({ userData }) => (
+/**
+ * Bottom Tab Navigator that contains the main navigation tabs for the app.
+ * It uses the Stack Navigators for each section (Daily, Tasks, Calendar, Study Plan).
+ */
+const BottomTabNavigator = () => (
   <Tab.Navigator>
-    <Tab.Screen
-      name="DailyStack"
-      options={{ title: "Daily", headerShown: false }}
-    >
-      {() => <DailyStack userData={userData} />}
+    <Tab.Screen name="DailyStack" options={{ title: "Daily", headerShown: false }}>
+      {() => <DailyStack />} 
     </Tab.Screen>
-    <Tab.Screen
-      name="TasksStack"
-      options={{ title: "Tasks", headerShown: false }}
-    >
-      {() => <TasksStack userData={userData} />}
+    <Tab.Screen name="TasksStack" options={{ title: "Tasks", headerShown: false }}>
+      {() => <TasksStack />} 
     </Tab.Screen>
-    <Tab.Screen
-      name="CalendarStack"
-      options={{ title: "Calendar", headerShown: false }}
-    >
-      {() => <CalendarStack userData={userData} />}
+    <Tab.Screen name="CalendarStack" options={{ title: "Calendar", headerShown: false }}>
+      {() => <CalendarStack />} 
     </Tab.Screen>
-    <Tab.Screen
-      name="StudyPlanStack"
-      options={{ title: "Study Plan", headerShown: false }}
-    >
-      {() => <StudyPlanStack userData={userData} />}
+    <Tab.Screen name="StudyPlanStack" options={{ title: "Study Plan", headerShown: false }}>
+      {() => <StudyPlanStack />} 
     </Tab.Screen>
   </Tab.Navigator>
 );
 
-// Main component that initializes everything
+/**
+ * The main component that initializes the app and handles user state.
+ * It fetches user data and displays a loading indicator if data is still being fetched.
+ * It also passes the `isDarkTheme` and `toggleTheme` props to the DrawerNavigator.
+ */
 const Main = ({ isDarkTheme, toggleTheme }) => {
-  const dispatch = useDispatch();
-  const userData = useSelector((state) => state.user);
+  const dispatch = useDispatch(); // Redux's dispatch function
+  const userData = useSelector((state) => state.userData); // Get user data from Redux store
+
+  // Fetch user data when the component mounts if not already present
   useEffect(() => {
     if (!userData) {
-      dispatch(fetchUser());
-    } 
+      dispatch(fetchUserData()); // Fetch user data from Firestore and store in Redux
+    }
   }, []);
+
+  // State to track loading status
+  const [isLoading, setIsLoading] = useState(true); 
+
+  // Set loading state to false once userData is available
   useEffect(() => {
     if (userData) {
-      setIsLoading(false)
-    } 
-  }, []);
+      setIsLoading(false);
+    }
+  }, [userData]);
 
-  const [isLoading, setIsLoading] = useState(false);
-
+  // Show a loading screen while data is being fetched
   if (isLoading) {
     return (
       <View
         style={{
           flex: 1,
           justifyContent: "center",
-          backgroundColor: colors.white,
+          backgroundColor: colors.white, // Set background color from the theme
         }}
       >
-        {/* Show loading indicator */}
+        {/* Add a loading indicator component here */}
       </View>
     );
   }
 
-  return (
-    <DrawerNavigator
-      isDarkTheme={isDarkTheme}
-      toggleTheme={toggleTheme}
-      userData={userData} // Pass userData to DrawerNavigator
-    />
-  );
+  // Render the DrawerNavigator once data is loaded
+  return <DrawerNavigator isDarkTheme={isDarkTheme} toggleTheme={toggleTheme} />;
 };
+
 export default Main;
