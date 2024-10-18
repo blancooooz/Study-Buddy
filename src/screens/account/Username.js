@@ -22,7 +22,7 @@ const Username = ({navigation,userData}) => {
 
   const [username, setUsername] = useState("");
   return (
-    <View style={{ marginTop: 40 }}>
+    <View style={{ marginTop: 40, padding: 20 }}>
       <Text style={{ fontSize: 20, marginBottom: 20 }}>Current Username: {currentUsername}</Text>
 
       <Text>Enter new Username</Text>
@@ -31,7 +31,7 @@ const Username = ({navigation,userData}) => {
         onChangeText={(text) => {
           setUsername(text);
         }}
-        style={{ borderWidth: 1 }}
+        style={{ borderWidth: 1, padding: 10, marginBottom: 20 }}
       ></TextInput>
       <Button
         title="Save"
