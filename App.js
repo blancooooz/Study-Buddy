@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react"; // Import React hooks
 import { View } from "react-native"; // Import React Native components
 
@@ -7,11 +6,9 @@ import { onAuthStateChanged } from "firebase/auth"; // Import onAuthStateChanged
 
 // REDUX/STATE MANAGEMENT
 import { Provider } from "react-redux"; // Import Redux provider to pass down the store to components
-import store from './src/redux/store'
+import store from "./src/redux/store";
 import { lightTheme, darkTheme } from "./src/theme/theme"; // Import your themes
 import { app } from "./src/utils/DataHandler"; // Import app configuration from Firebase utility
-
-
 
 // FIREBASE
 import { firebaseAuth } from "./src/utils/DataHandler"; // Import Firebase authentication instance
@@ -20,9 +17,6 @@ import { firebaseAuth } from "./src/utils/DataHandler"; // Import Firebase authe
 import { NavigationContainer, ThemeProvider } from "@react-navigation/native"; // Import React Navigation container
 import { createStackNavigator } from "@react-navigation/stack"; // Import Stack Navigator for screen transitions
 const Stack = createStackNavigator(); // Create a stack navigator
-
-// THEME
-import { colors } from "./src/theme/colors"; // Import theme colors
 
 // SCREEN IMPORTS
 import Main from "./src/Main"; // Import Main screen
@@ -60,7 +54,6 @@ export default function App() {
         style={{
           flex: 1, // Fill the entire screen
           justifyContent: "center", // Center the content vertically
-          backgroundColor: colors.background, // Set the background color
         }}
       >
         {/* Empty loading view */}
@@ -72,26 +65,28 @@ export default function App() {
   if (!user) {
     console.log("User not logged in");
     return (
-      <NavigationContainer>
-        {/* Stack navigator for the authentication flow */}
-        <Stack.Navigator initialRouteName="Landing">
-          <Stack.Screen
-            name="Landing"
-            component={Landing}
-            options={{ headerShown: false }} // Hide the header
-          />
-          <Stack.Screen
-            name="Register"
-            component={Register}
-            options={{ headerShown: false }} // Hide the header
-          />
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }} // Hide the header
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <ThemeProvider value={isDarkTheme ? darkTheme : lightTheme}>
+        <NavigationContainer theme={isDarkTheme ? darkTheme : lightTheme}>
+          {/* Stack navigator for the authentication flow */}
+          <Stack.Navigator initialRouteName="Landing">
+            <Stack.Screen
+              name="Landing"
+              component={Landing}
+              options={{ headerShown: false }} // Hide the header
+            />
+            <Stack.Screen
+              name="Register"
+              component={Register}
+              options={{ headerShown: false }} // Hide the header
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ headerShown: false }} // Hide the header
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ThemeProvider>
     );
   }
   //moew
