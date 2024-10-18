@@ -1,8 +1,10 @@
-import { View } from "react-native"
+import { View,Text } from "react-native";
 
-const Tasks = ()=>{
-    return (<View>
-        
-    </View>)
-}
+const Tasks = ({ userData }) => {
+  return (
+    <View>
+      <Text>This is the Tasks Scrrem</Text>
+    </View>
+  );
+};
 export default Tasks;

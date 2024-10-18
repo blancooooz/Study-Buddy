@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Text, View, TextInput, Button } from "react-native";
 
-const ChangePassword = () =>{
+const ChangePassword = ({userData, navigation}) =>{
     //new password
     async function SavePassword() {
         // functionality .. 
@@ -30,8 +30,7 @@ const ChangePassword = () =>{
           ></TextInput>
           <Button
             title="Save changes"
-            onPress={() => {
-              SavePassword();
+            onPress={() => {na
             }}
           ></Button>
         </View>

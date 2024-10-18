@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import { View,Button } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { fetchUser } from "./redux/actions/index";
+import { onSnapshot, doc } from "firebase/firestore";
+import { db, firebaseAuth } from "./utils/DataHandler";
 import firebase from "firebase/compat/app"; // Import Firebase app
 import "firebase/compat/auth"; // Import Firebase authentication
 import "firebase/compat/firestore"; // Import Firebase Firestore
+import { DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer'
+import { signOut } from "firebase/auth";
 
 // Screens
 import Daily from "./screens/daily/Daily";
@@ -28,122 +32,141 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-const DailyStack = () => (
+// Example of passing userData in one of the stacks
+const DailyStack = ({ userData }) => (
   <Stack.Navigator>
-    <Stack.Screen
-      name="Daily"
-      component={Daily}
-      options={{ headerShown: false }}
-    />
-    {/* Add other screens related to Daily */}
+    <Stack.Screen name="Daily" options={{ headerShown: false }}>
+      {() => <Daily userData={userData} />}
+    </Stack.Screen>
+    {/* Add other screens and pass userData similarly */}
   </Stack.Navigator>
 );
 
-const TasksStack = () => (
+const TasksStack = ({ userData }) => (
   <Stack.Navigator>
-    <Stack.Screen
-      name="Tasks"
-      component={Tasks}
-      options={{ headerShown: false }}
-    />
+    <Stack.Screen name="Tasks" options={{ headerShown: false }}>
+      {() => 
+        <Tasks userData={userData} />
+      }
+    </Stack.Screen>
     {/* Add other screens related to Tasks */}
   </Stack.Navigator>
 );
 
-const CalendarStack = () => (
+const CalendarStack = ({ userData }) => (
   <Stack.Navigator>
-    <Stack.Screen
-      name="Calendar"
-      component={Calendar}
-      options={{ headerShown: false }}
-    />
-    {/* Add other screens related to Calendar */}
+    <Stack.Screen name="Calendar" options={{ headerShown: false }}>
+      {() => 
+        <Calendar userData={userData} />
+      }
+    </Stack.Screen>
+    {/* Add other screens related to Tasks */}
   </Stack.Navigator>
 );
 
-const StudyPlanStack = () => (
+const StudyPlanStack = ({ userData }) => (
   <Stack.Navigator>
-    <Stack.Screen
-      name="Study Plan"
-      component={StudyPlan}
-      options={{ headerShown: false }}
-    />
-    {/* Add other screens related to Study Plan */}
+    <Stack.Screen name="Study Plan" options={{ headerShown: false }}>
+      {() => 
+        <StudyPlan userData={userData} />
+      }
+    </Stack.Screen>
+    {/* Add other screens related to Tasks */}
   </Stack.Navigator>
 );
-const SettingsStack = () => {
+const SettingsStack = ({ userData }) => {
   return (
     <Stack.Navigator initialRouteName="Settings">
       <Stack.Screen
         name="SettingsScreen"
-        component={Settings}
         options={{ headerShown: false }}
-      />
+      >
+        {({ navigation }) => (
+          <Settings userData={userData} navigation={navigation} />
+        )}
+      </Stack.Screen>
       <Stack.Screen
         name="Username"
-        component={Username}
         options={{ headerShown: false }}
-      />
+      >
+      {({navigation})=><Username navigation={navigation} userData={userData}/>}</Stack.Screen>
       <Stack.Screen
         name="ChangePassword"
-        component={ChangePassword}
         options={{ headerShown: false }}
-      />
-      {/* Add other screens related to Settings */}
+      >
+      {({navigation})=><ChangePassword navigation={navigation} userData={userData}/>}</Stack.Screen>
     </Stack.Navigator>
   );
 };
 
-// Bottom Tab Navigator with the 4 stack navigators
-const BottomTabNavigator = () => (
-  <Tab.Navigator>
-    <Tab.Screen
-      name="DailyStack"
-      component={DailyStack}
-      options={{ title: "Daily", headerShown: false }}
-    />
-    <Tab.Screen
-      name="TasksStack"
-      component={TasksStack}
-      options={{ title: "Tasks", headerShown: false }}
-    />
-    <Tab.Screen
-      name="CalendarStack"
-      component={CalendarStack}
-      options={{ title: "Calendar", headerShown: false }}
-    />
-    <Tab.Screen
-      name="StudyPlanStack"
-      component={StudyPlanStack}
-      options={{ title: "Study Plan", headerShown: false }}
-    />
-  </Tab.Navigator>
-);
-
 // Drawer Navigator wrapping the Bottom Tab Navigator
-const DrawerNavigator = ({ isDarkTheme, toggleTheme }) => (
-  <Drawer.Navigator initialRouteName="Home">
-    <Drawer.Screen
-      name="Home"
-      component={BottomTabNavigator}
-      options={{ title: "Home" }}
-    />
-    <Drawer.Screen
-      name="Settings"
-      component={SettingsStack}
-      options={{ title: "Settings"}}
-    />
+const DrawerNavigator = ({ isDarkTheme, toggleTheme, userData }) => (
+  <Drawer.Navigator initialRouteName="Home" drawerContent={props => {
+    return (
+      <DrawerContentScrollView {...props}>
+        <DrawerItemList {...props} />
+        <DrawerItem label="Logout" onPress={()=>signOut(firebaseAuth)} />
+      </DrawerContentScrollView>
+    )
+  }}>
+    <Drawer.Screen name="Home" options={{ title: "Home" }}>
+      {() => <BottomTabNavigator userData={userData} />}
+    </Drawer.Screen>
+    <Drawer.Screen name="Settings" options={{ title: "Settings" }}>
+      {() => <SettingsStack userData={userData} />}
+    </Drawer.Screen>
     <Drawer.Screen name="Preferences">
       {() => (
-        <Preferences toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
+        <Preferences
+          toggleTheme={toggleTheme}
+          isDarkTheme={isDarkTheme}
+          userData={userData} // Passing user data here as well
+        />
       )}
     </Drawer.Screen>
   </Drawer.Navigator>
 );
 
+// Bottom Tab Navigator with the 4 stack navigators
+const BottomTabNavigator = ({ userData }) => (
+  <Tab.Navigator>
+    <Tab.Screen
+      name="DailyStack"
+      options={{ title: "Daily", headerShown: false }}
+    >
+      {() => <DailyStack userData={userData} />}
+    </Tab.Screen>
+    <Tab.Screen
+      name="TasksStack"
+      options={{ title: "Tasks", headerShown: false }}
+    >
+      {() => <TasksStack userData={userData} />}
+    </Tab.Screen>
+    <Tab.Screen
+      name="CalendarStack"
+      options={{ title: "Calendar", headerShown: false }}
+    >
+      {() => <CalendarStack userData={userData} />}
+    </Tab.Screen>
+    <Tab.Screen
+      name="StudyPlanStack"
+      options={{ title: "Study Plan", headerShown: false }}
+    >
+      {() => <StudyPlanStack userData={userData} />}
+    </Tab.Screen>
+  </Tab.Navigator>
+);
+
 // Main component that initializes everything
-const Main = ({ navigation, isDarkTheme, toggleTheme }) => {
-  useEffect(() => {}, []);
+const Main = ({ isDarkTheme, toggleTheme }) => {
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const uid = firebaseAuth.currentUser.uid;
+    const unsub = onSnapshot(doc(db, "users", uid), (doc) => {
+      setUserData(doc.data()); // Fetch and set user data
+    });
+  }, []);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -161,9 +184,12 @@ const Main = ({ navigation, isDarkTheme, toggleTheme }) => {
     );
   }
 
-  // Drawer Navigator is the main navigator
   return (
-    <DrawerNavigator isDarkTheme={isDarkTheme} toggleTheme={toggleTheme} />
+    <DrawerNavigator
+      isDarkTheme={isDarkTheme}
+      toggleTheme={toggleTheme}
+      userData={userData} // Pass userData to DrawerNavigator
+    />
   );
 };
 
