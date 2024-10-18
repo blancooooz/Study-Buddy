@@ -1,24 +1,17 @@
-// REACT
-import { StatusBar } from "expo-status-bar"; // Import Expo's StatusBar component
+
 import React, { useEffect, useState } from "react"; // Import React hooks
-import { StyleSheet, Text, View } from "react-native"; // Import React Native components
+import { View } from "react-native"; // Import React Native components
 
 // FIREBASE
 import { onAuthStateChanged } from "firebase/auth"; // Import onAuthStateChanged function from Firebase
-import { app } from "./src/utils/DataHandler"; // Import app configuration from Firebase utility
 
 // REDUX/STATE MANAGEMENT
-import { configureStore } from "@reduxjs/toolkit"; // Import Redux Toolkit's configureStore
 import { Provider } from "react-redux"; // Import Redux provider to pass down the store to components
-import logger from "redux-logger"; // Import Redux logger middleware
-import rootReducer from "./src/redux/reducers"; // Import root reducer for Redux store
-
+import store from './src/redux/store'
 import { lightTheme, darkTheme } from "./src/theme/theme"; // Import your themes
-// Configure Redux store with logger middleware
-const store = configureStore({
-  reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
-});
+import { app } from "./src/utils/DataHandler"; // Import app configuration from Firebase utility
+
+
 
 // FIREBASE
 import { firebaseAuth } from "./src/utils/DataHandler"; // Import Firebase authentication instance

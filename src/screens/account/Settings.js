@@ -1,6 +1,6 @@
 import { View, Text, Button } from "react-native";
 
-const Settings = ({ userData,navigation }) => {
+const Settings = ({navigation }) => {
   return (
     <View>
       <Button
