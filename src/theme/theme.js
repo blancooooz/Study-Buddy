@@ -3,12 +3,13 @@ import { colors } from "./colors";
 export const lightTheme = {
   dark: false,
   colors: {
-    primary: colors.white,
-    background: colors.white,
-    card: "#f8f9fa",
+    primary: "#8FABB7",
+    background: "#FBFBFB",
+    card: "#f3f3ff",
     text: "#000000",
-    border: "#e0e0e0",
-    notification: "#ff4757",
+    secondary:'#f1e8e3',
+    tertriary: "#cccfff",
+    quatriary: '#cadfcf'
   },
 };
 

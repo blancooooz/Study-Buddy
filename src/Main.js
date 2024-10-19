@@ -106,7 +106,7 @@ const DrawerNavigator = ({ isDarkTheme, toggleTheme }) => (
       );
     }}
   >
-    <Drawer.Screen name="Home" options={{ title: "Home" }}>
+    <Drawer.Screen name="Home" options={{ title: "Home", headerShown:'false' }}>
       {() => <BottomTabNavigator />} 
     </Drawer.Screen>
     <Drawer.Screen name="Settings" options={{ title: "Settings" }}>
@@ -123,7 +123,7 @@ const DrawerNavigator = ({ isDarkTheme, toggleTheme }) => (
  * It uses the Stack Navigators for each section (Daily, Tasks, Calendar, Study Plan).
  */
 const BottomTabNavigator = () => (
-  <Tab.Navigator>
+  <Tab.Navigator >
     <Tab.Screen name="DailyStack" options={{ title: "Daily", headerShown: false }}>
       {() => <DailyStack />} 
     </Tab.Screen>
