@@ -1,6 +1,6 @@
 // Importing necessary libraries and components
 import React, { useEffect, useState } from "react";
-import { View, Button } from "react-native"; 
+import { View, Button, StyleSheet, Text } from "react-native"; 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"; // For bottom tab navigation
 import { createStackNavigator } from "@react-navigation/stack"; // For stack navigation within tabs
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from "@react-navigation/drawer"; // For drawer navigation
@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux"; // Redux hooks to dispat
 import { fetchUserData } from "./redux/actions"; // Redux action to fetch user data
 import { firebaseAuth } from "./utils/DataHandler"; // Firebase authentication utilities
 import { signOut } from "firebase/auth"; // Firebase signOut method
-
+import Icon from 'react-native-vector-icons/FontAwesome';
 // Importing screens for each part of the app
 import Daily from "./screens/daily/Daily";
 import Tasks from "./screens/tasks/Tasks";
@@ -123,19 +123,58 @@ const DrawerNavigator = ({ isDarkTheme, toggleTheme }) => (
  * It uses the Stack Navigators for each section (Daily, Tasks, Calendar, Study Plan).
  */
 const BottomTabNavigator = () => (
-  <Tab.Navigator>
-    <Tab.Screen name="DailyStack" options={{ title: "Daily", headerShown: false }}>
-      {() => <DailyStack />} 
-    </Tab.Screen>
-    <Tab.Screen name="TasksStack" options={{ title: "Tasks", headerShown: false }}>
-      {() => <TasksStack />} 
-    </Tab.Screen>
-    <Tab.Screen name="CalendarStack" options={{ title: "Calendar", headerShown: false }}>
-      {() => <CalendarStack />} 
-    </Tab.Screen>
-    <Tab.Screen name="StudyPlanStack" options={{ title: "Study Plan", headerShown: false }}>
-      {() => <StudyPlanStack />} 
-    </Tab.Screen>
+  <Tab.Navigator
+    // Configure screen options for each tab
+    screenOptions={({ route }) => ({
+      // Define the icon for each tab based on the route name
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName;
+
+        // Set icon name based on the route name and focus state, this is an Icon that will be displayed over the tab screen
+        if (route.name === 'DailyStack') {
+          iconName = focused ? 'calendar' : 'calendar-o';
+        } else if (route.name === 'TasksStack') {
+          iconName = focused ? 'tasks' : 'tasks';
+        } else if (route.name === 'CalendarStack') {
+          iconName = focused ? 'calendar-check-o' : 'calendar';
+        } else if (route.name === 'StudyPlanStack') {
+          iconName = focused ? 'book' : 'book';
+        }
+
+        // Return the icon component
+        return <Icon name={iconName} size={size} color={color} />;
+      },
+      // Define the label for each tab based on the route name
+      tabBarLabel: ({ focused }) => {
+        const label = route.name.replace('Stack', '');
+        return (
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: focused ? 'bold' : 'normal',
+              color: focused ? '#000' : '#888',
+            }}
+          >
+            {label}
+          </Text>
+        );
+      },
+      // Set active and inactive tint colors for the tab bar
+      tabBarActiveTintColor: '#000',
+      tabBarInactiveTintColor: '#888',
+      // Style the tab bar
+      tabBarStyle: {
+        backgroundColor: 'rgba(255,255,255,0.9)',
+        borderTopWidth: 0,
+        elevation: 5,
+      },
+    })}
+  >
+    {/* Define each tab screen and its corresponding stack navigator */}
+    <Tab.Screen name="DailyStack" component={DailyStack} options={{ title: 'Daily', headerShown: false }} />
+    <Tab.Screen name="TasksStack" component={TasksStack} options={{ title: 'Tasks', headerShown: false }} />
+    <Tab.Screen name="CalendarStack" component={CalendarStack} options={{ title: 'Calendar', headerShown: false }} />
+    <Tab.Screen name="StudyPlanStack" component={StudyPlanStack} options={{ title: 'Study Plan', headerShown: false }} />
   </Tab.Navigator>
 );
 
@@ -172,6 +211,7 @@ const Main = ({ isDarkTheme, toggleTheme }) => {
         style={{
           flex: 1,
           justifyContent: "center",
+
         }}
       >
         {/* Add a loading indicator component here */}
@@ -182,5 +222,18 @@ const Main = ({ isDarkTheme, toggleTheme }) => {
   // Render the DrawerNavigator once data is loaded
   return <DrawerNavigator isDarkTheme={isDarkTheme} toggleTheme={toggleTheme} />;
 };
-
+const styles = StyleSheet.create({
+  tabBar: {
+    backgroundColor:'black'
+  },
+  tabBarLabel: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  tabBarIcon: {
+    width: 24,
+    height: 24,
+  },
+});
 export default Main;
