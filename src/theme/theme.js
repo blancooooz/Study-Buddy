@@ -11,7 +11,7 @@ export const lightTheme = {
     button: '#806491',
     border: "#CCC",
     inputBackground: "#F5F5F5",
-    placeholderText:'#eeeeee'
+    placeholderText:'#666666'
   },
 };
 

@@ -51,7 +51,7 @@ const Register = () => {
           alignSelf: "center",
         }}
       >
-        <Text style={{color:theme.colors.text}}>Refister</Text>
+        <Text style={{color:theme.colors.text}}>Register</Text>
       </View>
 
       {/* Scrollable form section for user input */}
@@ -147,7 +147,7 @@ const Register = () => {
               <Text
                 style={{ color: theme.colors.background, fontWeight: "bold" }}
               >
-                Log in
+                Register
               </Text>
             </TouchableOpacity></View>
         </View>
