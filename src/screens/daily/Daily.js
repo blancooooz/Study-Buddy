@@ -4,7 +4,7 @@ import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 
 const Daily = () => {
-  theme = useTheme();
+  const theme = useTheme();
   // Try to get the user's name from the Redux store
   let username = "";
   let name = "";
@@ -28,12 +28,12 @@ const Daily = () => {
             fontSize: 26,
             fontWeight: "bold",
             marginBottom: 20,
-            color: theme.text, // Darker text color
+            color: theme.colors.text, // Darker text color
           }}
         >
           {username ? `Hello, ${username}!` : `Hello, ${name}!`}
         </Text>
-        <Text style={{ fontSize: 20, marginBottom: 12 }}>
+        <Text style={{ fontSize: 20, marginBottom: 12,color:theme.colors.text }}>
           Motivation quote or sum
         </Text>
       </View>
@@ -43,18 +43,18 @@ const Daily = () => {
         <View style={{ flex: 1 }}>
           <TouchableOpacity style={{ flex: 1, backgroundColor:theme.colors.secondary, margin:4,borderRadius:12 }}>
             
-          <Text style={{fontSize:20, fontWeight:'bold', marginLeft:12, marginTop:8}}>Start a Timer</Text>
+          <Text style={{fontSize:20, fontWeight:'bold', marginLeft:12, marginTop:8,color:theme.colors.text}}>Start a Timer</Text>
           </TouchableOpacity>
           <View style={{ flex: 1,backgroundColor:theme.colors.tertriary, margin:4,borderRadius:12 }}>
-          <Text style={{fontSize:20, fontWeight:'bold', marginLeft:12, marginTop:8}}>Progress Bar</Text>
+          <Text style={{fontSize:20, fontWeight:'bold', marginLeft:12, marginTop:8,color:theme.colors.text}}>Progress Bar</Text>
           </View>
         </View>
         <View style={{ flex: 1,backgroundColor:theme.colors.quatriary, margin:4,borderRadius:12, justifyContent:'flex-start' }}>
-          <Text style={{fontSize:20, fontWeight:'bold', marginLeft:12, marginTop:8}}>Daily Calender</Text>
+          <Text style={{fontSize:20, fontWeight:'bold', marginLeft:12, marginTop:8,color:theme.colors.text}}>Daily Calender</Text>
         </View>
       </View>
       {/* Section for tasks and events */}
-      <Text style={{paddingTop:12, fontSize:20, fontWeight:'600',paddingBottom:8}}>Tasks and Events for the day</Text>
+      <Text style={{paddingTop:12, fontSize:20, fontWeight:'600',paddingBottom:8,color:theme.colors.text}}>Tasks and Events for the day</Text>
       <ScrollView contentContainerStyle={{ paddingBottom: 30, flex:1 }}>
         {/* Placeholder for tasks */}
         <View
@@ -75,7 +75,7 @@ const Daily = () => {
           >
             Your Tasks for Today
           </Text>
-          <Text style={{ fontSize: 16 }}>No tasks yet!</Text>
+          <Text style={{ fontSize: 16,color:theme.colors.text }}>No tasks yet!</Text>
           {/* You can map your tasks here */}
         </View>
 
@@ -98,7 +98,7 @@ const Daily = () => {
           >
             Your Events for Today
           </Text>
-          <Text style={{ fontSize: 16 }}>No events scheduled!</Text>
+          <Text style={{ fontSize: 16,color:theme.colors.text }}>No events scheduled!</Text>
           {/* You can map your events here */}
         </View>
       </ScrollView>

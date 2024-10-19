@@ -2,17 +2,19 @@ import React, { useState } from "react";
 import { Text, View, TextInput, TouchableOpacity, Alert } from "react-native";
 import { firebaseAuth } from "../../utils/DataHandler"; // Firebase authentication handler
 import {
-  updatePassword, 
-  reauthenticateWithCredential, 
-  EmailAuthProvider 
+  updatePassword,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
 } from "firebase/auth"; // Firebase authentication functions
 import { useSelector } from "react-redux"; // Import useSelector to access Redux store
+import { useTheme } from "@react-navigation/native";
 
 /**
  * Component for changing the user's password.
  * Allows the user to enter their current password and update to a new one.
  */
 const ChangePassword = ({ navigation }) => {
+  const theme = useTheme();
   // Local state variables for storing input values
   const [currentPassword, setCurrentPassword] = useState(""); // Current password input
   const [password, setPassword] = useState(""); // New password input
@@ -53,70 +55,82 @@ const ChangePassword = ({ navigation }) => {
   }
 
   return (
-    <View style={{ flex: 0.6, justifyContent: "center", paddingHorizontal: 20 }}>
-      <Text style={{ marginBottom: 20 }}>Enter Current Password:</Text>
-      <TextInput
-      secureTextEntry
-      placeholder="Current Password"
-      value={currentPassword}
-      onChangeText={(text) => setCurrentPassword(text)}
-      style={{
-        borderWidth: 1,
-        borderColor: "#CCC",
-        padding: 12,
-        borderRadius: 10,
-        marginBottom: 20,
-      }}
-    />
-
-      <Text style={{ marginBottom: 20 }}>Enter New Password:</Text>
+    <View
+      style={{ flex: 0.6, justifyContent: "center", paddingHorizontal: 20 }}
+    >
+      <Text style={{ marginBottom: 20,color:theme.colors.text  }}>Enter Current Password:</Text>
       <TextInput
         secureTextEntry
-        placeholder="New Password"
-        value={password}
-        onChangeText={(text) => setPassword(text)}
+        placeholder="Current Password"
+        placeholderTextColor={theme.colors.text}
+        value={currentPassword}
+        onChangeText={(text) => setCurrentPassword(text)}
         style={{
+          color:theme.colors.text,
           borderWidth: 1,
-          borderColor: "#CCC",
+          borderColor: theme.colors.border,
           padding: 12,
           borderRadius: 10,
           marginBottom: 20,
         }}
       />
 
-      <Text style={{ marginBottom: 20 }}>Enter New Password Again:</Text>
+      <Text style={{ marginBottom: 20, color: theme.colors.text }}>
+        Enter New Password:
+      </Text>
+      <TextInput
+        secureTextEntry
+        placeholder="New Password"
+        placeholderTextColor={theme.colors.text}
+        value={password}
+        onChangeText={(text) => setPassword(text)}
+        style={{
+          color:theme.colors.text,
+          borderWidth: 1,
+          borderColor: theme.colors.border,
+          padding: 12,
+          borderRadius: 10,
+          marginBottom: 20,
+        }}
+      />
+
+      <Text style={{ marginBottom: 20, color: theme.colors.text }}>
+        Enter New Password Again:
+      </Text>
       <TextInput
         secureTextEntry
         placeholder="Confirm New Password"
+        placeholderTextColor={theme.colors.text}
         value={confirmPassword}
         onChangeText={(text) => setConfirmPassword(text)}
         style={{
+          color:theme.colors.text,
           borderWidth: 1,
-          borderColor: "#CCC",
+          borderColor: theme.colors.border,
           padding: 12,
           borderRadius: 10,
           marginBottom: 40,
         }}
       />
       {password !== confirmPassword && confirmPassword.length > 0 ? (
-      <Text style={{ color: "red", marginBottom: 20 }}>
-        Passwords do not match
-      </Text>
-    ) : null}
-
+        <Text style={{ color: "red", marginBottom: 20 }}>
+          Passwords do not match
+        </Text>
+      ) : null}
 
       <TouchableOpacity
         onPress={SavePassword}
         style={{
-          backgroundColor: "#007AFF",
+          backgroundColor: theme.colors.button,
           padding: 15,
           borderRadius: 10,
           alignItems: "center",
         }}
       >
-        <Text style={{ color: "white", fontWeight: "bold" }}>Save Changes</Text>
+        <Text style={{ color: theme.colors.background, fontWeight: "bold" }}>
+          Save Changes
+        </Text>
       </TouchableOpacity>
-
     </View>
   );
 };
