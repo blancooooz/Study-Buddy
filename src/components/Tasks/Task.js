@@ -1,11 +1,23 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { colors } from "../../theme/colors";
+import { Circle } from "react-native-progress";
 import * as Icons from "react-native-vector-icons";
 const good_colors = colors;
 //task is the task object that will come into this component
-const Task = ({task}) => {
+const Task = ({ task }) => {
+  const [currentTask, setCurrentTask] = useState(task);
+  const [isChecked, setIsChecked] = useState(task.completed);
+  const complete_task = () => {
+    setIsChecked(!isChecked);
+  };
   const { colors } = useTheme();
   const test_task_obj = {
     title: "Turn in HW4",
@@ -18,37 +30,118 @@ const Task = ({task}) => {
     completed: false,
     time_due: "11:59 PM",
     multi_step: false,
-    steps:[],
+    steps: [{ step1: false }, { step2: false }, { step3: false }],
   };
   return (
     <View
       style={{
         backgroundColor: good_colors.gray[800],
-        height: 100,
+
         width: "100%",
         borderRadius: 12,
         padding: 12,
-        marginBottom:8,
+        marginBottom: 8,
+        flexDirection: "row",
       }}
     >
+      <View style={{ justifyContent: "center", alignItems: "center" }}>
+        {currentTask.multi_step && currentTask.steps ? (
+          <ProgressCircle steps={currentTask.steps} />
+        ) : null}
+      </View>
       <View style={{}}>
         <View style={{ flexDirection: "row" }}>
-          <Text style={{ color: good_colors.white, fontSize: 18,fontFamily:'SFProRoundedSemibold' }}>
+          <Text
+            style={{
+              color: good_colors.white,
+              fontSize: 18,
+              fontFamily: "SFProRoundedSemibold",
+            }}
+          >
             {task.title}
           </Text>
         </View>
-        <View style={{flexDirection:'row', alignItems:'center',marginTop:8, fontFamily:'SFProRoundedMedium'}}>
-        <Icons.Feather name='clock' size={18} color={good_colors.gray[400]}/>
-          <Text style={{ color: good_colors.gray[400],marginLeft:4, }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 8,
+            fontFamily: "SFProRoundedMedium",
+          }}
+        >
+          <Icons.Feather name="clock" size={18} color={good_colors.gray[400]} />
+          <Text style={{ color: good_colors.gray[400], marginLeft: 4 }}>
             {task.time_due}
           </Text>
         </View>
-        <View style={{flexDirection:'row',marginTop:4, alignItems:'center',fontFamily:'SFProRoundedMedium'}}>
-        <Icons.Feather name='calendar' size={18} color={good_colors.gray[400]}/>
-          <Text style={{ color: good_colors.gray[400],marginLeft:4, }}>
-            {test_task_obj.deadline}
+        <View
+          style={{
+            flexDirection: "row",
+            marginTop: 4,
+            alignItems: "center",
+            fontFamily: "SFProRoundedMedium",
+          }}
+        >
+          <Icons.Feather
+            name="calendar"
+            size={18}
+            color={good_colors.gray[400]}
+          />
+          <Text style={{ color: good_colors.gray[400], marginLeft: 4 }}>
+            {task.deadline}
           </Text>
         </View>
+      </View>
+      <View
+        style={{
+          alignItems: "flex-end",
+          justifyContent: "center",
+          //backgroundColor: good_colors.red[200],
+          flex: 1,
+        }}
+      >
+        <Pressable onPress={() => complete_task()}>
+          {isChecked ? (
+            <View
+              style={{
+                height: 40,
+                width: 40,
+                borderRadius: 24,
+                backgroundColor: good_colors.green[200],
+                marginRight: 8,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Icons.Feather
+                name="check"
+                size={24}
+                color={good_colors.green[500]}
+              ></Icons.Feather>
+            </View>
+          ) : (
+            <View
+              style={{
+                height: 40,
+                width: 40,
+                borderRadius: 24,
+                backgroundColor: good_colors.gray[400],
+                marginRight: 8,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: good_colors.gray[800],
+                  height: 35,
+                  width: 35,
+                  borderRadius: 24,
+                }}
+              ></View>
+            </View>
+          )}
+        </Pressable>
       </View>
     </View>
     // <View style={{ height: 150, width: "100%", backgroundColor:good_colors.gray[500] }}>
@@ -101,6 +194,32 @@ const Task = ({task}) => {
     //     ></View>
     //   </View>
     // </View>
+  );
+};
+//i need a component that will render a progress circle, based off of how many tasks are completed in the step property of task_list
+const ProgressCircle = ({ steps }) => {
+  // Calculate the number of completed steps
+  const completedSteps = steps.filter((step) => Object.values(step)[0]).length;
+  // Calculate the progress as a fraction
+  const progress = completedSteps / steps.length;
+
+  return (
+    <View style={{ alignItems: "center", marginRight: 12 }}>
+      <Circle
+        size={50}
+        progress={progress}
+        showsText={true}
+        formatText={() => `${Math.round(progress * 100)}%`}
+        color={good_colors.green[500]}
+        unfilledColor={good_colors.gray[700]}
+        borderWidth={0}
+        textStyle={{
+          fontFamily: "SFProRoundedMedium",
+          fontSize: 18,
+          color: good_colors.white,
+        }}
+      />
+    </View>
   );
 };
 

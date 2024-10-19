@@ -42,6 +42,75 @@ const Tasks = ({ }) => {
   useEffect(() => {
     get_all_tasks();
   }, []); // Empty dependency array ensures it runs only once
+
+  // Sample task list, just for testing!!
+  const task_list = [
+    {
+      title: "Turn in HW4",
+      deadline: "June 5",
+      description: "Turn in HW4 on time for Programming Languages",
+      tags: ["school", "urgent"],
+      id: 1,
+      recurring: false,
+      priority: 1,
+      completed: false,
+      time_due: "11:59 PM",
+      multi_step: false,
+      steps: [],
+    },
+    {
+      title: "Grocery Shopping",
+      deadline: "June 6",
+      description: "Buy groceries for the week",
+      tags: ["personal", "shopping"],
+      id: 2,
+      recurring: true,
+      priority: 2,
+      completed: false,
+      time_due: "5:00 PM",
+      multi_step: false,
+      steps: [],
+    },
+    {
+      title: "Team Meeting",
+      deadline: "June 7",
+      description: "Attend the weekly team meeting",
+      tags: ["work", "meeting"],
+      id: 3,
+      recurring: true,
+      priority: 3,
+      completed: false,
+      time_due: "10:00 AM",
+      multi_step: false,
+      steps: [],
+    },
+    {
+      title: "Doctor Appointment",
+      deadline: "June 8",
+      description: "Visit the doctor for a regular check-up",
+      tags: ["health", "appointment"],
+      id: 4,
+      recurring: false,
+      priority: 1,
+      completed: false,
+      time_due: "2:00 PM",
+      multi_step: false,
+      steps: [],
+    },
+    {
+      title: "Finish Project Report",
+      deadline: "June 9",
+      description: "Complete the final report for the project",
+      tags: ["work", "urgent"],
+      id: 5,
+      recurring: false,
+      priority: 1,
+      completed: false,
+      time_due: "11:59 PM",
+      multi_step: true,
+      steps: [{"Draft report":true}, {"Review with team":false}, {"Finalize report":false}],
+    },
+  ];
   return (
     /* main screen view */
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -65,16 +134,18 @@ const Tasks = ({ }) => {
           </View>
         </Pressable>
       </View> 
+      <View style={{marginTop:32}}>
       {task_list.map((task) => (
         <Task key={task.id} task={task}></Task>
       ))}
+      </View>
     </View>
   );
 };
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
+    
     padding: 20,
     // justifyContent: "center",
   },
