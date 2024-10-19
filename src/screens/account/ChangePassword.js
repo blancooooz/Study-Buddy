@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, TextInput, Button, Alert } from "react-native";
+import { Text, View, TextInput, TouchableOpacity, Alert } from "react-native";
 import { firebaseAuth } from "../../utils/DataHandler"; // Firebase authentication handler
 import {
   updatePassword, 
@@ -53,32 +53,70 @@ const ChangePassword = ({ navigation }) => {
   }
 
   return (
-    <View style={{ marginTop: 40, padding: 20 }}>
+    <View style={{ flex: 0.6, justifyContent: "center", paddingHorizontal: 20 }}>
       <Text style={{ marginBottom: 20 }}>Enter Current Password:</Text>
       <TextInput
-        secureTextEntry
-        value={currentPassword}
-        onChangeText={(text) => setCurrentPassword(text)} // Update the currentPassword state
-        style={{ borderWidth: 1, padding: 10, marginBottom: 20 }}
-      />
-      
+      secureTextEntry
+      placeholder="Current Password"
+      value={currentPassword}
+      onChangeText={(text) => setCurrentPassword(text)}
+      style={{
+        borderWidth: 1,
+        borderColor: "#CCC",
+        padding: 12,
+        borderRadius: 10,
+        marginBottom: 20,
+      }}
+    />
+
       <Text style={{ marginBottom: 20 }}>Enter New Password:</Text>
       <TextInput
         secureTextEntry
+        placeholder="New Password"
         value={password}
-        onChangeText={(text) => setPassword(text)} // Update the password state
-        style={{ borderWidth: 1, padding: 10, marginBottom: 20 }}
+        onChangeText={(text) => setPassword(text)}
+        style={{
+          borderWidth: 1,
+          borderColor: "#CCC",
+          padding: 12,
+          borderRadius: 10,
+          marginBottom: 20,
+        }}
       />
 
       <Text style={{ marginBottom: 20 }}>Enter New Password Again:</Text>
       <TextInput
         secureTextEntry
+        placeholder="Confirm New Password"
         value={confirmPassword}
-        onChangeText={(text) => setConfirmPassword(text)} // Update the confirmPassword state
-        style={{ borderWidth: 1, padding: 10, marginBottom: 40 }}
+        onChangeText={(text) => setConfirmPassword(text)}
+        style={{
+          borderWidth: 1,
+          borderColor: "#CCC",
+          padding: 12,
+          borderRadius: 10,
+          marginBottom: 40,
+        }}
       />
+      {password !== confirmPassword && confirmPassword.length > 0 ? (
+      <Text style={{ color: "red", marginBottom: 20 }}>
+        Passwords do not match
+      </Text>
+    ) : null}
 
-      <Button title="Save changes" onPress={SavePassword}></Button> 
+
+      <TouchableOpacity
+        onPress={SavePassword}
+        style={{
+          backgroundColor: "#007AFF",
+          padding: 15,
+          borderRadius: 10,
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ color: "white", fontWeight: "bold" }}>Save Changes</Text>
+      </TouchableOpacity>
+
     </View>
   );
 };

@@ -1,6 +1,6 @@
 // Import necessary libraries and hooks
 import React, { useState } from 'react';
-import { Text, View, TextInput, Button } from 'react-native'; // React Native components
+import { Text, View, TextInput, TouchableOpacity } from 'react-native'; // React Native components
 import { connect } from 'react-redux'; // Connect component to Redux store
 import { updateUsername } from '../../redux/actions/index'; // Import the action to update username
 import { useSelector } from 'react-redux'; // Redux hook to access the store's state
@@ -25,28 +25,49 @@ const Username = ({ updateUsername }) => {
 
   return (
     // Container view with some styling for padding and spacing
-    <View style={{ marginTop: 40, padding: 20 }}>
+    <View style={{ marginTop: 40, paddingHorizontal: 20, paddingVertical: 30 }}>
       {/* Display the current username */}
-      <Text style={{ fontSize: 20, marginBottom: 20 }}>
+      <Text style={{ marginBottom: 40 }}>
         Current Username: {currentUsername}
       </Text>
 
       {/* Input field for entering a new username */}
-      <Text>Enter new Username</Text>
+      <Text style={{ marginBottom: 20 }}>
+        Enter new Username
+      </Text>
       <TextInput
+        placeholder="Add username"
         value={username} // Bind the value of the input to the local `username` state
         onChangeText={(text) => setUsername(text)} // Update state when the user types
-        style={{ borderWidth: 1, padding: 10, marginBottom: 20 }} // Styling for the input field
+        style={{
+          borderWidth: 1,
+          borderColor: "#CCC",
+          padding: 12,
+          borderRadius: 10,
+          marginBottom: 40, // Increased margin for more space below the input
+          backgroundColor: "#F5F5F5",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2,
+          shadowRadius: 4,
+        }}
       />
 
       {/* Button to save the new username */}
-      <Button
-        title="Save"
-        onPress={() => {
-          // When the button is pressed, update both Firebase and Redux
-          updateUsername(username); // Calls the Redux action to update the username
-        }}
-      />
+      <TouchableOpacity
+      onPress={() => {
+        updateUsername(username);
+      }}
+      style={{
+        backgroundColor: "#007AFF",
+        padding: 15,
+        borderRadius: 10,
+        alignItems: "center",
+      }}
+    >
+      <Text style={{ color: "white", fontWeight: "bold" }}>Save changes</Text>
+    </TouchableOpacity>
+
     </View>
   );
 };
