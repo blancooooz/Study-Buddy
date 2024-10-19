@@ -28,6 +28,7 @@ const Register = () => {
         uid: uid, // Store user ID from the result
         name: name, // Store user's name
         email: email, // Store user's email
+        task: [], // Initialize an empty array for tasks
       });
     } catch (e) {
       console.log(e); // Log any errors when adding document to Firestore

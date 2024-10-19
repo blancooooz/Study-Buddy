@@ -16,14 +16,7 @@ import { initializeFirestore } from "firebase/firestore"; // Import function to 
 
 // Firebase configuration object containing project-specific keys and IDs
 const firebaseConfig = {
-
-  apiKey: "AIzaSyCq4BF6OciC4FVEZ_F10QmrmoLGkWeFXqE",
-  authDomain: "study-app-bc788.firebaseapp.com",
-  projectId: "study-app-bc788",
-  storageBucket: "study-app-bc788.appspot.com",
-  messagingSenderId: "214203925511",
-  appId: "1:214203925511:web:5b3bfc05b4ede20e99d6a2",
-  measurementId: "G-ZLQ79S8Y48"
+  //
 };
 
 // Initialize app and auth
@@ -58,5 +51,43 @@ const db = initializeFirestore(app, {
   experimentalForceLongPolling: true, // Force long polling for better connection handling in React Native
 }, "(default)"); // Default Firestore namespace
 
+//adding a task to the databas
+export const add_task = (title, deadline, description, tags, id, recurring,priority,task_list, ) => {
+  try{
+  const completed=false;
+  const userId = firebaseAuth.currentUser.uid;
+  const tasks_copy = task_list;
+  //task object to store all the parameters in
+  const task = {
+    title: title,
+    deadline: deadline,
+    description: description,
+    tags: tags,
+    id: id,
+    recurring: recurring,
+    priority: priority,
+    completed: completed,
+  }
+  //access database and get reference to the doc
+  const docRef = firebase.firestore().collection('users').doc(userId);
+  //update the database with the new task
+  docRef.update({
+    tasks: firebase.firestore.FieldValue.arrayUnion(task)
+  })
+}catch(error){
+  console.log("error adding task: "+error)
+}
+}
+
+export const edit_task = (id, updated_task) =>{
+  try{
+    // access database and get ref to doc
+    const task_ref = firebase.firestore().collection('users').doc(userId)
+  }
+  
+  catch(error){
+    console.log("error editing task: "+error)
+  }
+}
 // Export Firebase authentication, app instance, and Firestore instance for use in other parts of the app
 export { firebaseAuth, app, db };
