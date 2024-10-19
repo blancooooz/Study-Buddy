@@ -20,7 +20,7 @@ const Daily = () => {
   }
 
   return (
-    <View style={{ flex: 1, padding: 20, backgroundColor: theme.card }}>
+    <View style={{ flex: 1, padding: 20, backgroundColor: theme.colors.background,borderWidth:0 }}>
       {/* Greeting message */}
       <View>
         <Text
@@ -41,31 +41,28 @@ const Daily = () => {
       {/* Section for meow*/}
       <View style={{ flex: 1, flexDirection: "row" }}>
         <View style={{ flex: 1 }}>
-          <TouchableOpacity style={{ flex: 1, backgroundColor:theme.colors.card, margin:4,borderRadius:4 }}>
-            <Text> Start a timer</Text>
+          <TouchableOpacity style={{ flex: 1, backgroundColor:theme.colors.secondary, margin:4,borderRadius:12 }}>
+            
+          <Text style={{fontSize:20, fontWeight:'bold', marginLeft:12, marginTop:8}}>Start a Timer</Text>
           </TouchableOpacity>
-          <View style={{ flex: 1,backgroundColor:theme.colors.card, margin:4,borderRadius:4 }}>
-            <Text>Progress Bar</Text>
+          <View style={{ flex: 1,backgroundColor:theme.colors.tertriary, margin:4,borderRadius:12 }}>
+          <Text style={{fontSize:20, fontWeight:'bold', marginLeft:12, marginTop:8}}>Progress Bar</Text>
           </View>
         </View>
-        <View style={{ flex: 1,backgroundColor:theme.colors.card, margin:4,borderRadius:4 }}>
-          <Text>Daily Calender</Text>
+        <View style={{ flex: 1,backgroundColor:theme.colors.quatriary, margin:4,borderRadius:12, justifyContent:'flex-start' }}>
+          <Text style={{fontSize:20, fontWeight:'bold', marginLeft:12, marginTop:8}}>Daily Calender</Text>
         </View>
       </View>
       {/* Section for tasks and events */}
+      <Text style={{paddingTop:12, fontSize:20, fontWeight:'600',paddingBottom:8}}>Tasks and Events for the day</Text>
       <ScrollView contentContainerStyle={{ paddingBottom: 30, flex:1 }}>
         {/* Placeholder for tasks */}
         <View
           style={{
-            marginBottom: 30, // Space between sections
+            marginBottom: 12, // Space between sections
             padding: 15,
-            backgroundColor: theme.colors.background, // White background for sections
-            borderRadius: 10,
-            shadowColor: theme.colors.text,
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 5,
-            elevation: 5, // For Android shadow
+            backgroundColor: theme.colors.card, // White background for sections
+            borderRadius: 18,
           }}
         >
           <Text
@@ -73,7 +70,7 @@ const Daily = () => {
               fontSize: 18,
               fontWeight: "bold",
               marginBottom: 10,
-              color: theme.colors.secondary,
+              color: theme.colors.text,
             }}
           >
             Your Tasks for Today
@@ -85,15 +82,10 @@ const Daily = () => {
         {/* Placeholder for events */}
         <View
           style={{
-            marginBottom: 30, // Space between sections
+            marginBottom: 12, // Space between sections
             padding: 15,
-            backgroundColor: theme.colors.background, // White background for sections
-            borderRadius: 10,
-            shadowColor: theme.colors.text,
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 5,
-            elevation: 5, // For Android shadow
+            backgroundColor: theme.colors.card, // White background for sections
+            borderRadius: 18,
           }}
         >
           <Text
@@ -101,7 +93,7 @@ const Daily = () => {
               fontSize: 18,
               fontWeight: "bold",
               marginBottom: 10,
-              color: theme.colors.secondary, // Color for section title (customize as needed)
+              color: theme.colors.text, // Color for section title (customize as needed)
             }}
           >
             Your Events for Today

@@ -5,9 +5,11 @@ export const lightTheme = {
   colors: {
     primary: "#8FABB7",
     background: "#FBFBFB",
-    card: "#D8DFE5",
+    card: "#f3f3ff",
     text: "#000000",
-    secondary:'#46656F'
+    secondary:'#f1e8e3',
+    tertriary: "#cccfff",
+    quatriary: '#cadfcf'
   },
 };
 
