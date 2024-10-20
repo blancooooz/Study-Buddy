@@ -16,7 +16,7 @@ import { initializeFirestore } from "firebase/firestore"; // Import function to 
 
 // Firebase configuration object containing project-specific keys and IDs
 const firebaseConfig = {
-  //
+
 };
 
 // Initialize app and auth
@@ -92,13 +92,41 @@ export const add_task = (
   }
 };
 
-export const edit_task = (id, updated_task) => {
-  try {
+export const edit_task = async(id, updated_task) =>{
+  try{
     // access database and get ref to doc
-    const task_ref = firebase.firestore().collection("users").doc(userId);
-  } catch (error) {
-    console.log("error editing task: " + error);
+    const task_ref = firebase.firestore().collection('users').doc(id)
+
+    await task_ref.update({
+      title: updated_task.title,
+      deadline: updated_task.deadline,
+      description: updated_task.description,
+      tags: updated_task.tags,
+      priority: updated_task.priority,
+      completed: updated_task.completed,
+
+  
+    });
+
+    console.log("Task successfully updated!");
   }
-};
+ 
+  catch(error){
+    console.log("error editing task: "+error)
+  }
+}
+
+const delete_task = async(id) => {
+try{
+  const task_ref = firebase.firestore().collection('users').doc(id)
+
+  await task_ref.delete()
+
+  console.log("task successfully deleted")
+
+} catch(error){
+  console.log("error deleting task" + error)
+}
+}
 // Export Firebase authentication, app instance, and Firestore instance for use in other parts of the app
 export { firebaseAuth, app, db };
