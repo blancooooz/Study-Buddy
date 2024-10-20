@@ -6,6 +6,9 @@ import {
   SET_TAGS, // For storing tags
   SET_EVENTS, // For storing events
   UPDATE_USERNAME, // For updating the username
+  DELETE_TASK,
+  ADD_TASKS,
+  EDIT_TASK,
   //ADD_TASK,
   //FETCH_USER_TASKS,
 } from "../actions";
@@ -63,16 +66,18 @@ export const userReducer = (state = initialState, action) => {
     case UPDATE_USERNAME:
       // Return the current state with the updated `Username` field set to the action's payload (new username)
       return { ...state, Username: action.payload };
-      {
-        /* 
-    case ADD_TASK:
-      return { ...state, tasks: [...tasks, action.payload] };
     case EDIT_TASK:
       return { ...state, tasks: [...tasks, action.payload] };
-    case FETCH_USER_TASKS:
-      return { ...state, tasks: action.payload };
-*/
-      }
+    case ADD_TASKS:
+      return {
+        ...state,
+        tasks: action.payload,
+      };
+    case DELETE_TASK:
+      return {
+        ...state,
+        tasks: action.payload,
+      };
     // Default case: if the action type doesn't match any case, return the state as is
     default:
       return state;

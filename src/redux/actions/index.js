@@ -1,7 +1,13 @@
 // Import Firebase authentication and Firestore database utilities
 import { firebaseAuth, db } from "../../utils/DataHandler";
 // Import Firestore methods for listening to document changes and updating documents
-import { onSnapshot, doc, updateDoc } from "firebase/firestore";
+import {
+  onSnapshot,
+  doc,
+  updateDoc,
+  FieldValue,
+  arrayRemove,
+} from "firebase/firestore";
 
 // Define action types as constants to avoid typos and manage action types easily
 export const FETCH_USER = "FETCH_USER"; // For fetching the current Firebase authenticated user
@@ -10,6 +16,9 @@ export const SET_TASKS = "SET_TASKS"; // For setting tasks in the Redux store
 export const SET_TAGS = "SET_TAGS"; // For setting tags in the Redux store
 export const SET_EVENTS = "SET_EVENTS"; // For setting events in the Redux store
 export const UPDATE_USERNAME = "UPDATE_USERNAME"; // For updating the username in the Redux store
+export const ADD_TASKS = "ADD_TASKS"; // For adding a task to the Redux store
+export const DELETE_TASK = "DELETE_TASK";
+export const EDIT_TASK = "EDIT_TASK";
 {
   /* 
 export const ADD_TASK = "ADD_TASK";
@@ -112,7 +121,112 @@ export const updateUsername = (username) => {
     }
   };
 };
+// export const add_task = () => {
+//   return async (dispatch) => {
+//     try {
+//       dispatch(add_task(task));
+//     } catch (error) {}
+//   };
+// };
 
+export const add_task = (
+  title,
+  deadline,
+  description,
+  tags,
+  id,
+  recurring,
+  priority,
+  task_list
+) => {
+  return async (dispatch) => {
+    try {
+      const completed = false;
+      const userId = firebaseAuth.currentUser.uid;
+      const tasks_copy = task_list;
+      //task object to store all the parameters in
+      const task = {
+        title: title,
+        deadline: deadline,
+        description: description,
+        tags: tags,
+        id: id,
+        recurring: recurring,
+        priority: priority,
+        completed: completed,
+      };
+      //access database and get reference to the document you're trying to update
+      const userRef = doc(db, "tasks", uid); // Reference to the Firestore document for the user's task information
+      await updateDoc(userRef, {
+        tasks: FieldValue.arrayUnion(task), // Update the "task" field in the Firestore document
+      });
+      //update the database with the new task
+
+      dispatch({ type: ADD_TASKS, payload: tasks_copy.push(task) });
+      //ADD_TASKS(tasks_copy.push(task));
+    } catch (error) {
+      console.log("error adding task: " + error);
+    }
+  };
+};
+export const delete_task = (taskId, task_list) => {
+  return async (dispatch) => {
+    try {
+      const userId = firebaseAuth.currentUser.uid; // != soft equals, so '1' != 1 is false '1' !== 1 is true
+      const tasks_copy = task_list.filter((task) => task.id !== taskId); // Filter out the task to be deleted != soft equals, so '1' == 1 is true '1' === 1 is false
+      //task_list = ['task 1', 'task 2', 'task 3']
+      //after the filter, you were checking for task 1 id
+      //after filter: task_list = ['task 2', 'task 3']
+      //for task in task_list
+      // Reference to the Firestore document for the user's task information
+      const userRef = doc(db, "tasks", userId);
+
+      // Find the task to be deleted
+      const taskToDelete = task_list.find((task) => task.id === taskId); //return the task with the id that matches the taskId
+
+      if (taskToDelete) {
+        // Update the Firestore document to remove the task
+        await updateDoc(userRef, {
+          tasks: arrayRemove(taskToDelete),
+        });
+
+        // Dispatch the action to update the Redux store
+        dispatch({ type: DELETE_TASK, payload: tasks_copy }); //DELETE_TASK(tasks_copy);
+
+        console.log("Task successfully deleted!");
+      } else {
+        console.log("Task not found!");
+      }
+    } catch (error) {
+      console.log("Error deleting task: " + error);
+    }
+  };
+};
+export const edit_task = (id, updated_task, task_list) => {
+  return async (dispatch) => {
+    try {
+      const userId = firebaseAuth.currentUser.uid;
+      const tasks_copy = task_list.map((task) =>
+        task.id === id ? { ...task, ...updated_task } : task
+      );
+
+      // Reference to the Firestore document for the user's task information
+      const userRef = doc(db, "tasks", userId);
+
+      // Update the Firestore document with the updated task
+      await updateDoc(userRef, {
+        tasks: tasks_copy,
+      });
+
+      // Dispatch the action to update the Redux store
+      dispatch({ type: EDIT_TASK, payload: tasks_copy });
+
+      console.log("Task successfully updated!");
+    } catch (error) {
+      console.log("Error editing task: " + error);
+    }
+  };
+};
 //adding a task to the database
 {
   /*  
