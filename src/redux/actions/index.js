@@ -10,14 +10,20 @@ export const SET_TASKS = "SET_TASKS"; // For setting tasks in the Redux store
 export const SET_TAGS = "SET_TAGS"; // For setting tags in the Redux store
 export const SET_EVENTS = "SET_EVENTS"; // For setting events in the Redux store
 export const UPDATE_USERNAME = "UPDATE_USERNAME"; // For updating the username in the Redux store
-
+{
+  /* 
+export const ADD_TASK = "ADD_TASK";
+export const EDIT_TASK = "EDIT_TASK";
+export const FETCH_USER_TASKS = "FETCH_USER_TASKS"
+*/
+}
 /**
  * Action creator to update the Redux store with a new username.
- * 
- * Action creators are functions that return an action (which is just a plain JavaScript object). 
- * In this case, it creates an action that holds the updated username, 
+ *
+ * Action creators are functions that return an action (which is just a plain JavaScript object).
+ * In this case, it creates an action that holds the updated username,
  * which will be used by the reducer to update the state.
- * 
+ *
  * @param {string} username - The new username to update.
  * @returns {object} - The action object to dispatch with type and payload.
  */
@@ -27,16 +33,25 @@ export const updateUsernameRedux = (username) => {
     payload: username, // Payload is the data we want to pass to the reducer (the new username in this case)
   };
 };
-
+{
+  /* 
+export const updateTasksRedux = (task) => {
+  return {
+    type: EDIT_TASK, // Action type to identify what the action does
+    payload: username, // Payload is the data we want to pass to the reducer (the new username in this case)
+  };
+};
+*/
+}
 // ----------- ASYNC ACTION CREATORS (THUNK) -----------
 
 // GETTERS (To fetch data)
 
 /**
  * Asynchronous action creator to fetch user data from Firestore and dispatch it to Redux.
- * 
+ *
  * Thunks allow us to perform asynchronous operations (like fetching data from Firebase) before dispatching an action.
- * 
+ *
  * @returns {function} - A thunk function that dispatches an action with fetched data.
  */
 export const fetchUserData = () => async (dispatch) => {
@@ -51,7 +66,7 @@ export const fetchUserData = () => async (dispatch) => {
 
 /**
  * Asynchronous action creator to fetch the current authenticated user from Firebase.
- * 
+ *
  * @returns {function} - A thunk function that dispatches an action with the current user.
  */
 export const fetchUser = () => async (dispatch) => {
@@ -60,15 +75,24 @@ export const fetchUser = () => async (dispatch) => {
   dispatch({ type: FETCH_USER, payload: currentUser });
 };
 
+{
+  /* 
+export const fetchUserTasks = () => async (dispatch) => {
+  
+    dispatch({ type: FETCH_USER_TASKS, payload: {} });
+  
+};
+ */
+}
 // SETTERS (To update data)
 
 /**
  * Asynchronous action creator to update the username in Firestore and Redux.
- * 
+ *
  * This function does two things:
  * 1. It updates the user's `Username` in the Firestore database.
  * 2. It dispatches an action to update the Redux store with the new username, so that the UI stays in sync.
- * 
+ *
  * @param {string} username - The new username to update in Firestore and Redux.
  * @returns {function} - A thunk function that performs the update and dispatches the updated data.
  */
@@ -89,4 +113,26 @@ export const updateUsername = (username) => {
   };
 };
 
+//adding a task to the database
+{
+  /*  
+export const add_task = () => {
+  return async (dispatch) => {
+    try {
+      dispatch(add_task(task));
+    } catch (error) {}
+  };
+};
+export const edit_task = () => {
+  return async (dispatch) => {
+    try {
+      dispatch(edit_task(updated_task));
+    } catch (error) {
+      console.log("error editing task: " + error);
+    }
+  };
+};
+
+*/
+}
 // You can create similar setter actions for tasks, tags, and events
