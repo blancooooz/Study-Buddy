@@ -78,16 +78,6 @@ const Username = ({ updateUsername }) => {
 };
 
 /**
- * Map the Redux state to component props.
- * This function makes the `userData` from the Redux store available as a prop.
- */
-const mapStateToProps = (state) => {
-  return {
-    userData: state.userData, // Access the `userData` part of the Redux store
-  };
-};
-
-/**
  * Map the Redux actions to component props.
  * This function makes the `updateUsername` action available as a prop.
  */
@@ -99,4 +89,4 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 // Use the `connect` function to link the Redux store and actions to the component
-export default connect(mapStateToProps, mapDispatchToProps)(Username);
+export default connect( mapDispatchToProps)(Username);
