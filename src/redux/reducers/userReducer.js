@@ -6,6 +6,7 @@ import {
   SET_TAGS,          // For storing tags
   SET_EVENTS,        // For storing events
   UPDATE_USERNAME,   // For updating the username
+  UPDATE_COLOR_PREFERENCE, // For updating the color preference
 } from "../actions";
 
 // Define the initial state of the userReducer.
@@ -17,6 +18,7 @@ const initialState = {
   tags: [],          // Array to hold the user's tags
   events: [],        // Array to hold the user's events
   Username: [],      // Username stored for the user (from Firestore)
+  mode: 'light',
 };
 
 /**
@@ -61,7 +63,8 @@ export const userReducer = (state = initialState, action) => {
     case UPDATE_USERNAME:
       // Return the current state with the updated `Username` field set to the action's payload (new username)
       return { ...state, Username: action.payload };
-
+    case UPDATE_COLOR_PREFERENCE:
+      return { ...state, mode: action.payload };
     // Default case: if the action type doesn't match any case, return the state as is
     default:
       return state;
