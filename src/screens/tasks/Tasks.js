@@ -17,28 +17,16 @@ import Task from "../../components/Tasks/Task";
 import * as Icons from "react-native-vector-icons";
 const Tasks = ({}) => {
   const { colors } = useTheme();
+  const [tasks, setTasks] = useState([]);
   //pull tasks from database, and display them
   //need an if check for a global variable that stores the light/dark mode
   const get_all_tasks = () => {
-    try {
-      const userId = firebaseAuth.currentUser.uid;
-      const docRef = firebase.firestore().collection("users").doc(userId);
-      docRef
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            const data = doc.data();
-            return data.tasks;
-          } else {
-            console.log("No such document!");
-          }
-        })
-        .catch((error) => {
-          console.log("Error getting document:", error);
-        });
-    } catch (error) {
-      console.log("error getting tasks: " + error);
-    }
+    //get all tasks from redux (in userReducer)
+    //this is an exmaple on how to do it
+    //currentUsername = useSelector((state) => state.userData?.Username || 'No username yet'); example on how to get a variable from there
+    //store it in a state variable
+    //by using this setTasks function
+    //setTasks(tasks)
   };
   return (
     /* main screen view */

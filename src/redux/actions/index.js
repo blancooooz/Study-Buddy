@@ -227,26 +227,13 @@ export const edit_task = (id, updated_task, task_list) => {
     }
   };
 };
-//adding a task to the database
-{
-  /*  
-export const add_task = () => {
-  return async (dispatch) => {
-    try {
-      dispatch(add_task(task));
-    } catch (error) {}
-  };
-};
-export const edit_task = () => {
-  return async (dispatch) => {
-    try {
-      dispatch(edit_task(updated_task));
-    } catch (error) {
-      console.log("error editing task: " + error);
-    }
-  };
-};
 
-*/
+export const get_all_tasks = () => {
+  //pull all tasks from the database and return that list
 }
+
+
+
+//adding a task to the database
+
 // You can create similar setter actions for tasks, tags, and events
