@@ -19,6 +19,7 @@ export const UPDATE_USERNAME = "UPDATE_USERNAME"; // For updating the username i
 export const ADD_TASKS = "ADD_TASKS"; // For adding a task to the Redux store
 export const DELETE_TASK = "DELETE_TASK";
 export const EDIT_TASK = "EDIT_TASK";
+
 {
   /* 
 export const ADD_TASK = "ADD_TASK";
@@ -229,7 +230,17 @@ export const edit_task = (id, updated_task, task_list) => {
 };
 
 export const get_all_tasks = () => {
-  //pull all tasks from the database and return that list
+  //pull all tasks from the database,
+  
+  const task_info = doc(db, "events", uid); //grab task document from the database
+  
+  const task_data = task_info.data();
+  console.log(task_data);
+//check to see if its even valid first
+  if(task_info){
+    dispatch({ type: SET_TASKS, payload: task_data.tasks });//if no .tasks, it wil return {'events':{}, 'tasks':[]}
+  }
+  
 }
 
 

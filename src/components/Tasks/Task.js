@@ -16,7 +16,9 @@ const Task = ({ task }) => {
   const [currentTask, setCurrentTask] = useState(task);
   const [isChecked, setIsChecked] = useState(task.completed);
   const complete_task = () => {
-    setIsChecked(!isChecked);
+    setIsChecked(!isChecked); //this line updates the UI
+    //i need you to update the task in redux by calling the update_task action in redux
+    //
   };
   const { colors } = useTheme();
   const test_task_obj = {

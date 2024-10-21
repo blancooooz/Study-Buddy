@@ -17,10 +17,31 @@ const themecolors = colors;
 import Task from "../../components/Tasks/Task";
 import * as Icons from "react-native-vector-icons";
 import { useSelector } from 'react-redux'; // Redux hook to access the store's state
-
-const Tasks = ({ }) => {
+import { get_all_tasks } from "../../redux/actions";
+const Tasks = ({navigation}) => {
   const { colors } = useTheme();
   const [tasks, setTasks] = useState([]); // State variable to store tasks
+  //useEffect(() => {
+    get_all_tasks();
+//})
+  //const [sort_type, setSortType] = useState(''); // State variable to store sort type
+
+  //whenever the user clicks sort,
+  // const sort = (sort_by, tasks,...props) => {
+  //   //sort_by could be by subject, by time created, etc
+  //   switch(sort_by){
+  //     case "subject":{
+  //       const subject = props.subject;
+  //       //core tasks will be all displayed first, then math
+  //       tasks.sort((a, b) => (a.title > b.title) ? 1 : -1);
+  //       //[math, math, core, ]
+
+  //       //[core,core,math, math,core] then rerun sort
+  //       break;
+  //     }
+  //   }
+  // }
+//sort(sort_by, tasks, subject="math")
   //pull tasks from database, and display them
   //need an if check for a global variable that stores the light/dark mode
   const get_all_tasks = () => {
@@ -115,7 +136,7 @@ const Tasks = ({ }) => {
     /* main screen view */
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={{ position: "absolute", top: 16, right: 16 }}>
-        <Pressable>
+        <Pressable onPress={()=> {navigation.navigate("AddTask")}}>
           <View
             style={{
               width: 32,
