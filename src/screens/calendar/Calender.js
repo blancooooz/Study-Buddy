@@ -29,7 +29,7 @@ const Calendar = () => {
           textDisabledColor: '#d9e1e8',
         }}
         enableSwipeMonths={true}
-      />
+      /> 
 
       {/* Display Selected Date */}
       {selectedDate ? (
