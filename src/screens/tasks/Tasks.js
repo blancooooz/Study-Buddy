@@ -16,91 +16,32 @@ import { connect } from "react-redux";
 const themecolors = colors;
 import Task from "../../components/Tasks/Task";
 import * as Icons from "react-native-vector-icons";
-const Tasks = ({}) => {
+import { useSelector } from 'react-redux'; // Redux hook to access the store's state
+
+const Tasks = ({ }) => {
   const { colors } = useTheme();
-  const [tasks, setTasks] = useState([]);
-  useEffect(() => {
-    //get all tasks from database
-    get_all_tasks();
-  }, []);
-  const task_list = [
-    {
-      title: "Turn in HW4",
-      deadline: "June 5",
-      description: "Turn in HW4 on time for Programming Languages",
-      tags: ["school", "urgent"],
-      id: 1,
-      recurring: false,
-      priority: 1,
-      completed: false,
-      time_due: "11:59 PM",
-      multi_step: false,
-      steps: [],
-    },
-    {
-      title: "Grocery Shopping",
-      deadline: "June 6",
-      description: "Buy groceries for the week",
-      tags: ["personal", "shopping"],
-      id: 2,
-      recurring: true,
-      priority: 2,
-      completed: false,
-      time_due: "5:00 PM",
-      multi_step: false,
-      steps: [],
-    },
-    {
-      title: "Team Meeting",
-      deadline: "June 7",
-      description: "Attend the weekly team meeting",
-      tags: ["work", "meeting"],
-      id: 3,
-      recurring: true,
-      priority: 3,
-      completed: false,
-      time_due: "10:00 AM",
-      multi_step: false,
-      steps: [],
-    },
-    {
-      title: "Doctor Appointment",
-      deadline: "June 8",
-      description: "Visit the doctor for a regular check-up",
-      tags: ["health", "appointment"],
-      id: 4,
-      recurring: false,
-      priority: 1,
-      completed: false,
-      time_due: "2:00 PM",
-      multi_step: false,
-      steps: [],
-    },
-    {
-      title: "Finish Project Report",
-      deadline: "June 9",
-      description: "Complete the final report for the project",
-      tags: ["work", "urgent"],
-      id: 5,
-      recurring: false,
-      priority: 1,
-      completed: false,
-      time_due: "11:59 PM",
-      multi_step: true,
-      steps: ["Draft report", "Review with team", "Finalize report"],
-    },
-  ];
+  const [tasks, setTasks] = useState([]); // State variable to store tasks
   //pull tasks from database, and display them
   //need an if check for a global variable that stores the light/dark mode
   const get_all_tasks = () => {
-    console.log("hi");
-    //get all tasks from redux (in userReducer)
-    //this is an exmaple on how to do it
-    //currentUsername = useSelector((state) => state.userData?.Username || 'No username yet'); example on how to get a variable from there
-    //store it in a state variable
-    //by using this setTasks function
-    //setTasks(tasks)
+    // Default value for current tasks
+    let allTasks = [];
+    try {
+      // Getting all tasks from redux using useSelector hook
+      allTasks = useSelector((state) => state.tasks?.tasks || []);
+
+      // Storing tasks in state var
+      setTasks(allTasks);
+    }
+    catch (error) {
+      console.log('No tasks found');
+    }
+
   };
+  // Use useEffect to call get_all_tasks when the component mounts
+  useEffect(() => {
+    get_all_tasks();
+  }, []); // Empty dependency array ensures it runs only once
   return (
     /* main screen view */
     <View style={[styles.container, { backgroundColor: colors.background }]}>
