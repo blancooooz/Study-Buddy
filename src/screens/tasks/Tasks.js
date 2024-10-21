@@ -12,15 +12,88 @@ import "firebase/compat/firestore"; // Import Firestore for compatibility mode
 import { useTheme } from "@react-navigation/native";
 import { add_task } from "../../utils/DataHandler";
 import { colors } from "../../theme/colors";
-const themecolors = colors
+import { connect } from "react-redux";
+const themecolors = colors;
 import Task from "../../components/Tasks/Task";
 import * as Icons from "react-native-vector-icons";
 const Tasks = ({}) => {
   const { colors } = useTheme();
   const [tasks, setTasks] = useState([]);
+  useEffect(() => {
+    //get all tasks from database
+    get_all_tasks();
+  }, []);
+  const task_list = [
+    {
+      title: "Turn in HW4",
+      deadline: "June 5",
+      description: "Turn in HW4 on time for Programming Languages",
+      tags: ["school", "urgent"],
+      id: 1,
+      recurring: false,
+      priority: 1,
+      completed: false,
+      time_due: "11:59 PM",
+      multi_step: false,
+      steps: [],
+    },
+    {
+      title: "Grocery Shopping",
+      deadline: "June 6",
+      description: "Buy groceries for the week",
+      tags: ["personal", "shopping"],
+      id: 2,
+      recurring: true,
+      priority: 2,
+      completed: false,
+      time_due: "5:00 PM",
+      multi_step: false,
+      steps: [],
+    },
+    {
+      title: "Team Meeting",
+      deadline: "June 7",
+      description: "Attend the weekly team meeting",
+      tags: ["work", "meeting"],
+      id: 3,
+      recurring: true,
+      priority: 3,
+      completed: false,
+      time_due: "10:00 AM",
+      multi_step: false,
+      steps: [],
+    },
+    {
+      title: "Doctor Appointment",
+      deadline: "June 8",
+      description: "Visit the doctor for a regular check-up",
+      tags: ["health", "appointment"],
+      id: 4,
+      recurring: false,
+      priority: 1,
+      completed: false,
+      time_due: "2:00 PM",
+      multi_step: false,
+      steps: [],
+    },
+    {
+      title: "Finish Project Report",
+      deadline: "June 9",
+      description: "Complete the final report for the project",
+      tags: ["work", "urgent"],
+      id: 5,
+      recurring: false,
+      priority: 1,
+      completed: false,
+      time_due: "11:59 PM",
+      multi_step: true,
+      steps: ["Draft report", "Review with team", "Finalize report"],
+    },
+  ];
   //pull tasks from database, and display them
   //need an if check for a global variable that stores the light/dark mode
   const get_all_tasks = () => {
+    console.log("hi");
     //get all tasks from redux (in userReducer)
     //this is an exmaple on how to do it
     //currentUsername = useSelector((state) => state.userData?.Username || 'No username yet'); example on how to get a variable from there
@@ -33,7 +106,16 @@ const Tasks = ({}) => {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={{ position: "absolute", top: 16, right: 16 }}>
         <Pressable>
-          <View style={{width:32,height:32,backgroundColor:themecolors.gray[400], borderRadius:24, justifyContent:'center', alignItems:'center'}}>
+          <View
+            style={{
+              width: 32,
+              height: 32,
+              backgroundColor: themecolors.gray[400],
+              borderRadius: 24,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Icons.Feather
               name="plus"
               size={24}
@@ -41,8 +123,10 @@ const Tasks = ({}) => {
             ></Icons.Feather>
           </View>
         </Pressable>
-      </View>
-      <Task></Task>
+      </View> 
+      {task_list.map((task) => (
+        <Task key={task.id} task={task}></Task>
+      ))}
     </View>
   );
 };
@@ -51,7 +135,7 @@ const styles = StyleSheet.create({
     flex: 1,
 
     padding: 20,
-    justifyContent: "center",
+    // justifyContent: "center",
   },
   card: {
     backgroundColor: "#4CAF50", // Green background color
@@ -86,5 +170,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // Dispatch the `updateUsername` action when called
+    updateUsername: (username) => dispatch(updateUsername(username)),
+  };
+};
 
-export default Tasks;
+export default connect(mapDispatchToProps)(Tasks);

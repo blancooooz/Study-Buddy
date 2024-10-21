@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"; // Import React hooks
-import { View } from "react-native"; // Import React Native components
+import { View,Text } from "react-native"; // Import React Native components
 
 // FIREBASE
 import { onAuthStateChanged } from "firebase/auth"; // Import onAuthStateChanged function from Firebase
-
+import { useFonts } from "expo-font"; //for fonts
 // REDUX/STATE MANAGEMENT
 import { Provider } from "react-redux"; // Import Redux provider to pass down the store to components
 import store from "./src/redux/store";
@@ -25,6 +25,20 @@ import Register from "./src/screens/auth/Register"; // Import Register screen
 import Landing from "./src/screens/auth/Landing"; // Import Landing screen
 
 export default function App() {
+  const [fontsLoaded, fontError] = useFonts({
+    SFProDisplayMedium: require("./assets/fonts/SFPro/SF-Pro-Display-Medium.otf"),
+    SFProTextMedium: require("./assets/fonts/SFPro/SF-Pro-Text-Medium.otf"),
+    SFProTextLight: require("./assets/fonts/SFPro/SF-Pro-Display-Light.otf"),
+    SFProTextReg: require("./assets/fonts/SFPro/SF-Pro-Text-Regular.otf"),
+    SFProRoundedMedium: require("./assets/fonts/SFPro/SF-Pro-Rounded-Medium.otf"),
+    SFProRoundedSemibold: require("./assets/fonts/SFPro/SF-Pro-Rounded-Semibold.otf"),
+    SFProRoundedLight: require("./assets/fonts/SFPro/SF-Pro-Rounded-Light.otf"),
+    SFProRoundedThin: require("./assets/fonts/SFPro/SF-Pro-Rounded-Thin.otf"),
+    SFProRoundedRegular: require("./assets/fonts/SFPro/SF-Pro-Rounded-Regular.otf"),
+    Pacifico: require("./assets/fonts/Pacifico-Regular.ttf"),
+    Allura: require("./assets/fonts/Allura-Regular.ttf"),
+  });
+  
   // Local state to track whether Firebase is initializing
   const [initializing, setInitializing] = useState(true);
   // Local state to track the logged-in user
