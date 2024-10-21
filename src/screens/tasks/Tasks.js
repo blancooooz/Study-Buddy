@@ -15,25 +15,38 @@ import { colors } from "../../theme/colors";
 const themecolors = colors
 import Task from "../../components/Tasks/Task";
 import * as Icons from "react-native-vector-icons";
-const Tasks = ({}) => {
+import { useSelector } from 'react-redux'; // Redux hook to access the store's state
+
+const Tasks = ({ }) => {
   const { colors } = useTheme();
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([]); // State variable to store tasks
   //pull tasks from database, and display them
   //need an if check for a global variable that stores the light/dark mode
   const get_all_tasks = () => {
-    //get all tasks from redux (in userReducer)
-    //this is an exmaple on how to do it
-    //currentUsername = useSelector((state) => state.userData?.Username || 'No username yet'); example on how to get a variable from there
-    //store it in a state variable
-    //by using this setTasks function
-    //setTasks(tasks)
+    // Default value for current tasks
+    let allTasks = [];
+    try {
+      // Getting all tasks from redux using useSelector hook
+      allTasks = useSelector((state) => state.tasks?.tasks || []);
+
+      // Storing tasks in state var
+      setTasks(allTasks);
+    }
+    catch (error) {
+      console.log('No tasks found');
+    }
+
   };
+  // Use useEffect to call get_all_tasks when the component mounts
+  useEffect(() => {
+    get_all_tasks();
+  }, []); // Empty dependency array ensures it runs only once
   return (
     /* main screen view */
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={{ position: "absolute", top: 16, right: 16 }}>
         <Pressable>
-          <View style={{width:32,height:32,backgroundColor:themecolors.gray[400], borderRadius:24, justifyContent:'center', alignItems:'center'}}>
+          <View style={{ width: 32, height: 32, backgroundColor: themecolors.gray[400], borderRadius: 24, justifyContent: 'center', alignItems: 'center' }}>
             <Icons.Feather
               name="plus"
               size={24}
