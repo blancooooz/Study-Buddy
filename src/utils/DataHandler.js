@@ -12,6 +12,18 @@ import { getApps } from "@firebase/app"; // Import function to check if Firebase
 import { initializeApp } from "firebase/app"; // Import function to initialize Firebase app
 import { initializeFirestore } from "firebase/firestore"; // Import function to initialize Firestore
 
+// FIREBASE INITIALIZATION
+
+// Firebase configuration object containing project-specific keys and IDs
+const firebaseConfig = {
+  apiKey: "AIzaSyCq4BF6OciC4FVEZ_F10QmrmoLGkWeFXqE",
+  authDomain: "study-app-bc788.firebaseapp.com",
+  projectId: "study-app-bc788",
+  storageBucket: "study-app-bc788.appspot.com",
+  messagingSenderId: "214203925511",
+  appId: "1:214203925511:web:5b3bfc05b4ede20e99d6a2",
+  measurementId: "G-ZLQ79S8Y48",
+};
 
 // Initialize app and auth
 let app, firebaseAuth;
@@ -21,7 +33,7 @@ if (!getApps().length) {
   try {
     // Initialize Firebase app with the configuration
     app = initializeApp(firebaseConfig);
-    
+
     // Initialize Firebase authentication with React Native persistence using AsyncStorage
     firebaseAuth = initializeAuth(app, {
       persistence: getReactNativePersistence(AsyncStorage),
@@ -40,10 +52,14 @@ if (!getApps().length) {
 
 // Initialize Firestore with custom settings to optimize for React Native
 // 'useFetchStreams' and 'experimentalForceLongPolling' help avoid network issues in React Native
-const db = initializeFirestore(app, {
-  useFetchStreams: false, // Disable fetch streams for compatibility with React Native
-  experimentalForceLongPolling: true, // Force long polling for better connection handling in React Native
-}, "(default)"); // Default Firestore namespace
+const db = initializeFirestore(
+  app,
+  {
+    useFetchStreams: false, // Disable fetch streams for compatibility with React Native
+    experimentalForceLongPolling: true, // Force long polling for better connection handling in React Native
+  },
+  "(default)"
+); // Default Firestore namespace
 
 // Export Firebase authentication, app instance, and Firestore instance for use in other parts of the app
 export { firebaseAuth, app, db };
