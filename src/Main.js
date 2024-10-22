@@ -18,7 +18,7 @@ import Settings from "./screens/account/Settings";
 import Preferences from "./screens/account/Preferences";
 import Username from "./screens/account/Username";
 import ChangePassword from "./screens/account/ChangePassword";
-
+import AddTask from "./screens/tasks/AddTask";
 
 // Navigators for tabs, stacks, and drawers
 const Tab = createBottomTabNavigator(); // Bottom Tab Navigator
@@ -33,6 +33,7 @@ const DailyStack = () => (
     <Stack.Screen name="Daily" options={{ headerShown: false }}>
       {() => <Daily />} 
     </Stack.Screen>
+
   </Stack.Navigator>
 );
 
@@ -42,7 +43,11 @@ const DailyStack = () => (
 const TasksStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Tasks" options={{ headerShown: false }}>
-      {() => <Tasks />} 
+      {({navigation}) => <Tasks navigation={navigation}/>} 
+    </Stack.Screen>
+
+    <Stack.Screen name="AddTask" options={{ headerShown: false }}>
+      {({navigation}) => <AddTask navigation={navigation}/>}
     </Stack.Screen>
     {/* Add other screens related to Tasks here */}
   </Stack.Navigator>

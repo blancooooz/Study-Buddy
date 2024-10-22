@@ -31,6 +31,9 @@ const Register = () => {
         name: name, // Store user's name
         email: email, // Store user's email
       });
+      await setDoc(doc,db,"tasks", `${uid}`),{
+        
+      }
     } catch (e) {
       console.log(e); // Log any errors when adding document to Firestore
     }
