@@ -9,6 +9,7 @@ import {
   DELETE_TASK,
   ADD_TASKS,
   EDIT_TASK,
+  COMPLETE_TASK,
   //ADD_TASK,
   //FETCH_USER_TASKS,
 } from "../actions";
@@ -78,6 +79,11 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         tasks: action.payload,
       };
+      case COMPLETE_TASK:
+        return {
+          ...state,
+          tasks: action.payload,
+        };
     // Default case: if the action type doesn't match any case, return the state as is
     default:
       return state;

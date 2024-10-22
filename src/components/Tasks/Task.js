@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import {
   View,
   Text,
@@ -10,6 +11,8 @@ import { useTheme } from "@react-navigation/native";
 import { colors } from "../../theme/colors";
 import { Circle } from "react-native-progress";
 import * as Icons from "react-native-vector-icons";
+import { edit_task, complete_task } from "../../redux/actions"; // Importing edit_task action
+
 const good_colors = colors;
 //task is the task object that will come into this component
 const Task = ({ task }) => {
@@ -18,11 +21,14 @@ const Task = ({ task }) => {
   let is_multi_step = task.multi_step;
   //complete_task toggles the isChecked state, which will update the UI,
   //and then it will update the task object in the database AND redux
-  const complete_task = () => {
-    setIsChecked(!isChecked); //this line updates the UI
-    //import and call edit_task
-    //
-  };
+  const handle_complete_task = () => {
+      setIsChecked(!isChecked); //this line updates the UI
+      console.log("hello")
+      // Update Redux state with the new task completion status
+      const updated_task = {...currentTask, completed: !isChecked};
+      setCurrentTask(updated_task);
+      complete_task(updated_task);
+  }
   const { colors } = useTheme();
 
   if (is_multi_step) {
@@ -98,7 +104,7 @@ const Task = ({ task }) => {
             flex: 1,
           }}
         >
-          <Pressable onPress={() => complete_task()}>
+          <Pressable onPress={() => handle_complete_task()}>
             {isChecked ? (
               <View
                 style={{
@@ -257,7 +263,7 @@ const Task = ({ task }) => {
         </View>
       </View>
     </>
-  
+
   );
 };
 //i need a component that will render a progress circle, based off of how many tasks are completed in the step property of task_list
@@ -335,53 +341,53 @@ export default Task;
 
 
 //code for the cool shape
-  // <View style={{ height: 150, width: "100%", backgroundColor:good_colors.gray[500] }}>
-    //   <View
-    //     style={{
-    //       backgroundColor: "#4CAF50", // Green background color
-    //       borderTopStartRadius: 20,
-    //       borderTopEndRadius: 20,
-    //       borderBottomEndRadius: 20,
-    //       padding: 20,
-    //     }}
-    //   >
-    //     <Text style={styles.username}>{test_task_obj.title}</Text>
+// <View style={{ height: 150, width: "100%", backgroundColor:good_colors.gray[500] }}>
+//   <View
+//     style={{
+//       backgroundColor: "#4CAF50", // Green background color
+//       borderTopStartRadius: 20,
+//       borderTopEndRadius: 20,
+//       borderBottomEndRadius: 20,
+//       padding: 20,
+//     }}
+//   >
+//     <Text style={styles.username}>{test_task_obj.title}</Text>
 
-    //     <TouchableOpacity style={styles.button}>
-    //       <Text style={styles.buttonText}>Write Comment</Text>
-    //     </TouchableOpacity>
-    //   </View>
-    //   <View style={{ flexDirection: "row" }}>
-    //     <View
-    //       style={{
-    //         backgroundColor: "#4CAF50", // Green background color
-    //         flex: 2,
-    //         borderBottomRightRadius: 20,
-    //         padding: 20,
-    //         borderBottomLeftRadius: 20,
-    //       }}
-    //     >
-    //       <View
-    //         style={{
-    //           backgroundColor: "#4CAF50",
-    //           position: "absolute",
-    //           top: 0,
-    //           right: -20,
-    //           height: 16,
-    //           width: 24,
-    //         }}
-    //       ></View>
-    //     </View>
-    //     <View
-    //       style={{
-    //         // position: "absolute",
-    //         // bottom: 0,
-    //         // right: 0,
-    //         flex: 1,
-    //         borderTopStartRadius: 20,
-    //         height: 50,
-    //         backgroundColor: colors.background,
-    //       }}
-    //     ></View>
-    //   </View>
-    // </View>
+//     <TouchableOpacity style={styles.button}>
+//       <Text style={styles.buttonText}>Write Comment</Text>
+//     </TouchableOpacity>
+//   </View>
+//   <View style={{ flexDirection: "row" }}>
+//     <View
+//       style={{
+//         backgroundColor: "#4CAF50", // Green background color
+//         flex: 2,
+//         borderBottomRightRadius: 20,
+//         padding: 20,
+//         borderBottomLeftRadius: 20,
+//       }}
+//     >
+//       <View
+//         style={{
+//           backgroundColor: "#4CAF50",
+//           position: "absolute",
+//           top: 0,
+//           right: -20,
+//           height: 16,
+//           width: 24,
+//         }}
+//       ></View>
+//     </View>
+//     <View
+//       style={{
+//         // position: "absolute",
+//         // bottom: 0,
+//         // right: 0,
+//         flex: 1,
+//         borderTopStartRadius: 20,
+//         height: 50,
+//         backgroundColor: colors.background,
+//       }}
+//     ></View>
+//   </View>
+// </View>

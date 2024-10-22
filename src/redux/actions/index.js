@@ -22,7 +22,7 @@ export const UPDATE_USERNAME = "UPDATE_USERNAME"; // For updating the username i
 export const ADD_TASKS = "ADD_TASKS"; // For adding a task to the Redux store
 export const DELETE_TASK = "DELETE_TASK";
 export const EDIT_TASK = "EDIT_TASK";
-
+export const COMPLETE_TASK = "COMPLETE_TASK";
 {
   /* 
 export const ADD_TASK = "ADD_TASK";
@@ -250,6 +250,22 @@ export const get_all_tasks = () => {
   };
 };
 
+export const complete_task = (task) => {
+  return async (dispatch, getState)=>{
+    try{ 
+      const task_ref = doc(db, "tasks", userId); // Reference to the Firestore document for the user's task information
+      
+      // Update Redux state with the new task completion status
+      dispatch({type: COMPLETE_TASK, payload: task});
+
+      // update firebase
+      await updateDoc(task_ref, {
+        completed: task.completed,
+      }); 
+
+    } catch(e){console.log(e)}
+  }
+}
 //adding a task to the database
 
 // You can create similar setter actions for tasks, tags, and events
