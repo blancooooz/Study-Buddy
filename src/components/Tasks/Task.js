@@ -15,187 +15,249 @@ const good_colors = colors;
 const Task = ({ task }) => {
   const [currentTask, setCurrentTask] = useState(task);
   const [isChecked, setIsChecked] = useState(task.completed);
+  let is_multi_step = task.multi_step;
+  //complete_task toggles the isChecked state, which will update the UI,
+  //and then it will update the task object in the database AND redux
   const complete_task = () => {
     setIsChecked(!isChecked); //this line updates the UI
-    //i need you to update the task in redux by calling the update_task action in redux
+    //import and call edit_task
     //
   };
   const { colors } = useTheme();
-  const test_task_obj = {
-    title: "Turn in HW4",
-    deadline: "June 5",
-    description: "Turn in HW4 on time for Programming Languages",
-    tags: [],
-    id: 1,
-    recurring: false,
-    priority: 1,
-    completed: false,
-    time_due: "11:59 PM",
-    multi_step: false,
-    steps: [{ step1: false }, { step2: false }, { step3: false }],
-  };
-  return (
-    <View
-      style={{
-        backgroundColor: good_colors.gray[800],
 
-        width: "100%",
-        borderRadius: 12,
-        padding: 12,
-        marginBottom: 8,
-        flexDirection: "row",
-      }}
-    >
-      <View style={{ justifyContent: "center", alignItems: "center" }}>
-        {currentTask.multi_step && currentTask.steps ? (
-          <ProgressCircle steps={currentTask.steps} />
-        ) : null}
-      </View>
-      <View style={{}}>
-        <View style={{ flexDirection: "row" }}>
-          <Text
-            style={{
-              color: good_colors.white,
-              fontSize: 18,
-              fontFamily: "SFProRoundedSemibold",
-            }}
-          >
-            {task.title}
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: 8,
-            fontFamily: "SFProRoundedMedium",
-          }}
-        >
-          <Icons.Feather name="clock" size={18} color={good_colors.gray[400]} />
-          <Text style={{ color: good_colors.gray[400], marginLeft: 4 }}>
-            {task.time_due}
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            marginTop: 4,
-            alignItems: "center",
-            fontFamily: "SFProRoundedMedium",
-          }}
-        >
-          <Icons.Feather
-            name="calendar"
-            size={18}
-            color={good_colors.gray[400]}
-          />
-          <Text style={{ color: good_colors.gray[400], marginLeft: 4 }}>
-            {task.deadline}
-          </Text>
-        </View>
-      </View>
+  if (is_multi_step) {
+    return (
       <View
         style={{
-          alignItems: "flex-end",
-          justifyContent: "center",
-          //backgroundColor: good_colors.red[200],
-          flex: 1,
+          backgroundColor: good_colors.gray[800],
+
+          width: "100%",
+          borderRadius: 12,
+          padding: 12,
+          marginBottom: 8,
+          flexDirection: "row",
         }}
       >
-        <Pressable onPress={() => complete_task()}>
-          {isChecked ? (
-            <View
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
+          {currentTask.multi_step && currentTask.sub_tasks ? (
+            <ProgressCircle steps={currentTask.sub_tasks} />
+          ) : null}
+        </View>
+        <View style={{}}>
+          <View style={{ flexDirection: "row" }}>
+            <Text
               style={{
-                height: 40,
-                width: 40,
-                borderRadius: 24,
-                backgroundColor: good_colors.green[200],
-                marginRight: 8,
-                justifyContent: "center",
-                alignItems: "center",
+                color: good_colors.white,
+                fontSize: 18,
+                fontFamily: "SFProRoundedSemibold",
               }}
             >
-              <Icons.Feather
-                name="check"
-                size={24}
-                color={good_colors.green[500]}
-              ></Icons.Feather>
-            </View>
-          ) : (
-            <View
-              style={{
-                height: 40,
-                width: 40,
-                borderRadius: 24,
-                backgroundColor: good_colors.gray[400],
-                marginRight: 8,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+              {task.title}
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 8,
+              fontFamily: "SFProRoundedMedium",
+            }}
+          >
+            <Icons.Feather
+              name="clock"
+              size={18}
+              color={good_colors.gray[400]}
+            />
+            <Text style={{ color: good_colors.gray[400], marginLeft: 4 }}>
+              {task.time_due}
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 4,
+              alignItems: "center",
+              fontFamily: "SFProRoundedMedium",
+            }}
+          >
+            <Icons.Feather
+              name="calendar"
+              size={18}
+              color={good_colors.gray[400]}
+            />
+            <Text style={{ color: good_colors.gray[400], marginLeft: 4 }}>
+              {task.deadline}
+            </Text>
+          </View>
+        </View>
+        <View
+          style={{
+            alignItems: "flex-end",
+            justifyContent: "center",
+            //backgroundColor: good_colors.red[200],
+            flex: 1,
+          }}
+        >
+          <Pressable onPress={() => complete_task()}>
+            {isChecked ? (
               <View
                 style={{
-                  backgroundColor: good_colors.gray[800],
-                  height: 35,
-                  width: 35,
+                  height: 32,
+                  width: 32,
                   borderRadius: 24,
+                  backgroundColor: good_colors.green[200],
+                  marginRight: 8,
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
-              ></View>
-            </View>
-          )}
-        </Pressable>
+              >
+                <Icons.Feather
+                  name="check"
+                  size={24}
+                  color={good_colors.green[500]}
+                ></Icons.Feather>
+              </View>
+            ) : (
+              <View
+                style={{
+                  height: 32,
+                  width: 32,
+                  borderRadius: 24,
+                  backgroundColor: good_colors.gray[400],
+                  marginRight: 8,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: good_colors.gray[800],
+                    height: 28,
+                    width: 28,
+                    borderRadius: 24,
+                  }}
+                ></View>
+              </View>
+            )}
+          </Pressable>
+        </View>
       </View>
-    </View>
-    // <View style={{ height: 150, width: "100%", backgroundColor:good_colors.gray[500] }}>
-    //   <View
-    //     style={{
-    //       backgroundColor: "#4CAF50", // Green background color
-    //       borderTopStartRadius: 20,
-    //       borderTopEndRadius: 20,
-    //       borderBottomEndRadius: 20,
-    //       padding: 20,
-    //     }}
-    //   >
-    //     <Text style={styles.username}>{test_task_obj.title}</Text>
+    );
+  }
+  return (
+    <>
+      <View
+        style={{
+          backgroundColor: good_colors.gray[800],
 
-    //     <TouchableOpacity style={styles.button}>
-    //       <Text style={styles.buttonText}>Write Comment</Text>
-    //     </TouchableOpacity>
-    //   </View>
-    //   <View style={{ flexDirection: "row" }}>
-    //     <View
-    //       style={{
-    //         backgroundColor: "#4CAF50", // Green background color
-    //         flex: 2,
-    //         borderBottomRightRadius: 20,
-    //         padding: 20,
-    //         borderBottomLeftRadius: 20,
-    //       }}
-    //     >
-    //       <View
-    //         style={{
-    //           backgroundColor: "#4CAF50",
-    //           position: "absolute",
-    //           top: 0,
-    //           right: -20,
-    //           height: 16,
-    //           width: 24,
-    //         }}
-    //       ></View>
-    //     </View>
-    //     <View
-    //       style={{
-    //         // position: "absolute",
-    //         // bottom: 0,
-    //         // right: 0,
-    //         flex: 1,
-    //         borderTopStartRadius: 20,
-    //         height: 50,
-    //         backgroundColor: colors.background,
-    //       }}
-    //     ></View>
-    //   </View>
-    // </View>
+          width: "100%",
+          borderRadius: 12,
+          padding: 12,
+          marginBottom: 8,
+          flexDirection: "row",
+        }}
+      >
+        <View style={{}}>
+          <View style={{ flexDirection: "row" }}>
+            <Text
+              style={{
+                color: good_colors.white,
+                fontSize: 18,
+                fontFamily: "SFProRoundedSemibold",
+              }}
+            >
+              {task.title}
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 8,
+              fontFamily: "SFProRoundedMedium",
+            }}
+          >
+            <Icons.Feather
+              name="clock"
+              size={18}
+              color={good_colors.gray[400]}
+            />
+            <Text style={{ color: good_colors.gray[400], marginLeft: 4 }}>
+              {task.time_due}
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 4,
+              alignItems: "center",
+              fontFamily: "SFProRoundedMedium",
+            }}
+          >
+            <Icons.Feather
+              name="calendar"
+              size={18}
+              color={good_colors.gray[400]}
+            />
+            <Text style={{ color: good_colors.gray[400], marginLeft: 4 }}>
+              {task.deadline}
+            </Text>
+          </View>
+        </View>
+        <View
+          style={{
+            alignItems: "flex-end",
+            justifyContent: "center",
+            //backgroundColor: good_colors.red[200],
+            flex: 1,
+          }}
+        >
+          <Pressable onPress={() => complete_task()}>
+            {isChecked ? (
+              <View
+                style={{
+                  height: 32,
+                  width: 32,
+                  borderRadius: 24,
+                  backgroundColor: good_colors.green[200],
+                  marginRight: 8,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Icons.Feather
+                  name="check"
+                  size={24}
+                  color={good_colors.green[500]}
+                ></Icons.Feather>
+              </View>
+            ) : (
+              <View
+                style={{
+                  height: 32,
+                  width: 32,
+                  borderRadius: 24,
+                  backgroundColor: good_colors.gray[400],
+                  marginRight: 8,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: good_colors.gray[800],
+                    height: 28,
+                    width: 28,
+                    borderRadius: 24,
+                  }}
+                ></View>
+              </View>
+            )}
+          </Pressable>
+        </View>
+      </View>
+    </>
+  
   );
 };
 //i need a component that will render a progress circle, based off of how many tasks are completed in the step property of task_list
@@ -217,7 +279,7 @@ const ProgressCircle = ({ steps }) => {
         borderWidth={0}
         textStyle={{
           fontFamily: "SFProRoundedMedium",
-          fontSize: 18,
+          fontSize: 16,
           color: good_colors.white,
         }}
       />
@@ -268,3 +330,58 @@ const styles = StyleSheet.create({
 });
 
 export default Task;
+
+
+
+
+//code for the cool shape
+  // <View style={{ height: 150, width: "100%", backgroundColor:good_colors.gray[500] }}>
+    //   <View
+    //     style={{
+    //       backgroundColor: "#4CAF50", // Green background color
+    //       borderTopStartRadius: 20,
+    //       borderTopEndRadius: 20,
+    //       borderBottomEndRadius: 20,
+    //       padding: 20,
+    //     }}
+    //   >
+    //     <Text style={styles.username}>{test_task_obj.title}</Text>
+
+    //     <TouchableOpacity style={styles.button}>
+    //       <Text style={styles.buttonText}>Write Comment</Text>
+    //     </TouchableOpacity>
+    //   </View>
+    //   <View style={{ flexDirection: "row" }}>
+    //     <View
+    //       style={{
+    //         backgroundColor: "#4CAF50", // Green background color
+    //         flex: 2,
+    //         borderBottomRightRadius: 20,
+    //         padding: 20,
+    //         borderBottomLeftRadius: 20,
+    //       }}
+    //     >
+    //       <View
+    //         style={{
+    //           backgroundColor: "#4CAF50",
+    //           position: "absolute",
+    //           top: 0,
+    //           right: -20,
+    //           height: 16,
+    //           width: 24,
+    //         }}
+    //       ></View>
+    //     </View>
+    //     <View
+    //       style={{
+    //         // position: "absolute",
+    //         // bottom: 0,
+    //         // right: 0,
+    //         flex: 1,
+    //         borderTopStartRadius: 20,
+    //         height: 50,
+    //         backgroundColor: colors.background,
+    //       }}
+    //     ></View>
+    //   </View>
+    // </View>

@@ -7,6 +7,9 @@ import {
   updateDoc,
   FieldValue,
   arrayRemove,
+  getDoc,
+  setDoc,
+  arrayUnion,
 } from "firebase/firestore";
 
 // Define action types as constants to avoid typos and manage action types easily
@@ -130,43 +133,35 @@ export const updateUsername = (username) => {
 //   };
 // };
 
-export const add_task = (
-  title,
-  deadline,
-  description,
-  tags,
-  id,
-  recurring,
-  priority,
-  task_list
-) => {
-  return async (dispatch) => {
+export const add_task = (task, task_list) => {
+  return async (dispatch, getState) => {
     try {
       const completed = false;
       const userId = firebaseAuth.currentUser.uid;
-      const tasks_copy = task_list;
-      //task object to store all the parameters in
-      const task = {
-        title: title,
-        deadline: deadline,
-        description: description,
-        tags: tags,
-        id: id,
-        recurring: recurring,
-        priority: priority,
-        completed: completed,
-      };
-      //access database and get reference to the document you're trying to update
-      const userRef = doc(db, "tasks", uid); // Reference to the Firestore document for the user's task information
-      await updateDoc(userRef, {
-        tasks: FieldValue.arrayUnion(task), // Update the "task" field in the Firestore document
-      });
-      //update the database with the new task
+      const state = getState();
+      const allTasks = state.tasks || [];
+      // Task object to store all the parameters in
 
-      dispatch({ type: ADD_TASKS, payload: tasks_copy.push(task) });
-      //ADD_TASKS(tasks_copy.push(task));
+      // Access database and get reference to the document you're trying to update
+      const userRef = doc(db, "tasks", userId); // Reference to the Firestore document for the user's task information
+
+      // Check if the document exists
+      const docSnap = await getDoc(userRef);
+      if (!docSnap.exists()) {
+        // If the document does not exist, create it with an empty tasks array
+        await setDoc(userRef, { tasks: [] });
+      }
+
+      // Update the Firestore document with the new task
+      await updateDoc(userRef, {
+        tasks: arrayUnion(task), // Update the "tasks" field in the Firestore document
+      });
+      const updatedTasks = [...allTasks, task];
+      // Update the local task list and dispatch the action
+
+      dispatch({ type: ADD_TASKS, payload: updatedTasks });
     } catch (error) {
-      console.log("error adding task: " + error);
+      console.log("Error adding task: " + error);
     }
   };
 };
@@ -230,20 +225,30 @@ export const edit_task = (id, updated_task, task_list) => {
 };
 
 export const get_all_tasks = () => {
-  //pull all tasks from the database,
-  
-  const task_info = doc(db, "events", uid); //grab task document from the database
-  
-  const task_data = task_info.data();
-  console.log(task_data);
-//check to see if its even valid first
-  if(task_info){
-    dispatch({ type: SET_TASKS, payload: task_data.tasks });//if no .tasks, it wil return {'events':{}, 'tasks':[]}
-  }
-  
-}
+  // Pull all tasks from the database
+  return async (dispatch) => {
+    try {
+      const uid = firebaseAuth.currentUser.uid; // Get the current user's id
+      const taskRef = doc(db, "tasks", uid); // Grab task document reference from the database
+      
+      const taskSnapshot = await getDoc(taskRef); // Fetch the document snapshot
 
-
+      if (taskSnapshot.exists()) {
+        const task_data = taskSnapshot.data(); // Get the document data
+        // Check to see if it's even valid first
+        if (task_data && task_data.tasks) {
+          dispatch({ type: SET_TASKS, payload: task_data.tasks }); // Dispatch the tasks
+        } else {
+          console.log('No tasks found in the document.');
+        }
+      } else {
+        console.log('No such document!');
+      }
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    }
+  };
+};
 
 //adding a task to the database
 
