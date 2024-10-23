@@ -74,7 +74,7 @@ const AddTask = ({ navigation }) => {
     handleChange({ target: { name: "time_due", value: format_time(currentDate) } });
   };
   const handleChange = (event) => {
-    const { name, value, type, checked, multi_step } = event.target; //e comes in as an object
+    const { name, value, type, checked, } = event.target; //e comes in as an object
     setTask((prevTask) => ({
       ...prevTask,
       [name]: type === "checkbox" ? checked : value,
