@@ -21,9 +21,10 @@ import { fetchUserData } from "./redux/actions"; // Redux action to fetch user d
 import { get_all_tasks } from "./redux/actions";
 import { firebaseAuth } from "./utils/DataHandler"; // Firebase authentication utilities
 import { signOut } from "firebase/auth"; // Firebase signOut method
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as Icons from "react-native-vector-icons";
+import useTheme from "@react-navigation/native";
 // Importing screens for each part of the app
 import Daily from "./screens/daily/Daily";
 import Tasks from "./screens/tasks/Tasks";
@@ -36,6 +37,7 @@ import ChangePassword from "./screens/account/ChangePassword";
 import AddTask from "./screens/tasks/AddTask";
 import { colors } from "./theme/colors";
 import { current } from "@reduxjs/toolkit";
+
 // Navigators for tabs, stacks, and drawers
 const Tab = createBottomTabNavigator(); // Bottom Tab Navigator
 const Stack = createStackNavigator(); // Stack Navigator
@@ -61,7 +63,9 @@ const TasksStack = () => (
       {({ navigation }) => <Tasks navigation={navigation} />}
     </Stack.Screen>
 
-    <Stack.Screen name="AddTask" options={{ headerShown: false }}>
+    <Stack.Screen name="AddTask" options={{
+          header: (props) => <CustomHeader {...props} title="AddTasks" />,
+        }}>
       {({ navigation }) => <AddTask navigation={navigation} />}
     </Stack.Screen>
     {/* Add other screens related to Tasks here */}
@@ -153,6 +157,9 @@ const DrawerNavigator = ({
   </Drawer.Navigator>
 );
 const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
+  const route = useRoute();
+  const currentScreen = route.name;
+  console.log(currentScreen);
   const navigation = useNavigation();
   const renderExtraElements = (screenName) => {
     switch (screenName) {
@@ -164,26 +171,55 @@ const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
         );
       case "TasksStack":
         return (
-          <View>
-          <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
-            <View
-              style={{
-                width: 32,
-                height: 32,
-                backgroundColor: colors.gray[400],
-                borderRadius: 24,
-                justifyContent: "center",
-                alignItems: "center",
-                marginRight:16
-              }}
-            >
-              <Icons.Feather
-                name="plus"
-                size={24}
-                color={"#FAFAFA"}
-              ></Icons.Feather>
-            </View>
-          </TouchableOpacity>
+          <View
+            style={{
+              marginTop: 64,
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: colors.transparent,
+              justifyContent: "space-between",
+              marginBottom: 16,
+            }}
+          >
+            {title === "AddTask" ? (
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Icons.Feather
+                  name="chevron-left"
+                  size={40}
+                  color={colors.gray[100]}
+                />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+                {/* safe area view pushes a margin of 2 already so 14+2=16 */}
+                <View style={{ marginLeft: 14 }}>
+                  <Icons.Ionicons
+                    name="menu"
+                    size={36}
+                    color={colors.gray[500]}
+                  />
+                </View>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: colors.gray[400],
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.Feather
+                  name="plus"
+                  size={24}
+                  color={"#FAFAFA"}
+                ></Icons.Feather>
+              </View>
+            </TouchableOpacity>
           </View>
         );
       case "CalendarStack":
@@ -198,25 +234,54 @@ const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
             <Icons.Feather name="plus" size={24} color={colors.gray[500]} />
           </TouchableOpacity>
         );
+      case "AddTask":
+        return (
+          <View
+            style={{
+              marginTop: 64,
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: colors.transparent,
+              justifyContent: "space-between",
+              marginBottom: 16,
+            }}
+          >
+
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Icons.Feather
+                  name="chevron-left"
+                  size={40}
+                  color={colors.gray[100]}
+                />
+              </TouchableOpacity>
+            
+              
+            
+            <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: colors.gray[800],
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.Feather
+                  name="plus"
+                  size={24}
+                  color={"#FAFAFA"}
+                ></Icons.Feather>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )
     }
   };
   return (
-    <View
-      style={{
-        marginTop:64,
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: colors.transparent,
-        justifyContent: "space-between",
-        marginBottom: 16
-      }}
-    >
-      <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-        {/* safe area view pushes a margin of 2 already so 14+2=16 */}
-        <View style={{marginLeft: 14 }}>
-          <Icons.Ionicons name="menu" size={36} color={colors.gray[500]} />
-        </View>
-      </TouchableOpacity>
+    <View style={{}}>
       {/* <Text style={styles.headerTitle}>{title}</Text> */}
       {renderExtraElements(currentTabScreen)}
     </View>
@@ -256,7 +321,7 @@ const BottomTabNavigator = ({ setCurrentTabScreen }) => (
             style={{
               fontSize: 12,
               fontWeight: focused ? "bold" : "normal",
-              color: focused ? "#000" : "#888",
+              color: focused ? "#B19CD9" : colors.gray[400],
             }}
           >
             {label}
@@ -264,13 +329,15 @@ const BottomTabNavigator = ({ setCurrentTabScreen }) => (
         );
       },
       // Set active and inactive tint colors for the tab bar
-      tabBarActiveTintColor: "#000",
-      tabBarInactiveTintColor: "#888",
+      tabBarActiveTintColor: "#B19CD9",
+      tabBarInactiveTintColor: colors.gray[400],
       // Style the tab bar
       tabBarStyle: {
-        backgroundColor: "rgba(255,255,255,0.9)",
+        backgroundColor: colors.gray[800],
         borderTopWidth: 0,
         elevation: 5,
+        marginTop: 8,
+        height: 90,
       },
     })}
     screenListeners={{

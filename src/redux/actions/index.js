@@ -141,7 +141,7 @@ export const add_task = (task, task_list) => {
       const state = getState();
       const allTasks = state.tasks || [];
       // Task object to store all the parameters in
-
+      console.log(allTasks)
       // Access database and get reference to the document you're trying to update
       const userRef = doc(db, "tasks", userId); // Reference to the Firestore document for the user's task information
 
@@ -251,21 +251,42 @@ export const get_all_tasks = () => {
 };
 
 export const complete_task = (task) => {
+  console.log('hello i am in complete_task')
   return async (dispatch, getState)=>{
     try{ 
       const task_ref = doc(db, "tasks", userId); // Reference to the Firestore document for the user's task information
       
       // Update Redux state with the new task completion status
-      dispatch({type: COMPLETE_TASK, payload: task});
-
+      
+      
       // update firebase
-      await updateDoc(task_ref, {
-        completed: task.completed,
-      }); 
+      if (task_ref) {
+        // Fetch the document
+        const docSnap = await getDoc(task_ref);
+    
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const tasks = data.tasks || [];
+    
+          // Find the index of the task to update
+          const taskIndex = tasks.findIndex(t => t.id === task.id);
+    
+          if (taskIndex !== -1) {
+            // Update the specific task
+            tasks[taskIndex] = { ...tasks[taskIndex], completed: task.completed };
+            
+            // Write the updated tasks array back to Firestore
+            await updateDoc(task_ref, {
+              tasks: tasks,
+            });
+          }}}
+          dispatch({type: COMPLETE_TASK, payload: task});
 
     } catch(e){console.log(e)}
   }
 }
+
+//
 //adding a task to the database
 
 // You can create similar setter actions for tasks, tags, and events

@@ -15,19 +15,18 @@ import { edit_task, complete_task } from "../../redux/actions"; // Importing edi
 
 const good_colors = colors;
 //task is the task object that will come into this component
-const Task = ({ task }) => {
+const Task = ({ task, onPress }) => {
   const [currentTask, setCurrentTask] = useState(task);
   const [isChecked, setIsChecked] = useState(task.completed);
   let is_multi_step = task.multi_step;
   //complete_task toggles the isChecked state, which will update the UI,
   //and then it will update the task object in the database AND redux
   const handle_complete_task = () => {
+      const updated_task = {...currentTask, completed: !isChecked};
       setIsChecked(!isChecked); //this line updates the UI
       console.log("hello")
-      // Update Redux state with the new task completion status
-      const updated_task = {...currentTask, completed: !isChecked};
-      setCurrentTask(updated_task);
-      complete_task(updated_task);
+      onPress(updated_task); //react native is going to go to the file that called this component and run the function that was passed in
+      setCurrentTask(updated_task); //set the current task to the updated task, so that the UI will update
   }
   const { colors } = useTheme();
 
@@ -104,7 +103,7 @@ const Task = ({ task }) => {
             flex: 1,
           }}
         >
-          <Pressable onPress={() => handle_complete_task()}>
+          <TouchableOpacity onPress={handle_complete_task}>
             {isChecked ? (
               <View
                 style={{
@@ -145,7 +144,7 @@ const Task = ({ task }) => {
                 ></View>
               </View>
             )}
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -218,7 +217,7 @@ const Task = ({ task }) => {
             flex: 1,
           }}
         >
-          <Pressable onPress={() => complete_task()}>
+          <Pressable onPress={() => handle_complete_task()}>
             {isChecked ? (
               <View
                 style={{

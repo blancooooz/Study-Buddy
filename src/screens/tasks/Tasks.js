@@ -18,10 +18,12 @@ const themecolors = colors;
 import Task from "../../components/Tasks/Task";
 import * as Icons from "react-native-vector-icons";
 import { useSelector } from "react-redux"; // Redux hook to access the store's state
-import { get_all_tasks } from "../../redux/actions";
+import { get_all_tasks,  complete_task} from "../../redux/actions";
 const Tasks = ({ navigation }) => {
   const { colors } = useTheme();
-  const [tasks, setTasks] = useState([]); // State variable to store tasks
+  //const [tasks, setTasks] = useState([]); // State variable to store tasks
+  const [uncompleted_tasks, setUncompletedTasks] = useState([]); // State variable to store uncompleted tasks
+  const [completed_tasks, setCompletedTasks] = useState([]); // State variable to store completed tasks
   //const [sort_type, setSortType] = useState(''); // State variable to store sort type
   let allTasks = [];
   try{
@@ -30,25 +32,54 @@ const Tasks = ({ navigation }) => {
   catch(e){
     console.log(e);
   }
-  const uncompleted_tasks = allTasks
-    .filter(task => !task.completed);
-  //console.log(uncompleted_tasks);
-  const completed_tasks = allTasks
-    .filter(task => task.completed);
+
+  useEffect(() => {
+    const uncompleted = allTasks.filter(task => !task.completed);
+    const completed = allTasks.filter(task => task.completed);
+
+    // console.log('uncompleted', uncompleted);
+    // console.log('completed', completed);
+    setUncompletedTasks(uncompleted);
+    setCompletedTasks(completed);
+  }, [allTasks]);
+
+  const handleCompleteTask = (task) => {
+    const updatedTasks = allTasks.map(each_task => 
+      each_task.id === task.id ? { ...each_task, completed: true } : each_task
+    );
+    const updated_task = {...task, completed: task.completed};
+
+    //setTasks(updatedTasks);
+    console.log('going into complete_task')
+    complete_task(updated_task);
+    if (updated_task.completed) {
+      setUncompletedTasks(uncompleted_tasks.filter(t => t.id !== task.id));
+      setCompletedTasks([...completed_tasks, updated_task]);
+    } else {
+      setCompletedTasks(completed_tasks.filter(t => t.id !== task.id));
+      setUncompletedTasks([...uncompleted_tasks, updated_task]);
+    }
+  };
+
+  // const uncompleted_tasks = allTasks.filter(task => !task.completed);
+  // const completed_tasks = allTasks.filter(task => task.completed);
+
+    //
   return (
     /* main screen view */
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       
       <ScrollView style={{ }} showsVerticalScrollIndicator={false}>
         {uncompleted_tasks?.map((task) => (
-          <Task key={task.id} task={task}></Task>
+          <Task key={task.id} task={task} onPress={handleCompleteTask}></Task>
         ))}
-        <Text style={{color:themecolors.gray[100],fontFamily:'SFProRoundedSemibold', fontSize:24,marginBottom:8}}>Completed</Text>
+        {completed_tasks.length > 0 ? <Text style={{color:themecolors.gray[100],fontFamily:'SFProRoundedSemibold', fontSize:24,marginBottom:8}}>Completed</Text> : null}
+        
         {completed_tasks?.map((task) => (
-          <Task key={task.id} task={task}></Task>
+          <Task key={task.id} task={task} onPress={handleCompleteTask}></Task>
         ))}
       </ScrollView>
-    </View>
+    </View> 
   );
 };
 const styles = StyleSheet.create({
