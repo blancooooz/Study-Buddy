@@ -8,15 +8,14 @@ import {
   StyleSheet,
 } from "react-native";
 import { useSelector } from "react-redux";
-import { colors } from "../../theme/colors";
 const Daily = () => {
-  //need to have this as a global variable, but I'm going to set it true/false for shit
-
-  const dark_mode = true;
-  theme = useTheme();
+  const theme = useTheme();
+  const styles = createStyles(theme);
   // Try to get the user's name from the Redux store
   let username = "";
   let name = "";
+  let tasks = [];
+  let events = [];
   try {
     name = useSelector((state) => state.userData.name);
   } catch (e) {
@@ -26,6 +25,16 @@ const Daily = () => {
     username = useSelector((state) => state.userData.Username);
   } catch (e) {
     console.log("No username available", e);
+  }
+  try {
+    tasks = useSelector((state) => state.tasks);
+  } catch (e) {
+    console.log("No tasks:", e);
+  }
+  try {
+    tasks = useSelector((state) => state.events);
+  } catch (e) {
+    console.log("No events:", e);
   }
 
   return (
@@ -39,16 +48,12 @@ const Daily = () => {
     >
       {/* Greeting message */}
       <View>
-        <Text
-          style={dark_mode ? styles.dark_mode.welcome_text : styles.light_mode.welcome_text}
-        >
+        <Text style={styles.welcome_text}>
           {username
             ? `Hi, ${username}!`
             : `Hi, ${name.charAt(0).toUpperCase() + name.slice(1)}!`}
         </Text>
-        <Text style={{ fontSize: 20, marginBottom: 12 }}>
-          Motivation quote or sum
-        </Text>
+        <Text style={{ fontSize: 20, marginBottom: 12 }}>subheader</Text>
       </View>
 
       {/* Section for meow*/}
@@ -175,22 +180,14 @@ const Daily = () => {
     </View>
   );
 };
-const styles = StyleSheet.create({
-  light_mode: {
+const createStyles = (theme) =>
+  StyleSheet.create({
     welcome_text: {
       fontSize: 26,
       fontWeight: "bold",
       marginBottom: 20,
-      color: colors.gray[800],
+      color: theme.colors.text,
     },
-  },
-  dark_mode: {
-    welcome_text: {
-      fontSize: 20,
-      
-      marginBottom: 20,
-      color: colors.gray[200],
-    },
-  },
-});
+  });
+
 export default Daily;

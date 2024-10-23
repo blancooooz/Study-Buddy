@@ -10,7 +10,6 @@ export const SET_TASKS = "SET_TASKS"; // For setting tasks in the Redux store
 export const SET_TAGS = "SET_TAGS"; // For setting tags in the Redux store
 export const SET_EVENTS = "SET_EVENTS"; // For setting events in the Redux store
 export const UPDATE_USERNAME = "UPDATE_USERNAME"; // For updating the username in the Redux store
-export const UPDATE_COLOR_PREFERENCE = "UPDATE_COLOR_PREFERENCE"; // For updating the color preference in the Redux store
 /**
  * Action creator to update the Redux store with a new username.
  * 
@@ -88,21 +87,4 @@ export const updateUsername = (username) => {
     }
   };
 };
-export const updateColorPreference = (mode) => {
-  return async (dispatch) => {
-    try {
-      const uid = firebaseAuth.currentUser.uid; // Get the current user's UID
-      const userRef = doc(db, "users", uid); // Reference to the Firestore document for the user
-      await updateDoc(userRef, {
-        mode: mode, // Update the "mode" field in the Firestore document
-      });
-
-      // Dispatch an action to update the color preference in the Redux store
-      dispatch(updateColorPreferenceRedux(mode));
-    } catch (error) {
-      console.log("Error updating color preference:", error); // Log any errors
-    }
-  };
-};
-
 // You can create similar setter actions for tasks, tags, and events
