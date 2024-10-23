@@ -16,8 +16,8 @@ import {
   DrawerItemList,
   DrawerItem,
 } from "@react-navigation/drawer"; // For drawer navigation
-import { useDispatch, useSelector } from "react-redux"; // Redux hooks to dispatch actions and select state
-import { fetchUserData } from "./redux/actions"; // Redux action to fetch user data
+import { connect, useDispatch, useSelector } from "react-redux"; // Redux hooks to dispatch actions and select state
+import { fetchUserData, logOut } from "./redux/actions"; // Redux action to fetch user data
 import { get_all_tasks } from "./redux/actions";
 import { firebaseAuth } from "./utils/DataHandler"; // Firebase authentication utilities
 import { signOut } from "firebase/auth"; // Firebase signOut method
@@ -118,6 +118,7 @@ const DrawerNavigator = ({
   toggleTheme,
   currentTabScreen,
   setCurrentTabScreen,
+  dispatch
 }) => (
   <Drawer.Navigator
     initialRouteName="Home"
@@ -129,7 +130,7 @@ const DrawerNavigator = ({
         <DrawerContentScrollView {...props}>
           <DrawerItemList {...props} />
           {/* Logout button */}
-          <DrawerItem label="Logout" onPress={() => signOut(firebaseAuth)} />
+          <DrawerItem label="Logout" onPress={() => dispatch(logOut())} />
         </DrawerContentScrollView>
       );
     }}
@@ -145,7 +146,7 @@ const DrawerNavigator = ({
     <Drawer.Screen name="Settings" options={{ title: "Settings" }}>
       {() => <SettingsStack />}
     </Drawer.Screen>
-    <Drawer.Screen name="Preferences">
+    <Drawer.Screen name="Preferences" options={{headerShown:true}}>
       {() => (
         <Preferences toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
       )}
@@ -353,6 +354,7 @@ const Main = ({ isDarkTheme, toggleTheme }) => {
       toggleTheme={toggleTheme}
       currentTabScreen={currentTabScreen}
       setCurrentTabScreen={setCurrentTabScreen}
+      dispatch={dispatch}
     />
   );
 };
@@ -371,4 +373,13 @@ const styles = StyleSheet.create({
     color: "#fff", // Customize your header title color
   },
 });
-export default Main;
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // Dispatch the `updateUsername` action when called
+    logOut: () => dispatch(logOut()),
+  };
+};
+
+
+export default connect(mapDispatchToProps)(Main)

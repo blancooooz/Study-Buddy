@@ -11,6 +11,7 @@ import {
   setDoc,
   arrayUnion,
 } from "firebase/firestore";
+import { signOut } from "firebase/auth";
 
 // Define action types as constants to avoid typos and manage action types easily
 export const FETCH_USER = "FETCH_USER"; // For fetching the current Firebase authenticated user
@@ -23,6 +24,7 @@ export const ADD_TASKS = "ADD_TASKS"; // For adding a task to the Redux store
 export const DELETE_TASK = "DELETE_TASK";
 export const EDIT_TASK = "EDIT_TASK";
 export const COMPLETE_TASK = "COMPLETE_TASK";
+export const LOG_OUT = "LOG_OUT";
 {
   /* 
 export const ADD_TASK = "ADD_TASK";
@@ -230,7 +232,7 @@ export const get_all_tasks = () => {
     try {
       const uid = firebaseAuth.currentUser.uid; // Get the current user's id
       const taskRef = doc(db, "tasks", uid); // Grab task document reference from the database
-      
+
       const taskSnapshot = await getDoc(taskRef); // Fetch the document snapshot
 
       if (taskSnapshot.exists()) {
@@ -239,33 +241,46 @@ export const get_all_tasks = () => {
         if (task_data && task_data.tasks) {
           dispatch({ type: SET_TASKS, payload: task_data.tasks }); // Dispatch the tasks
         } else {
-          console.log('No tasks found in the document.');
+          console.log("No tasks found in the document.");
         }
       } else {
-        console.log('No such document!');
+        console.log("No such document!");
       }
     } catch (error) {
-      console.error('Error fetching tasks:', error);
+      console.error("Error fetching tasks:", error);
     }
   };
 };
 
 export const complete_task = (task) => {
-  return async (dispatch, getState)=>{
-    try{ 
+  return async (dispatch, getState) => {
+    try {
       const task_ref = doc(db, "tasks", userId); // Reference to the Firestore document for the user's task information
-      
+
       // Update Redux state with the new task completion status
-      dispatch({type: COMPLETE_TASK, payload: task});
+      dispatch({ type: COMPLETE_TASK, payload: task });
 
       // update firebase
       await updateDoc(task_ref, {
         completed: task.completed,
-      }); 
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
 
-    } catch(e){console.log(e)}
-  }
-}
+export const logOut = () => {
+  return async (dispatch) => {
+    try {
+      await signOut(firebaseAuth)
+      dispatch({type:LOG_OUT}
+      )
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
 //adding a task to the database
 
 // You can create similar setter actions for tasks, tags, and events

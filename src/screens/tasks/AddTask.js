@@ -7,7 +7,8 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { CheckBox } from "@react-native-community/checkbox";
+
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { useDispatch } from "react-redux";
 import { add_task } from "../../redux/actions";
 import { connect } from "react-redux";
@@ -45,7 +46,33 @@ const AddTask = ({ navigation }) => {
   });
   const [isMultiStep, setIsMultiStep] = useState(false);
   const dispatch = useDispatch();
+  const [date, setDate] = useState(new Date());
+  const [show, setShow] = useState(true);
 
+  const format_time = (date_string) => {
+    const date = new Date(date_string);
+  
+    const options = { hour: 'numeric', minute: 'numeric', hour12: true };
+    const formattedTime = date.toLocaleTimeString('en-US', options);
+    console.log(formattedTime);
+    return formattedTime;
+  };
+  const format_date = (date_string) => {
+    const date = new Date(date_string);
+
+    const options = { month: "short", day: "numeric" };
+    const formattedDate = date.toLocaleDateString('en-US', options);
+    console.log(formattedDate);
+    return formattedDate;
+  };
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    console.log(currentDate);
+    setShow(false);
+    setDate(currentDate);
+    handleChange({ target: { name: "deadline", value: format_date(currentDate) } });
+    handleChange({ target: { name: "time_due", value: format_time(currentDate) } });
+  };
   const handleChange = (event) => {
     const { name, value, type, checked, multi_step } = event.target; //e comes in as an object
     setTask((prevTask) => ({
@@ -81,7 +108,14 @@ const AddTask = ({ navigation }) => {
 
   return (
     <View>
-      <View style={{ marginBottom: 16, marginLeft: 8 }}>
+      <View
+        style={{
+          marginBottom: 16,
+          marginLeft: 8,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icons.Feather
             name="chevron-left"
@@ -89,13 +123,23 @@ const AddTask = ({ navigation }) => {
             color={colors.gray[100]}
           />
         </TouchableOpacity>
+        <Text
+          style={{
+            color: colors.gray[100],
+            fontSize: 24,
+            fontFamily: "SFProRoundedSemibold",
+          }}
+        >
+          Create a new task
+        </Text>
       </View>
       <ScrollView style={{ padding: 20 }}>
         <Text
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[100],
+            color: colors.gray[300],
+            marginBottom: 8,
           }}
         >
           Title
@@ -107,7 +151,7 @@ const AddTask = ({ navigation }) => {
             borderColor: colors.gray[600],
             padding: 12,
             borderRadius: 10,
-            marginBottom: 20,
+            marginBottom: 12,
           }}
           placeholder="Title"
           placeholderTextColor={colors.gray[600]}
@@ -117,23 +161,37 @@ const AddTask = ({ navigation }) => {
             handleChange({ target: { name: "title", value: text } })
           }
         />
-        <TextInput
+        <Text
           style={{
-            color: colors.white,
-            borderWidth: 1,
-            borderColor: colors.gray[600],
-            padding: 12,
-            borderRadius: 10,
-            marginBottom: 20,
+            fontFamily: "SFProRoundedMedium",
+            fontSize: 16,
+            color: colors.gray[300],
+            marginBottom: 8,
           }}
-          placeholder="Deadline"
-          name="deadline"
-          value={task.deadline}
-          placeholderTextColor={theme.colors.placeholderText}
-          onChangeText={(text) =>
-            handleChange({ target: { name: "deadline", value: text } })
-          }
-        />
+        >
+          Deadline
+        </Text>
+
+        <View style={{ alignItems: "flex-start" }}>
+          <DateTimePicker
+            minimumDate={new Date()}
+            value={date}
+            mode="datetime"
+            themeVariant="dark"
+            style={{ marginLeft: -10, marginBottom: 8 }}
+            onChange={onChange}
+          />
+        </View>
+        <Text
+          style={{
+            fontFamily: "SFProRoundedMedium",
+            fontSize: 16,
+            color: colors.gray[300],
+            marginBottom: 8,
+          }}
+        >
+          Description
+        </Text>
         <TextInput
           style={{
             color: colors.white,
@@ -153,6 +211,16 @@ const AddTask = ({ navigation }) => {
           }
           multiline
         />
+        <Text
+          style={{
+            fontFamily: "SFProRoundedMedium",
+            fontSize: 16,
+            color: colors.gray[300],
+            marginBottom: 8,
+          }}
+        >
+          Tags
+        </Text>
         <TextInput
           style={{
             color: colors.white,
@@ -170,6 +238,16 @@ const AddTask = ({ navigation }) => {
             handleChange({ target: { name: "tags", value: text.split(", ") } })
           }
         />
+        <Text
+          style={{
+            fontFamily: "SFProRoundedMedium",
+            fontSize: 16,
+            color: colors.gray[300],
+            marginBottom: 8,
+          }}
+        >
+          ID
+        </Text>
         <TextInput
           style={{
             color: colors.white,
@@ -187,14 +265,16 @@ const AddTask = ({ navigation }) => {
             handleChange({ target: { name: "id", value: text } })
           }
         />
-        <TouchableOpacity onPress={handleMultiStep}>
-          <View>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TouchableOpacity onPress={handleMultiStep}>
             <View
               style={{
-                height: 50,
-                width: 50,
-                borderRadius: 12,
-                backgroundColor: colors.gray[100],
+                height: 32,
+                width: 32,
+                borderRadius: 10,
+                borderWidth: 2,
+                borderColor: colors.gray[300],
+                backgroundColor: theme.colors.background,
                 justifyContent: "center",
                 alignItems: "center",
               }}
@@ -202,30 +282,61 @@ const AddTask = ({ navigation }) => {
               {isMultiStep ? (
                 <View
                   style={{
-                    height: 48,
-                    width: 48,
-                    borderRadius: 12,
-                    backgroundColor: colors.gray[200],
-                    justifyContent:'center',
-                    alignItems:'center',
+                    height: 32,
+                    width: 32,
+                    borderRadius: 10,
+                    backgroundColor: colors.gray[300],
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
-                ><Icons.Feather name="check" size={16} color={colors.gray[600]}/></View>
-              ) : (
-                <View
-                  style={{
-                    height: 48,
-                    width: 48,
-                    borderRadius: 12,
-                    backgroundColor: theme.colors.background,
-                  }}
-                ></View>
-              )}
+                >
+                  <Icons.Feather
+                    name="check"
+                    size={16}
+                    color={colors.gray[600]}
+                  />
+                </View>
+              ) : null}
             </View>
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontFamily: "SFProRoundedRegular",
+              color: colors.gray[300],
+              fontSize: 16,
+              marginLeft: 8,
+            }}
+          >
+            Sub tasks
+          </Text>
+        </View>
+        <TouchableOpacity onPress={handleSubmit}>
+          <View
+            style={{
+              backgroundColor: colors.gray[300],
+              width: "75%",
+              height: 48,
+              borderRadius: 12,
+              alignSelf: "center",
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 32,
+              marginTop: 16,
+            }}
+          >
+            <Text
+              styles={{
+                fontFamily: "SFProRoundedRegular",
+                color: colors.gray[100],
+                fontSize: 24,
+              }}
+            >
+              Create Task
+            </Text>
           </View>
         </TouchableOpacity>
 
-        <Button title="Add Task" onPress={handleSubmit} />
-        <View style={{ height: 50 }} />
+        <View style={{ height: 75 }} />
       </ScrollView>
     </View>
   );

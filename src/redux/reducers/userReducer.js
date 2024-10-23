@@ -10,6 +10,7 @@ import {
   ADD_TASKS,
   EDIT_TASK,
   COMPLETE_TASK,
+  LOG_OUT,
   //ADD_TASK,
   //FETCH_USER_TASKS,
 } from "../actions";
@@ -79,11 +80,21 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         tasks: action.payload,
       };
-      case COMPLETE_TASK:
-        return {
-          ...state,
-          tasks: action.payload,
-        };
+    case COMPLETE_TASK:
+      return {
+        ...state,
+        tasks: action.payload,
+      };
+    case LOG_OUT:
+      return {
+        ...state,
+        user: null, // The current authenticated user (from Firebase Auth)
+        userData: null, // Additional user data (from Firestore)
+        tasks: [], // Array to hold the user's tasks
+        tags: [], // Array to hold the user's tags
+        events: [], // Array to hold the user's events
+        Username: [], // Username stored for the user (from Firestore)
+      };
     // Default case: if the action type doesn't match any case, return the state as is
     default:
       return state;

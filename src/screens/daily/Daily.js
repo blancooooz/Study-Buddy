@@ -1,13 +1,21 @@
 import { useTheme } from "@react-navigation/native";
 import React from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { useSelector } from "react-redux";
-
 const Daily = () => {
   const theme = useTheme();
+  const styles = createStyles(theme);
   // Try to get the user's name from the Redux store
   let username = "";
   let name = "";
+  let tasks = null;
+  let events = [];
   try {
     name = useSelector((state) => state.userData.name);
   } catch (e) {
@@ -18,44 +26,116 @@ const Daily = () => {
   } catch (e) {
     console.log("No username available", e);
   }
+  try {
+    tasks = useSelector((state) => state.tasks);
+  } catch (e) {
+    console.log("No tasks:", e);
+  }
+  try {
+    events = useSelector((state) => state.events);
+  } catch (e) {
+    console.log("No events:", e);
+  }
+
 
   return (
-    <View style={{ flex: 1, padding: 20, backgroundColor: theme.colors.background,borderWidth:0 }}>
+    <View
+      style={{
+        flex: 1,
+        padding: 20,
+        backgroundColor: theme.colors.background,
+        borderWidth: 0,
+      }}
+    >
       {/* Greeting message */}
       <View>
-        <Text
-          style={{
-            fontSize: 26,
-            fontWeight: "bold",
-            marginBottom: 20,
-            color: theme.colors.text, // Darker text color
-          }}
-        >
-          {username ? `Hello, ${username}!` : `Hello, ${name}!`}
+        <Text style={styles.welcome_text}>
+          {username
+            ? `Hi, ${username}!`
+            : `Hi, ${name.charAt(0).toUpperCase() + name.slice(1)}!`}
         </Text>
-        <Text style={{ fontSize: 20, marginBottom: 12,color:theme.colors.text }}>
-          Motivation quote or sum
-        </Text>
+        <Text style={{ fontSize: 20, marginBottom: 12 }}>subheader</Text>
       </View>
 
       {/* Section for meow*/}
       <View style={{ flex: 1, flexDirection: "row" }}>
         <View style={{ flex: 1 }}>
-          <TouchableOpacity style={{ flex: 1, backgroundColor:theme.colors.secondary, margin:4,borderRadius:12 }}>
-            
-          <Text style={{fontSize:20, fontWeight:'bold', marginLeft:12, marginTop:8,color:theme.colors.text}}>Start a Timer</Text>
+          <TouchableOpacity
+            style={{
+              flex: 1,
+              backgroundColor: theme.colors.secondary,
+              margin: 4,
+              borderRadius: 12,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+                marginLeft: 12,
+                marginTop: 8,
+                color: theme.colors.text,
+              }}
+            >
+              Start a Timer
+            </Text>
           </TouchableOpacity>
-          <View style={{ flex: 1,backgroundColor:theme.colors.tertriary, margin:4,borderRadius:12 }}>
-          <Text style={{fontSize:20, fontWeight:'bold', marginLeft:12, marginTop:8,color:theme.colors.text}}>Progress Bar</Text>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: theme.colors.tertriary,
+              margin: 4,
+              borderRadius: 12,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+                marginLeft: 12,
+                marginTop: 8,
+                color: theme.colors.text,
+              }}
+            >
+              Progress Bar
+            </Text>
           </View>
         </View>
-        <View style={{ flex: 1,backgroundColor:theme.colors.quatriary, margin:4,borderRadius:12, justifyContent:'flex-start' }}>
-          <Text style={{fontSize:20, fontWeight:'bold', marginLeft:12, marginTop:8,color:theme.colors.text}}>Daily Calender</Text>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: theme.colors.quatriary,
+            margin: 4,
+            borderRadius: 12,
+            justifyContent: "flex-start",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              marginLeft: 12,
+              marginTop: 8,
+              color: theme.colors.text,
+            }}
+          >
+            Daily Calender
+          </Text>
         </View>
       </View>
       {/* Section for tasks and events */}
-      <Text style={{paddingTop:12, fontSize:20, fontWeight:'600',paddingBottom:8,color:theme.colors.text}}>Tasks and Events for the day</Text>
-      <ScrollView contentContainerStyle={{ paddingBottom: 30, flex:1 }}>
+      <Text
+        style={{
+          paddingTop: 12,
+          fontSize: 20,
+          fontWeight: "600",
+          paddingBottom: 8,
+          color: theme.colors.text,
+        }}
+      >
+        Tasks and Events for the day
+      </Text>
+      <ScrollView contentContainerStyle={{ paddingBottom: 30, flex: 1 }}>
         {/* Placeholder for tasks */}
         <View
           style={{
@@ -75,8 +155,19 @@ const Daily = () => {
           >
             Your Tasks for Today
           </Text>
-          <Text style={{ fontSize: 16,color:theme.colors.text }}>No tasks yet!</Text>
-          {/* You can map your tasks here */}
+          {tasks != null ? (
+            tasks?.map((task) => (
+              <View style={{}}>
+                <Text style={{ fontSize: 16, color: theme.colors.text }}>
+                  {task.title}
+                </Text>
+              </View>
+            ))
+          ) : (
+            <Text style={{ fontSize: 16, color: theme.colors.text }}>
+              No tasks yet!
+            </Text>
+          )}
         </View>
 
         {/* Placeholder for events */}
@@ -98,12 +189,23 @@ const Daily = () => {
           >
             Your Events for Today
           </Text>
-          <Text style={{ fontSize: 16,color:theme.colors.text }}>No events scheduled!</Text>
+          <Text style={{ fontSize: 16, color: theme.colors.text }}>
+            No events scheduled!
+          </Text>
           {/* You can map your events here */}
         </View>
       </ScrollView>
     </View>
   );
 };
+const createStyles = (theme) =>
+  StyleSheet.create({
+    welcome_text: {
+      fontSize: 26,
+      fontWeight: "bold",
+      marginBottom: 20,
+      color: theme.colors.text,
+    },
+  });
 
 export default Daily;
