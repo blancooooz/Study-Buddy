@@ -8,6 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { useSelector } from "react-redux";
+import TaskList from "./TaskList";
 const Daily = () => {
   const theme = useTheme();
   const styles = createStyles(theme);
@@ -15,7 +16,7 @@ const Daily = () => {
   let username = "";
   let name = "";
   let tasks = null;
-  let events = [];
+  let events = null;
   try {
     name = useSelector((state) => state.userData.name);
   } catch (e) {
@@ -37,6 +38,35 @@ const Daily = () => {
     console.log("No events:", e);
   }
 
+  const HourlyCalendar = () => {
+    const hours = Array.from({ length: 24 }, (_, i) => i);
+  
+    return (
+      <ScrollView style={{ padding: 16 }}>
+        {hours.map((hour) => (
+          <View
+            key={hour}
+            style={{
+              height: 50,
+              justifyContent: "center",
+              borderBottomWidth: 1,
+              borderColor: "#ddd",
+            }}
+          >
+            <Text style={{ fontSize: 16, color:theme.colors.text }}>
+              {hour === 0
+                ? "12 AM"
+                : hour < 12
+                ? `${hour} AM`
+                : hour === 12
+                ? "12 PM"
+                : `${hour - 12} PM`}
+            </Text>
+          </View>
+        ))}
+      </ScrollView>
+    );
+  };
 
   return (
     <View
@@ -49,15 +79,19 @@ const Daily = () => {
     >
       {/* Greeting message */}
       <View>
-        <Text style={styles.welcome_text}>
+        <Text style={[{ color: theme.colors.text }, styles.welcome_text]}>
           {username
             ? `Hi, ${username}!`
             : `Hi, ${name.charAt(0).toUpperCase() + name.slice(1)}!`}
         </Text>
-        <Text style={{ fontSize: 20, marginBottom: 12 }}>subheader</Text>
+        <Text
+          style={{ fontSize: 20, marginBottom: 12, color: theme.colors.text }}
+        >
+          Motivational Quote
+        </Text>
       </View>
 
-      {/* Section for meow*/}
+      {/* Section for grid view*/}
       <View style={{ flex: 1, flexDirection: "row" }}>
         <View style={{ flex: 1 }}>
           <TouchableOpacity
@@ -121,6 +155,7 @@ const Daily = () => {
           >
             Daily Calender
           </Text>
+        {HourlyCalendar()}
         </View>
       </View>
       {/* Section for tasks and events */}
@@ -156,13 +191,8 @@ const Daily = () => {
             Your Tasks for Today
           </Text>
           {tasks != null ? (
-            tasks?.map((task) => (
-              <View style={{}}>
-                <Text style={{ fontSize: 16, color: theme.colors.text }}>
-                  {task.title}
-                </Text>
-              </View>
-            ))
+<TaskList></TaskList>
+            
           ) : (
             <Text style={{ fontSize: 16, color: theme.colors.text }}>
               No tasks yet!
@@ -204,7 +234,6 @@ const createStyles = (theme) =>
       fontSize: 26,
       fontWeight: "bold",
       marginBottom: 20,
-      color: theme.colors.text,
     },
   });
 
