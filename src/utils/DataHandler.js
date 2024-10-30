@@ -11,9 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"; // Import 
 import { getApps } from "@firebase/app"; // Import function to check if Firebase apps are already initialized
 import { initializeApp } from "firebase/app"; // Import function to initialize Firebase app
 import { initializeFirestore } from "firebase/firestore"; // Import function to initialize Firestore
-import firebaseConfig from "../../firebaseConfig";
-// FIREBASE INITIALIZATION
-
+import firebaseConfig from '../../firebaseConfig.js'
 // Initialize app and auth
 let app, firebaseAuth;
 

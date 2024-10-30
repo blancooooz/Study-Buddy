@@ -108,6 +108,7 @@ const Daily = () => {
                 fontWeight: "bold",
                 marginLeft: 12,
                 marginTop: 8,
+                color: theme.colors.text,
               }}
             >
               Start a Timer
@@ -127,6 +128,7 @@ const Daily = () => {
                 fontWeight: "bold",
                 marginLeft: 12,
                 marginTop: 8,
+                color: theme.colors.text,
               }}
             >
               Progress Bar
@@ -148,6 +150,7 @@ const Daily = () => {
               fontWeight: "bold",
               marginLeft: 12,
               marginTop: 8,
+              color: theme.colors.text,
             }}
           >
             Daily Calender
@@ -162,6 +165,7 @@ const Daily = () => {
           fontSize: 20,
           fontWeight: "600",
           paddingBottom: 8,
+          color: theme.colors.text,
         }}
       >
         Tasks and Events for the day
@@ -215,7 +219,9 @@ const Daily = () => {
           >
             Your Events for Today
           </Text>
-          <Text style={{ fontSize: 16 }}>No events scheduled!</Text>
+          <Text style={{ fontSize: 16, color: theme.colors.text }}>
+            No events scheduled!
+          </Text>
           {/* You can map your events here */}
         </View>
       </ScrollView>

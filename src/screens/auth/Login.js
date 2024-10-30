@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { View, ScrollView, TouchableOpacity, Text } from "react-native";
-import { firebaseAuth, db } from "../../utils/DataHandler";
-import { TextInput } from "react-native";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { useState } from "react"; // Import useState hook for managing state
+import { View, ScrollView, Button, Text } from "react-native"; // Import basic UI components from React Native
+import { firebaseAuth, db } from "../../utils/DataHandler"; // Import Firebase authentication and Firestore database utilities
+import { TextInput } from "react-native"; // Import TextInput for form input fields
+import { signInWithEmailAndPassword } from "firebase/auth"; // Import Firebase function to sign in users with email and password
+import { TouchableOpacity } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
 const Login = () => {
@@ -60,10 +60,16 @@ const Login = () => {
   };
 
   return (
-    <View style={{ flex: 0.6, justifyContent: "center", paddingHorizontal: 20 }}>
+    <View style={{ flex: .6, justifyContent: "center", paddingHorizontal: 20 }}>
       {/* Header Section */}
-      <View style={{ flex: 1, justifyContent: "center", alignSelf: "center" }}>
-        <Text style={{ color: theme.colors.text }}>Login</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignSelf: "center",
+        }}
+      >
+        <Text style={{color:theme.colors.text}}>Login</Text>
       </View>
 
       {/* Scrollable form section for input fields */}
@@ -79,29 +85,45 @@ const Login = () => {
         <View>
           {/* Email Input Field */}
           <View style={{ flex: 1, padding: 4 }}>
-            <Text>Email</Text>
+            <Text style={{ color: theme.colors.text, marginBottom: 20 }}>
+              Enter your Email
+            </Text>
             <TextInput
               value={email}
               placeholder="Email"
               placeholderTextColor={theme.colors.placeholderText}
-              onChangeText={(text) => setEmail(text)}
+              onChangeText={(text) => {
+                setEmail(text); // Update email state on text change
+              }}
               style={{
-                color: theme.colors.text,
+                color:theme.colors.text,
                 borderWidth: 1,
+                borderColor: theme.colors.border,
+                padding: 12,
+                borderRadius: 10,
+                marginBottom: 20,
               }}
             />
           </View>
 
           {/* Password Input Field */}
           <View style={{ flex: 1, padding: 4 }}>
-            <Text>Password</Text>
+            <Text style={{ color: theme.colors.text, marginBottom: 20 }}>
+              Password
+            </Text>
             <TextInput
+              placeholder="Password"
+              placeholderTextColor={theme.colors.placeholderText}
               value={password}
               onChangeText={(text) => setPassword(text)}
               secureTextEntry
               style={{
-                color: theme.colors.text,
+                color:theme.colors.text,
                 borderWidth: 1,
+                borderColor: theme.colors.border,
+                padding: 12,
+                borderRadius: 10,
+                marginBottom: 20,
               }}
             />
           </View>
@@ -117,7 +139,11 @@ const Login = () => {
                 alignItems: "center",
               }}
             >
-              <Text style={{ color: theme.colors.background, fontWeight: "bold" }}>Log in</Text>
+              <Text
+                style={{ color: theme.colors.background, fontWeight: "bold" }}
+              >
+                Log in
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
