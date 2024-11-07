@@ -15,14 +15,25 @@ const Login = () => {
       .then((result) => {
         console.log("User signed in with email"); // Log success message
       })
-      .catch((e) => {
-        console.log("Error signing in user: ", e); // Log error message in case of failure
-      });
-  };
+      .catch((error) => {
+        if (error.code === "auth/wrong-password") {
+          setErrorMessage("Incorrect password. Please try again.");
+        } else if (error.code === "auth/user-not-found") {
+          setErrorMessage("User not found. Please check the email.");
+        } else if (error.code === "auth/invalid-credential") {
+          setErrorMessage("Invalid email or password.");
+        } else {
+          setErrorMessage("Error signing in: " + error.message);
+        }
+      }); 
+
+  }; 
+
 
   // State variables for storing email and password input from user
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   return (
     <View style={{ flex: .6, justifyContent: "center", paddingHorizontal: 20 }}>
@@ -93,6 +104,11 @@ const Login = () => {
               }}
             />
           </View>
+
+          {errorMessage && (
+  <Text style={{ color: "red", marginBottom: 20 }}>{errorMessage}</Text>
+)}
+
 
           {/* Sign In Button */}
           <View>

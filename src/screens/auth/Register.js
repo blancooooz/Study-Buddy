@@ -18,6 +18,11 @@ const Register = () => {
         addDocument(uid); // Call function to add user details to Firestore
       })
       .catch((e) => {
+        if (e.code === "auth/email-already-in-use") {
+          setErrorMessage("This email is already registered. Please log in instead.");
+        } else {
+          setErrorMessage("Error signing up: " + e.message);
+        }
         console.log("Error signing up user: ", e); // Log any errors during sign-up
       });
   };
@@ -43,6 +48,8 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null); // State for error messages
+
 
   return (
     <View style={{ flex: 1, justifyContent: "center", paddingHorizontal: 20 }}>
@@ -135,6 +142,11 @@ const Register = () => {
               }}
             />
           </View>
+
+           {/* Display error message */}
+           {errorMessage && (
+            <Text style={{ color: "red", marginBottom: 20 }}>{errorMessage}</Text>
+          )}
 
           {/* Sign Up Button */}
           <View>
