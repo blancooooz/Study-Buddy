@@ -47,7 +47,10 @@ const Drawer = createDrawerNavigator(); // Drawer Navigator
 const DailyStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Daily" options={{ headerShown: false }}>
-      {() => <Daily />}
+      {({navigation}) => <Daily navigation={navigation}/>}
+    </Stack.Screen>
+    <Stack.Screen name="AddTask" options={{ headerShown: false }}>
+      {({navigation}) => <AddTask navigation={navigation}/>}
     </Stack.Screen>
   </Stack.Navigator>
 );
@@ -118,7 +121,7 @@ const DrawerNavigator = ({
   toggleTheme,
   currentTabScreen,
   setCurrentTabScreen,
-  dispatch
+  dispatch,
 }) => (
   <Drawer.Navigator
     initialRouteName="Home"
@@ -146,7 +149,7 @@ const DrawerNavigator = ({
     <Drawer.Screen name="Settings" options={{ title: "Settings" }}>
       {() => <SettingsStack />}
     </Drawer.Screen>
-    <Drawer.Screen name="Preferences" options={{headerShown:true}}>
+    <Drawer.Screen name="Preferences" options={{ headerShown: true }}>
       {() => (
         <Preferences toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
       )}
@@ -159,32 +162,50 @@ const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
     switch (screenName) {
       case "DailyStack":
         return (
-          <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
-            <Icons.Feather name="plus" size={24} color={colors.gray[500]} />
-          </TouchableOpacity>
+          <View>
+            <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: colors.gray[400],
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.Feather
+                  name="plus"
+                  size={24}
+                  color={"#FAFAFA"}
+                ></Icons.Feather>
+              </View>
+            </TouchableOpacity>
+          </View>
         );
       case "TasksStack":
         return (
           <View>
-          <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
-            <View
-              style={{
-                width: 32,
-                height: 32,
-                backgroundColor: colors.gray[400],
-                borderRadius: 24,
-                justifyContent: "center",
-                alignItems: "center",
-                marginRight:16
-              }}
-            >
-              <Icons.Feather
-                name="plus"
-                size={24}
-                color={"#FAFAFA"}
-              ></Icons.Feather>
-            </View>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: colors.gray[400],
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.Feather
+                  name="plus"
+                  size={24}
+                  color={"#FAFAFA"}
+                ></Icons.Feather>
+              </View>
+            </TouchableOpacity>
           </View>
         );
       case "CalendarStack":
@@ -204,17 +225,17 @@ const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
   return (
     <View
       style={{
-        marginTop:64,
+        marginTop: 64,
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: colors.transparent,
         justifyContent: "space-between",
-        marginBottom: 16
+        marginBottom: 16,
       }}
     >
       <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
         {/* safe area view pushes a margin of 2 already so 14+2=16 */}
-        <View style={{marginLeft: 14 }}>
+        <View style={{ marginLeft: 14 }}>
           <Icons.Ionicons name="menu" size={36} color={colors.gray[500]} />
         </View>
       </TouchableOpacity>
@@ -381,5 +402,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-
-export default connect(mapDispatchToProps)(Main)
+export default connect(mapDispatchToProps)(Main);

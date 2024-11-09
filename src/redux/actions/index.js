@@ -251,31 +251,38 @@ export const get_all_tasks = () => {
     }
   };
 };
-
-export const complete_task = (task) => {
-  return async (dispatch, getState) => {
+export const complete_task = ( taskId) => {
+  return async (dispatch,getState) => {
     try {
-      const task_ref = doc(db, "tasks", userId); // Reference to the Firestore document for the user's task information
+      const uid = firebaseAuth.currentUser.uid;
+      const taskRef = doc(db, "tasks", uid);
 
-      // Update Redux state with the new task completion status
-      dispatch({ type: COMPLETE_TASK, payload: task });
+      // Fetch current tasks from Redux state
+      const state = getState();
+      const currentTasks = state.tasks || [];
 
-      // update firebase
-      await updateDoc(task_ref, {
-        completed: task.completed,
+      // Find and update the specific task
+      const updatedTasks = currentTasks.map((task) =>
+        task.id === taskId ? { ...task, completed: !task.completed } : task
+      );
+
+      // Update Firestore document
+      await updateDoc(taskRef, {
+        tasks: updatedTasks,
       });
-    } catch (e) {
-      console.log(e);
+
+      // Dispatch the updated tasks list to Redux
+      dispatch({ type: COMPLETE_TASK, payload: updatedTasks });
+    } catch (error) {
+      console.error("Error completing task:", error);
     }
   };
 };
-
 export const logOut = () => {
   return async (dispatch) => {
     try {
-      await signOut(firebaseAuth)
-      dispatch({type:LOG_OUT}
-      )
+      await signOut(firebaseAuth);
+      dispatch({ type: LOG_OUT });
     } catch (e) {
       console.log(e);
     }
