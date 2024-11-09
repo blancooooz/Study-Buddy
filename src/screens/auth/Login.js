@@ -4,6 +4,7 @@ import { firebaseAuth, db } from "../../utils/DataHandler"; // Import Firebase a
 import { TextInput } from "react-native"; // Import TextInput for form input fields
 import { signInWithEmailAndPassword } from "firebase/auth"; // Import Firebase function to sign in users with email and password
 import { TouchableOpacity } from "react-native";
+import { doc, setDoc,getDoc } from "firebase/firestore"; // Import Firestore functions for working with collections and documents
 import { useTheme } from "@react-navigation/native";
 
 const Login = () => {
@@ -46,8 +47,6 @@ const Login = () => {
         name: "",
         email: "",
         username: "",
-        tasks: [],
-        events: [],
         image: "",
         achievements: {
           badges: [],
