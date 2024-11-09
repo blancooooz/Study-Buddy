@@ -230,7 +230,7 @@ export const get_all_tasks = () => {
   // Pull all tasks from the database
   return async (dispatch) => {
     try {
-      const uid = firebaseAuth.currentUser.uid; // Get the current user's id
+      const uid = firebaseAuth.currentUser.uid ; // Get the current user's id
       const taskRef = doc(db, "tasks", uid); // Grab task document reference from the database
 
       const taskSnapshot = await getDoc(taskRef); // Fetch the document snapshot
