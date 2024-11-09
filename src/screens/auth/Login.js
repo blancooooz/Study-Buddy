@@ -12,16 +12,27 @@ const Login = () => {
   // State variables for storing email and password input from user
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   // Function to handle user sign-in
-  const onSignUp = async () => {
-    try {
-      const result = await signInWithEmailAndPassword(firebaseAuth, email, password);
-      console.log("User signed in with email");
-      await initializeUserData(result.user.uid); // Check and initialize user data
-    } catch (e) {
-      console.log("Error signing in user:", e);
-    }
+  onSignUp = async () => {
+    // Firebase authentication function to sign in using email and password
+    signInWithEmailAndPassword(firebaseAuth, email, password)
+      .then((result) => {
+        console.log("User signed in with email"); // Log success message
+        initializeUserData(result.user.uid);
+      })
+      .catch((error) => {
+        if (error.code === "auth/wrong-password") {
+          setErrorMessage("Incorrect password. Please try again.");
+        } else if (error.code === "auth/user-not-found") {
+          setErrorMessage("User not found. Please check the email.");
+        } else if (error.code === "auth/invalid-credential") {
+          setErrorMessage("Invalid email or password.");
+        } else {
+          setErrorMessage("Error signing in: " + error.message);
+        }
+      });
   };
 
   // Function to check and initialize user data if fields are missing
@@ -32,12 +43,12 @@ const Login = () => {
     if (userDoc.exists()) {
       const userData = userDoc.data();
       const defaultUserData = {
-        name: '',
-        email: '',
-        username: '',
+        name: "",
+        email: "",
+        username: "",
         tasks: [],
         events: [],
-        image: '',
+        image: "",
         achievements: {
           badges: [],
           level: 0,
@@ -60,7 +71,9 @@ const Login = () => {
   };
 
   return (
-    <View style={{ flex: .6, justifyContent: "center", paddingHorizontal: 20 }}>
+    <View
+      style={{ flex: .7, justifyContent: "center", paddingHorizontal: 20 }}
+    >
       {/* Header Section */}
       <View
         style={{
@@ -69,7 +82,7 @@ const Login = () => {
           alignSelf: "center",
         }}
       >
-        <Text style={{color:theme.colors.text}}>Login</Text>
+        <Text style={{ color: theme.colors.text }}>Login</Text>
       </View>
 
       {/* Scrollable form section for input fields */}
@@ -96,7 +109,7 @@ const Login = () => {
                 setEmail(text); // Update email state on text change
               }}
               style={{
-                color:theme.colors.text,
+                color: theme.colors.text,
                 borderWidth: 1,
                 borderColor: theme.colors.border,
                 padding: 12,
@@ -118,7 +131,7 @@ const Login = () => {
               onChangeText={(text) => setPassword(text)}
               secureTextEntry
               style={{
-                color:theme.colors.text,
+                color: theme.colors.text,
                 borderWidth: 1,
                 borderColor: theme.colors.border,
                 padding: 12,
@@ -127,6 +140,11 @@ const Login = () => {
               }}
             />
           </View>
+          {errorMessage && (
+            <Text style={{ color: "red", marginBottom: 20 }}>
+              {errorMessage}
+            </Text>
+          )}
 
           {/* Sign In Button */}
           <View>
