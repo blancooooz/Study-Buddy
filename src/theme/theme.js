@@ -1,4 +1,3 @@
-import Calendar from "../screens/calendar/Calender";
 
 export const lightTheme = {
   dark: false,

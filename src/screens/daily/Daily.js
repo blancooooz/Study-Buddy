@@ -1,5 +1,5 @@
 import { useTheme } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,15 +8,22 @@ import {
   StyleSheet,
 } from "react-native";
 import { useSelector } from "react-redux";
+import { Circle } from "react-native-progress";
 import TaskList from "./TaskList";
 const Daily = () => {
   const theme = useTheme();
   const styles = createStyles(theme);
+  const [progress, setProgress] = useState(0);
+  const [uncompleted_tasks, setUncompletedTasks] = useState([]); // State variable to store uncompleted tasks
+  const [completed_tasks, setCompletedTasks] = useState([]); // State variable to store completed tasks
+  const [uncompleted_events, setUncompletedEvents] = useState([]); // State variable to store uncompleted tasks
+  const [completed_events, setCompletedEvents] = useState([]); // State variable to store completed tasks
+  const [dailyTasks, setDailyTasks] = useState([]);
   // Try to get the user's name from the Redux store
   let username = "";
   let name = "";
-  let tasks = null;
-  let events = null;
+  let tasks = [];
+  let events = [];
   try {
     name = useSelector((state) => state.userData.name);
   } catch (e) {
@@ -38,33 +45,121 @@ const Daily = () => {
     console.log("No events:", e);
   }
 
+  // Format date in "Oct 30" format
+  const format_date = (date_string) => {
+    const date = new Date(date_string);
+    const options = { month: "short", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  // Get today's date formatted
+  const currentFormattedDate = format_date(new Date());
+  // Helper function to convert "HH:MM AM/PM" format to minutes since midnight
+  const convertToMinutes = (timeString) => {
+    const [time, period] = timeString.split(" ");
+    let [hours, minutes] = time.split(":").map(Number);
+
+    // Adjust hours based on AM/PM
+    if (period === "PM" && hours !== 12) hours += 12;
+    if (period === "AM" && hours === 12) hours = 0;
+
+    return hours * 60 + minutes;
+  };
+
+  // Filter and sort tasks by hour for today
+  useEffect(() => {
+
+    const daily = tasks
+    .filter((task) => task.deadline === currentFormattedDate)
+    .sort(
+      (a, b) => convertToMinutes(a.time_due) - convertToMinutes(b.time_due)
+    );
+    setDailyTasks(daily)
+  },[tasks]);
+
+  useEffect(() => {
+    const uncompletedTasks = dailyTasks.filter((task) => !task.completed);
+    const completedTasks = dailyTasks.filter((task) => task.completed);
+    setUncompletedTasks(uncompletedTasks);
+    setCompletedTasks(completedTasks);
+  }, [tasks]);
+  useEffect(() => {
+    const uncompletedEvents = events.filter((task) => !task.completed);
+    const completedEvents = events.filter((task) => task.completed);
+    setUncompletedEvents(uncompletedEvents);
+    setCompletedEvents(completedEvents);
+  }, [events]);
+  // Group tasks by hour
+  const tasksByHour = dailyTasks.reduce((acc, task) => {
+    const taskHour = task.time_due.split(":")[0]; // Get hour from time_due
+    if (!acc[taskHour]) acc[taskHour] = [];
+    acc[taskHour].push(task);
+    return acc;
+  }, {});
   const HourlyCalendar = () => {
-    const hours = Array.from({ length: 24 }, (_, i) => i);
-  
     return (
-      <ScrollView style={{ padding: 16 }}>
-        {hours.map((hour) => (
-          <View
-            key={hour}
-            style={{
-              height: 50,
-              justifyContent: "center",
-              borderBottomWidth: 1,
-              borderColor: "#ddd",
-            }}
-          >
-            <Text style={{ fontSize: 16, color:theme.colors.text }}>
-              {hour === 0
-                ? "12 AM"
-                : hour < 12
-                ? `${hour} AM`
-                : hour === 12
-                ? "12 PM"
-                : `${hour - 12} PM`}
-            </Text>
-          </View>
-        ))}
+      <ScrollView>
+        {Object.keys(tasksByHour).length > 0 ? (
+          Object.keys(tasksByHour).map((hour) => (
+            <View key={hour} style={styles.hourBlock}>
+              <Text style={[styles.hourText, { color: theme.colors.text }]}>
+                {hour < 12 ? `${hour} AM` : `${hour - 12} PM`}
+              </Text>
+              {tasksByHour[hour].map((task) => (
+                <Text key={task.id} style={{ color: theme.colors.text }}>
+                  - {task.title}
+                </Text>
+              ))}
+            </View>
+          ))
+        ) : (
+          <Text style={{ color: theme.colors.text, textAlign: "center" }}>
+            No tasks for today!
+          </Text>
+        )}
       </ScrollView>
+    );
+  };
+
+  //i need a component that will render a progress circle, based off of how many tasks are completed in the step property of task_list
+  const ProgressCircle = () => {
+    const [progress, setProgress] = useState(0); // Use state to track progress
+
+    useEffect(() => {
+      try {
+        // Calculate progress
+        const totalTasks = dailyTasks.length + events.length;
+        const completedTasks = completed_tasks.length + completed_events.length;
+        const newProgress = totalTasks > 0 ? completedTasks / totalTasks : 1;
+        console.log(totalTasks, completedTasks, newProgress);
+
+        if (typeof newProgress === "number") {
+          setProgress(newProgress);
+          console.log("Progress set to:", newProgress);
+        } else {
+          console.log("Progress is not a number:", typeof newProgress);
+        }
+      } catch (e) {
+        console.error("Error calculating progress:", e);
+      }
+    }, [tasks]);
+    return (
+      <View style={{ alignItems: "center", marginRight: 12, marginTop: 12 }}>
+        <Circle
+          size={70}
+          progress={progress}
+          showsText={true}
+          formatText={() => `${Math.round(progress * 100)}%`}
+          color={theme.colors.primary}
+          unfilledColor={theme.colors.secondary}
+          borderWidth={0}
+          textStyle={{
+            fontFamily: "SFProRoundedMedium",
+            fontSize: 16,
+            color: theme.colors.text,
+          }}
+        />
+      </View>
     );
   };
 
@@ -133,6 +228,7 @@ const Daily = () => {
             >
               Progress Bar
             </Text>
+            {ProgressCircle()}
           </View>
         </View>
         <View
@@ -155,7 +251,7 @@ const Daily = () => {
           >
             Daily Calender
           </Text>
-        {HourlyCalendar()}
+          {HourlyCalendar()}
         </View>
       </View>
       {/* Section for tasks and events */}
@@ -190,9 +286,8 @@ const Daily = () => {
           >
             Your Tasks for Today
           </Text>
-          {tasks != null ? (
-<TaskList></TaskList>
-            
+          {dailyTasks.length != 0 ? (
+            <TaskList />
           ) : (
             <Text style={{ fontSize: 16, color: theme.colors.text }}>
               No tasks yet!
@@ -234,6 +329,30 @@ const createStyles = (theme) =>
       fontSize: 26,
       fontWeight: "bold",
       marginBottom: 20,
+    },
+    container: {
+      flex: 1,
+      padding: 20,
+    },
+    greetingText: {
+      fontSize: 26,
+      fontWeight: "bold",
+      marginBottom: 20,
+    },
+    sectionTitle: {
+      fontSize: 20,
+      fontWeight: "600",
+      paddingBottom: 8,
+    },
+    hourBlock: {
+      paddingVertical: 10,
+      borderBottomWidth: 1,
+      borderColor: "#ddd",
+      marginLeft: 12,
+    },
+    hourText: {
+      fontSize: 16,
+      fontWeight: "bold",
     },
   });
 

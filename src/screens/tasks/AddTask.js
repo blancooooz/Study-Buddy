@@ -15,6 +15,8 @@ import { connect } from "react-redux";
 import { useTheme } from "@react-navigation/native";
 import { colors } from "../../theme/colors";
 import * as Icons from "react-native-vector-icons";
+import 'react-native-get-random-values'
+import { v4 as uuidv4 } from "uuid"; // import uuid library
 //import DateTimePickerModal from "react-native-modal-datetime-picker";
 const AddTask = ({ navigation }) => {
   const theme = useTheme();
@@ -23,7 +25,7 @@ const AddTask = ({ navigation }) => {
     deadline: "",
     description: "",
     tags: [],
-    id: "",
+    id: uuidv4(),
     recurring: false,
     priority: 0,
     completed: false,
@@ -51,9 +53,9 @@ const AddTask = ({ navigation }) => {
 
   const format_time = (date_string) => {
     const date = new Date(date_string);
-  
-    const options = { hour: 'numeric', minute: 'numeric', hour12: true };
-    const formattedTime = date.toLocaleTimeString('en-US', options);
+
+    const options = { hour: "numeric", minute: "numeric", hour12: true };
+    const formattedTime = date.toLocaleTimeString("en-US", options);
     console.log(formattedTime);
     return formattedTime;
   };
@@ -61,7 +63,7 @@ const AddTask = ({ navigation }) => {
     const date = new Date(date_string);
 
     const options = { month: "short", day: "numeric" };
-    const formattedDate = date.toLocaleDateString('en-US', options);
+    const formattedDate = date.toLocaleDateString("en-US", options);
     console.log(formattedDate);
     return formattedDate;
   };
@@ -70,8 +72,12 @@ const AddTask = ({ navigation }) => {
     console.log(currentDate);
     setShow(false);
     setDate(currentDate);
-    handleChange({ target: { name: "deadline", value: format_date(currentDate) } });
-    handleChange({ target: { name: "time_due", value: format_time(currentDate) } });
+    handleChange({
+      target: { name: "deadline", value: format_date(currentDate) },
+    });
+    handleChange({
+      target: { name: "time_due", value: format_time(currentDate) },
+    });
   };
   const handleChange = (event) => {
     const { name, value, type, checked, multi_step } = event.target; //e comes in as an object
@@ -238,7 +244,7 @@ const AddTask = ({ navigation }) => {
             handleChange({ target: { name: "tags", value: text.split(", ") } })
           }
         />
-        <Text
+        {/*  <Text
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
@@ -264,7 +270,8 @@ const AddTask = ({ navigation }) => {
           onChangeText={(text) =>
             handleChange({ target: { name: "id", value: text } })
           }
-        />
+        /> */}
+
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TouchableOpacity onPress={handleMultiStep}>
             <View

@@ -18,6 +18,11 @@ const Register = () => {
         addDocument(uid); // Call function to add user details to Firestore
       })
       .catch((e) => {
+        if (e.code === "auth/email-already-in-use") {
+          setErrorMessage("This email is already registered. Please log in instead.");
+        } else {
+          setErrorMessage("Error signing up: " + e.message);
+        }
         console.log("Error signing up user: ", e); // Log any errors during sign-up
       });
   };
@@ -27,10 +32,23 @@ const Register = () => {
     try {
       // Add a new document with user details in the 'users' collection
       await setDoc(doc(db, "users", `${uid}`), {
-        uid: uid, // Store user ID from the result
-        name: name, // Store user's name
-        email: email, // Store user's email
+        uid: uid,
+        name: name || '', // Ensures name has a default value if empty
+        email: email || '',
+        username: '',
+        image: '',
+        achievements: {
+          badges: [],
+          level: 0, // Set initial level
+        },
+        progress: {
+          tasksCompleted: 0, // Initial task completion count
+          dailyStreak: 0, // Initial daily streak
+        },
       });
+      await setDoc(doc(db,"tasks", `${uid}`),{
+        tasks: []
+      })
     } catch (e) {
       console.log(e); // Log any errors when adding document to Firestore
     }
@@ -40,6 +58,8 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null); // State for error messages
+
 
   return (
     <View style={{ flex: 1, justifyContent: "center", paddingHorizontal: 20 }}>
@@ -132,6 +152,11 @@ const Register = () => {
               }}
             />
           </View>
+
+           {/* Display error message */}
+           {errorMessage && (
+            <Text style={{ color: "red", marginBottom: 20 }}>{errorMessage}</Text>
+          )}
 
           {/* Sign Up Button */}
           <View>
