@@ -32,13 +32,23 @@ const Register = () => {
     try {
       // Add a new document with user details in the 'users' collection
       await setDoc(doc(db, "users", `${uid}`), {
-        uid: uid, // Store user ID from the result
-        name: name, // Store user's name
-        email: email, // Store user's email
+        uid: uid,
+        name: name || '', // Ensures name has a default value if empty
+        email: email || '',
+        username: '',
+        image: '',
+        achievements: {
+          badges: [],
+          level: 0, // Set initial level
+        },
+        progress: {
+          tasksCompleted: 0, // Initial task completion count
+          dailyStreak: 0, // Initial daily streak
+        },
       });
-      await setDoc(doc,db,"tasks", `${uid}`),{
-        
-      }
+      await setDoc(doc(db,"tasks", `${uid}`),{
+        tasks: []
+      })
     } catch (e) {
       console.log(e); // Log any errors when adding document to Firestore
     }

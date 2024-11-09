@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Pressable,
+  ScrollView
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app"; // Import Firebase for compatibility mode (older SDK version)
@@ -17,160 +18,75 @@ const themecolors = colors;
 import Task from "../../components/Tasks/Task";
 import * as Icons from "react-native-vector-icons";
 import { useSelector } from "react-redux"; // Redux hook to access the store's state
-import { get_all_tasks } from "../../redux/actions";
+import { get_all_tasks,  complete_task} from "../../redux/actions";
 const Tasks = ({ navigation }) => {
   const { colors } = useTheme();
-  const [tasks, setTasks] = useState([]); // State variable to store tasks
+  //const [tasks, setTasks] = useState([]); // State variable to store tasks
+  const [uncompleted_tasks, setUncompletedTasks] = useState([]); // State variable to store uncompleted tasks
+  const [completed_tasks, setCompletedTasks] = useState([]); // State variable to store completed tasks
   //const [sort_type, setSortType] = useState(''); // State variable to store sort type
+  let allTasks = [];
+  try{
+    allTasks = useSelector((state) => state.tasks || []);
+  }
+  catch(e){
+    console.log(e);
+  }
 
-  //whenever the user clicks sort,
-  // const sort = (sort_by, tasks,...props) => {
-  //   //sort_by could be by subject, by time created, etc
-  //   switch(sort_by){
-  //     case "subject":{
-  //       const subject = props.subject;
-  //       //core tasks will be all displayed first, then math
-  //       tasks.sort((a, b) => (a.title > b.title) ? 1 : -1);
-  //       //[math, math, core, ]
+  useEffect(() => {
+    const uncompleted = allTasks.filter(task => !task.completed);
+    const completed = allTasks.filter(task => task.completed);
 
-  //       //[core,core,math, math,core] then rerun sort
-  //       break;
-  //     }
-  //   }
-  // }
-  //sort(sort_by, tasks, subject="math")
-  //pull tasks from database, and display them
-  //need an if check for a global variable that stores the light/dark mode
-  const get_all_tasks = () => {
-    // Default value for current tasks
-    let allTasks = [];
-    try {
-      // Getting all tasks from redux using useSelector hook
-      allTasks = useSelector((state) => state.tasks?.tasks || []);
+    // console.log('uncompleted', uncompleted);
+    // console.log('completed', completed);
+    setUncompletedTasks(uncompleted);
+    setCompletedTasks(completed);
+  }, [allTasks]);
 
-      // Storing tasks in state var
-      setTasks(allTasks);
-    } catch (error) {
-      console.log("No tasks found");
+  const handleCompleteTask = (task) => {
+    const updatedTasks = allTasks.map(each_task => 
+      each_task.id === task.id ? { ...each_task, completed: true } : each_task
+    );
+    const updated_task = {...task, completed: task.completed};
+
+    //setTasks(updatedTasks);
+    console.log('going into complete_task')
+    complete_task(updated_task);
+    if (updated_task.completed) {
+      setUncompletedTasks(uncompleted_tasks.filter(t => t.id !== task.id));
+      setCompletedTasks([...completed_tasks, updated_task]);
+    } else {
+      setCompletedTasks(completed_tasks.filter(t => t.id !== task.id));
+      setUncompletedTasks([...uncompleted_tasks, updated_task]);
     }
   };
-  // Use useEffect to call get_all_tasks when the component mounts
-  useEffect(() => {
-    get_all_tasks();
-  }, []); // Empty dependency array ensures it runs only once
 
-  // Sample task list, just for testing!!
-  const task_list = [
-    {
-      title: "Turn in HW4",
-      deadline: "June 5",
-      description: "Turn in HW4 on time for Programming Languages",
-      tags: ["school", "urgent"],
-      id: 1,
-      recurring: false,
-      priority: 1,
-      completed: false,
-      time_due: "11:59 PM",
-      multi_step: false,
-      steps: [],
-    },
-    {
-      title: "Grocery Shopping",
-      deadline: "June 6",
-      description: "Buy groceries for the week",
-      tags: ["personal", "shopping"],
-      id: 2,
-      recurring: true,
-      priority: 2,
-      completed: false,
-      time_due: "5:00 PM",
-      multi_step: false,
-      steps: [],
-    },
-    {
-      title: "Team Meeting",
-      deadline: "June 7",
-      description: "Attend the weekly team meeting",
-      tags: ["work", "meeting"],
-      id: 3,
-      recurring: true,
-      priority: 3,
-      completed: false,
-      time_due: "10:00 AM",
-      multi_step: false,
-      steps: [],
-    },
-    {
-      title: "Doctor Appointment",
-      deadline: "June 8",
-      description: "Visit the doctor for a regular check-up",
-      tags: ["health", "appointment"],
-      id: 4,
-      recurring: false,
-      priority: 1,
-      completed: false,
-      time_due: "2:00 PM",
-      multi_step: false,
-      steps: [],
-    },
-    {
-      title: "Finish Project Report",
-      deadline: "June 9",
-      description: "Complete the final report for the project",
-      tags: ["work", "urgent"],
-      id: 5,
-      recurring: false,
-      priority: 1,
-      completed: false,
-      time_due: "11:59 PM",
-      multi_step: true,
-      steps: [
-        { "Draft report": true },
-        { "Review with team": false },
-        { "Finalize report": false },
-      ],
-    },
-  ];
+  // const uncompleted_tasks = allTasks.filter(task => !task.completed);
+  // const completed_tasks = allTasks.filter(task => task.completed);
+
+    //
   return (
     /* main screen view */
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={{ position: "absolute", top: 16, right: 16 }}>
-        <Pressable
-          onPress={() => {
-            navigation.navigate("AddTask");
-          }}
-        >
-          <View
-            style={{
-              width: 32,
-              height: 32,
-              backgroundColor: themecolors.gray[400],
-              borderRadius: 24,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Icons.Feather
-              name="plus"
-              size={24}
-              color={"#FAFAFA"}
-            ></Icons.Feather>
-          </View>
-        </Pressable>
-      </View>
-      <View style={{ marginTop: 32 }}>
-        {task_list.map((task) => (
-          <Task key={task.id} task={task}></Task>
+      
+      <ScrollView style={{ }} showsVerticalScrollIndicator={false}>
+        {uncompleted_tasks?.map((task) => (
+          <Task key={task.id} task={task} onPress={handleCompleteTask}></Task>
         ))}
-      </View>
-    </View>
+        {completed_tasks.length > 0 ? <Text style={{color:themecolors.gray[100],fontFamily:'SFProRoundedSemibold', fontSize:24,marginBottom:8}}>Completed</Text> : null}
+        
+        {completed_tasks?.map((task) => (
+          <Task key={task.id} task={task} onPress={handleCompleteTask}></Task>
+        ))}
+      </ScrollView>
+    </View> 
   );
 };
 const styles = StyleSheet.create({
   container: {
     flex: 1,
 
-    padding: 20,
+    paddingHorizontal: 16,
     // justifyContent: "center",
   },
   card: {
@@ -214,3 +130,26 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapDispatchToProps)(Tasks);
+
+
+
+
+
+  //whenever the user clicks sort,
+  // const sort = (sort_by, tasks,...props) => {
+  //   //sort_by could be by subject, by time created, etc
+  //   switch(sort_by){
+  //     case "subject":{
+  //       const subject = props.subject;
+  //       //core tasks will be all displayed first, then math
+  //       tasks.sort((a, b) => (a.title > b.title) ? 1 : -1);
+  //       //[math, math, core, ]
+
+  //       //[core,core,math, math,core] then rerun sort
+  //       break;
+  //     }
+  //   }
+  // }
+  //sort(sort_by, tasks, subject="math")
+  //pull tasks from database, and display them
+  //need an if check for a global variable that stores the light/dark mode
