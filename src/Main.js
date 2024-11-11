@@ -19,8 +19,6 @@ import {
 import { connect, useDispatch, useSelector } from "react-redux"; // Redux hooks to dispatch actions and select state
 import { fetchUserData, get_all_studyPlans, logOut } from "./redux/actions"; // Redux action to fetch user data
 import { get_all_tasks } from "./redux/actions";
-import { firebaseAuth } from "./utils/DataHandler"; // Firebase authentication utilities
-import { signOut } from "firebase/auth"; // Firebase signOut method
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as Icons from "react-native-vector-icons";
@@ -53,9 +51,17 @@ const Drawer = createDrawerNavigator(); // Drawer Navigator
 const DailyStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Daily" options={{ headerShown: false }}>
-      {({ navigation }) => <Daily navigation={navigation} />}
+      {({ navigation }) => (
+        <>
+          <HomeHeader screen={"Daily"} />
+          <Daily navigation={navigation} />
+        </>
+      )}
     </Stack.Screen>
-    <Stack.Screen name="AddTask" options={{ headerShown: false }}>
+    <Stack.Screen
+      name="AddTask"
+      options={{ header: () => <CustomHeader title={"AddTask"} /> }}
+    >
       {({ navigation }) => <AddTask navigation={navigation} />}
     </Stack.Screen>
   </Stack.Navigator>
@@ -67,10 +73,18 @@ const DailyStack = () => (
 const TasksStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Tasks" options={{ headerShown: false }}>
-      {({ navigation }) => <Tasks navigation={navigation} />}
+      {({ navigation }) => (
+        <>
+          <HomeHeader screen={"Tasks"} />
+          <Tasks navigation={navigation} />
+        </>
+      )}
     </Stack.Screen>
 
-    <Stack.Screen name="AddTask" options={{ headerShown: false }}>
+    <Stack.Screen
+      name="AddTask"
+      options={{ header: () => <CustomHeader title={"AddTask"} /> }}
+    >
       {({ navigation }) => <AddTask navigation={navigation} />}
     </Stack.Screen>
     {/* Add other screens related to Tasks here */}
@@ -83,7 +97,12 @@ const TasksStack = () => (
 const CalendarStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Calendar" options={{ headerShown: false }}>
-      {() => <Calendar />}
+      {() => (
+        <>
+          <HomeHeader screen={"Calendar"} />
+          <Calendar />
+        </>
+      )}
     </Stack.Screen>
   </Stack.Navigator>
 );
@@ -94,34 +113,57 @@ const CalendarStack = () => (
 const StudyPlanStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Study" options={{ headerShown: false }}>
-      {({ navigation }) => <StudyPlans navigation={navigation} />}
+      {({ navigation }) => (
+        <>
+          <HomeHeader screen={"StudyPlan"} />
+          <StudyPlans navigation={navigation} />
+        </>
+      )}
     </Stack.Screen>
-    <Stack.Screen name="Study Plan" options={{ headerShown: false }}>
+    <Stack.Screen
+      name="Study Plan"
+      options={{ header: () => <CustomHeader title={"Study Plan"} /> }}
+    >
       {({ navigation, route }) => (
         <StudyPlan navigation={navigation} route={route} />
       )}
     </Stack.Screen>
-    <Stack.Screen name="Session" options={{ headerShown: false }}>
+    <Stack.Screen
+      name="Session"
+      options={{ header: () => <CustomHeader title={"Session"} /> }}
+    >
       {({ navigation, route }) => (
         <Session navigation={navigation} route={route} />
       )}
     </Stack.Screen>
-    <Stack.Screen name="Add a Session" options={{ headerShown: false }}>
+    <Stack.Screen
+      name="Add a Session"
+      options={{ header: () => <CustomHeader title={"Add a Session"} /> }}
+    >
       {({ navigation, route }) => (
         <AddSession navigation={navigation} route={route} />
       )}
     </Stack.Screen>
-    <Stack.Screen name="Edit a Session" options={{ headerShown: false }}>
+    <Stack.Screen
+      name="Edit a Session"
+      options={{ header: () => <CustomHeader title={"Edit a Session"} /> }}
+    >
       {({ navigation, route }) => (
         <EditSession navigation={navigation} route={route} />
       )}
     </Stack.Screen>
-    <Stack.Screen name="Add a Plan" options={{ headerShown: false }}>
+    <Stack.Screen
+      name="Add a Plan"
+      options={{ header: () => <CustomHeader title={"Add a Plan"} /> }}
+    >
       {({ navigation, route }) => (
         <AddStudyPlan navigation={navigation} route={route} />
       )}
     </Stack.Screen>
-    <Stack.Screen name="Edit a Plan" options={{ headerShown: false }}>
+    <Stack.Screen
+      name="Edit a Plan"
+      options={{ header: () => <CustomHeader title={"Edit a Plan"} /> }}
+    >
       {({ navigation, route }) => (
         <EditStudyPlan navigation={navigation} route={route} />
       )}
@@ -177,7 +219,6 @@ const DrawerNavigator = ({
     <Drawer.Screen name="Home" options={{ title: "Home" }}>
       {() => (
         <>
-          <CustomHeader title="Home" currentTabScreen={currentTabScreen} />
           <BottomTabNavigator setCurrentTabScreen={setCurrentTabScreen} />
         </>
       )}
@@ -192,12 +233,13 @@ const DrawerNavigator = ({
     </Drawer.Screen>
   </Drawer.Navigator>
 );
-const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
+
+const HomeHeader = ({ screen }) => {
   const navigation = useNavigation();
   const theme = useTheme();
   const renderExtraElements = (screenName) => {
     switch (screenName) {
-      case "DailyStack":
+      case "Daily":
         return (
           <View>
             <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
@@ -221,7 +263,7 @@ const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
             </TouchableOpacity>
           </View>
         );
-      case "TasksStack":
+      case "Tasks":
         return (
           <View>
             <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
@@ -245,16 +287,24 @@ const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
             </TouchableOpacity>
           </View>
         );
-      case "CalendarStack":
+      case "Calendar":
         return (
           <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
             <Icons.Feather name="plus" size={24} color={colors.gray[500]} />
           </TouchableOpacity>
         );
-      case "StudyPlanStack":
+      case "StudyPlan":
         return (
           <>
-          <Text style={{color:theme.colors.text,fontSize:20, fontWeight:'500'}}>Study Plan</Text>
+            <Text
+              style={{
+                color: theme.colors.text,
+                fontSize: 20,
+                fontWeight: "500",
+              }}
+            >
+              Study Plan
+            </Text>
             <TouchableOpacity onPress={() => navigation.navigate("Add a Plan")}>
               <View
                 style={{
@@ -296,7 +346,33 @@ const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
         </View>
       </TouchableOpacity>
       {/* <Text style={styles.headerTitle}>{title}</Text> */}
-      {renderExtraElements(currentTabScreen)}
+      {renderExtraElements(screen)}
+    </View>
+  );
+};
+const CustomHeader = ({ title }) => {
+  const navigation = useNavigation();
+  const theme = useTheme();
+  const renderExtraElements = (title) => {
+    switch (title /* add custom things here */) {
+    }
+  };
+  return (
+    <View
+      style={{
+        marginTop: 64,
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: colors.transparent,
+        marginBottom: 16,
+        padding: 10,
+      }}
+    >
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Icons.Ionicons name="arrow-back" size={24} color={theme.colors.text} />
+      </TouchableOpacity>
+      <Text style={styles.headerTitle}>{title}</Text>
+      {renderExtraElements(title)}
     </View>
   );
 };
