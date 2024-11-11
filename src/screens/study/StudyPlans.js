@@ -1,26 +1,75 @@
-import React, { useEffect } from "react";
-import { View, Text, Button, Touchable } from "react-native";
-import { useTheme } from "@react-navigation/native"; // Use theme for light/dark mode
-import { TouchableOpacity } from "react-native";
-import { useSelector } from "react-redux"; // Redux hook to access the store's state
-import { connect } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { View, Text, Button, TouchableOpacity, FlatList } from "react-native";
+import { useTheme } from "@react-navigation/native";
+import { useSelector, connect } from "react-redux";
 import { addStudyPlan, addSession } from "../../redux/actions";
-import "react-native-get-random-values";
-import { useDispatch } from "react-redux";
-import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid"; // import uuid library
 
 const StudyPlan = ({ navigation }) => {
-  const dispatch = useDispatch();
   const theme = useTheme();
-  let studyPlans = [];
-  try {
-    studyPlans = useSelector((state) => state.studyPlans || []);
-  } catch (e) {}
+  const studyPlans = useSelector((state) => state.studyPlans || []);
+  const [expanded, setExpanded] = useState({});
 
-  useEffect(() => {
-    console.log(studyPlans.length);
-  }, []);
+  const toggleExpand = (studyPlanId) => {
+    setExpanded((prevExpanded) => ({
+      ...prevExpanded,
+      [studyPlanId]: !prevExpanded[studyPlanId],
+    }));
+  };
+
+  const renderStudyPlan = ({ item }) => {
+    const sessionsCompleted = item.sessions.filter((session) => session.completed).length;
+    const totalSessions = item.sessions.length;
+    const progress = totalSessions > 0 ? (sessionsCompleted / totalSessions) * 100 : 0;
+
+    return (
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Study Plan", { id: item.id })}
+        style={{
+          padding: 16,
+          marginVertical: 8,
+          backgroundColor: theme.colors.card,
+          borderRadius: 8,
+          alignSelf: "center",
+        }}
+      >
+        <Text style={{ color: theme.colors.text, fontSize: 18, fontWeight: "bold" }}>
+          {item.title}
+        </Text>
+        <Text style={{ color: theme.colors.text }}>Due Date: {item.dueDate}</Text>
+        <Text style={{ color: theme.colors.text }}>Created At: {item.createdAt}</Text>
+        <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>
+          Urgent: {item.urgent ? "Yes" : "No"}
+        </Text>
+        
+        <TouchableOpacity onPress={() => toggleExpand(item.id)}>
+          <Text style={{ color: theme.colors.primary }}>
+            {expanded[item.id] ? "Hide Sessions" : "Show Sessions"}
+          </Text>
+        </TouchableOpacity>
+
+        {expanded[item.id] && (
+          <View style={{ marginTop: 8 }}>
+            {item.sessions.map((session) => (
+              <Text key={session.id} style={{ color: theme.colors.text, marginLeft: 8 }}>
+                - {session.title}
+              </Text>
+            ))}
+          </View>
+        )}
+
+        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 16 }}>
+          <Button
+            title="Start Session"
+            onPress={() => console.log("Starting session for", item.title)}
+            color={theme.colors.primary}
+          />
+          <Text style={{ color: theme.colors.text, marginLeft: 16 }}>
+            Progress: {Math.round(progress)}%
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View
@@ -31,106 +80,36 @@ const StudyPlan = ({ navigation }) => {
         backgroundColor: theme.colors.background,
       }}
     >
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Session");
-        }}
-      >
-        <View
+      {studyPlans.length === 0 ? (
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Add a Plan")}
           style={{
-            height: 100,
-            width: 100,
+            padding: 16,
             backgroundColor: theme.colors.primary,
+            borderRadius: 8,
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <Text style={{ fontSize: 20, fontWeight: "600" }}>Add a Session</Text>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Add a Session");
-        }}
-      >
-        <View
-          style={{
-            height: 100,
-            width: 100,
-            backgroundColor: theme.colors.primary,
-          }}
-        >
-          <Text style={{ fontSize: 20, fontWeight: "600" }}>Edit a Session</Text>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Edit a Session");
-        }}
-      >
-        <View
-          style={{
-            height: 100,
-            width: 100,
-            backgroundColor: theme.colors.primary,
-          }}
-        >
-          <Text style={{ fontSize: 20, fontWeight: "600" }}>Session</Text>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Session");
-        }}
-      >
-        <View
-          style={{
-            height: 100,
-            width: 100,
-            backgroundColor: theme.colors.primary,
-          }}
-        >
-          <Text style={{ fontSize: 20, fontWeight: "600" }}>Study Plan</Text>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Add a Plan");
-        }}
-      >
-        <View
-          style={{
-            height: 100,
-            width: 100,
-            backgroundColor: theme.colors.primary,
-          }}
-        >
-          <Text style={{ fontSize: 20, fontWeight: "600" }}>Add a study plan</Text>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Edit a Plan");
-        }}
-      >
-        <View
-          style={{
-            height: 100,
-            width: 100,
-            backgroundColor: theme.colors.primary,
-          }}
-        >
-          <Text style={{ fontSize: 20, fontWeight: "600" }}>Edit a study plan</Text>
-        </View>
-      </TouchableOpacity>
+          <Text style={{ color: theme.colors.text, fontSize: 18 }}>
+            Tap here to add your first study plan
+          </Text>
+        </TouchableOpacity>
+      ) : (
+        <FlatList
+          data={studyPlans}
+          renderItem={renderStudyPlan}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ paddingBottom: 16 }}
+        />
+      )}
     </View>
   );
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    // Dispatch the `updateUsername` action when called
-    addStudyPlan: (studyPlan) => dispatch(addStudyPlan(studyPlan)),
-    addSession: (session) => dispatch(addSession(session)),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  addStudyPlan: (studyPlan) => dispatch(addStudyPlan(studyPlan)),
+  addSession: (session) => dispatch(addSession(session)),
+});
 
-export default connect(mapDispatchToProps)(StudyPlan);
+export default connect(null, mapDispatchToProps)(StudyPlan);

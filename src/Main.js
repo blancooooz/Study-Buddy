@@ -94,13 +94,17 @@ const CalendarStack = () => (
 const StudyPlanStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Study" options={{ headerShown: false }}>
-      {({navigation}) => <StudyPlans  navigation={navigation}/>}
+      {({ navigation }) => <StudyPlans navigation={navigation} />}
     </Stack.Screen>
     <Stack.Screen name="Study Plan" options={{ headerShown: false }}>
-      {() => <StudyPlan />}
+      {({ navigation, route }) => (
+        <StudyPlan navigation={navigation} route={route} />
+      )}
     </Stack.Screen>
     <Stack.Screen name="Session" options={{ headerShown: false }}>
-      {() => <Session />}
+      {({ navigation, route }) => (
+        <Session navigation={navigation} route={route} />
+      )}
     </Stack.Screen>
     <Stack.Screen name="Add a Session" options={{ headerShown: false }}>
       {() => <AddSession />}
@@ -240,8 +244,24 @@ const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
         );
       case "StudyPlanStack":
         return (
-          <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
-            <Icons.Feather name="plus" size={24} color={colors.gray[500]} />
+          <TouchableOpacity onPress={() => navigation.navigate("Add a Plan")}>
+            <View
+              style={{
+                width: 32,
+                height: 32,
+                backgroundColor: colors.gray[400],
+                borderRadius: 24,
+                justifyContent: "center",
+                alignItems: "center",
+                marginRight: 16,
+              }}
+            >
+              <Icons.Feather
+                name="plus"
+                size={24}
+                color={"#FAFAFA"}
+              ></Icons.Feather>
+            </View>
           </TouchableOpacity>
         );
     }
