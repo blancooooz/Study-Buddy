@@ -21,7 +21,7 @@ import { fetchUserData, get_all_studyPlans, logOut } from "./redux/actions"; // 
 import { get_all_tasks } from "./redux/actions";
 import { firebaseAuth } from "./utils/DataHandler"; // Firebase authentication utilities
 import { signOut } from "firebase/auth"; // Firebase signOut method
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useTheme } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as Icons from "react-native-vector-icons";
 // Importing screens for each part of the app
@@ -107,16 +107,24 @@ const StudyPlanStack = () => (
       )}
     </Stack.Screen>
     <Stack.Screen name="Add a Session" options={{ headerShown: false }}>
-      {({ navigation, route }) => <AddSession navigation={navigation} route={route} />}
+      {({ navigation, route }) => (
+        <AddSession navigation={navigation} route={route} />
+      )}
     </Stack.Screen>
     <Stack.Screen name="Edit a Session" options={{ headerShown: false }}>
-      {({ navigation, route }) => <EditSession navigation={navigation} route={route} />}
+      {({ navigation, route }) => (
+        <EditSession navigation={navigation} route={route} />
+      )}
     </Stack.Screen>
     <Stack.Screen name="Add a Plan" options={{ headerShown: false }}>
-      {({ navigation, route }) => <AddStudyPlan navigation={navigation} route={route} />}
+      {({ navigation, route }) => (
+        <AddStudyPlan navigation={navigation} route={route} />
+      )}
     </Stack.Screen>
     <Stack.Screen name="Edit a Plan" options={{ headerShown: false }}>
-      {({ navigation, route }) => <EditStudyPlan navigation={navigation} route={route} />}
+      {({ navigation, route }) => (
+        <EditStudyPlan navigation={navigation} route={route} />
+      )}
     </Stack.Screen>
   </Stack.Navigator>
 );
@@ -186,6 +194,7 @@ const DrawerNavigator = ({
 );
 const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
   const navigation = useNavigation();
+  const theme = useTheme();
   const renderExtraElements = (screenName) => {
     switch (screenName) {
       case "DailyStack":
@@ -244,25 +253,28 @@ const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
         );
       case "StudyPlanStack":
         return (
-          <TouchableOpacity onPress={() => navigation.navigate("Add a Plan")}>
-            <View
-              style={{
-                width: 32,
-                height: 32,
-                backgroundColor: colors.gray[400],
-                borderRadius: 24,
-                justifyContent: "center",
-                alignItems: "center",
-                marginRight: 16,
-              }}
-            >
-              <Icons.Feather
-                name="plus"
-                size={24}
-                color={"#FAFAFA"}
-              ></Icons.Feather>
-            </View>
-          </TouchableOpacity>
+          <>
+          <Text style={{color:theme.colors.text,fontSize:20, fontWeight:'500'}}>Study Plan</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Add a Plan")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: colors.gray[400],
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.Feather
+                  name="plus"
+                  size={24}
+                  color={"#FAFAFA"}
+                ></Icons.Feather>
+              </View>
+            </TouchableOpacity>
+          </>
         );
     }
   };
