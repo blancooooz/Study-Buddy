@@ -1,4 +1,5 @@
-/*  */const AddStudyPlan = () => {
+/*  */const AddStudyPlan = ({navigation, route}) => {
+  console.log("add a plan")
   return <></>;
 };
 export default AddStudyPlan;

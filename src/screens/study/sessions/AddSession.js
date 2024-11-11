@@ -1,4 +1,6 @@
-const AddSession = () => {
+const AddSession = ({ navigation, route }) => {
+  const {planId}=route.params
+  console.log(planId)
   return <></>;
 };
 export default AddSession;

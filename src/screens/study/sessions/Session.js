@@ -19,7 +19,6 @@ const Session = ({ route, navigation }) => {
   }, [session, navigation]);
 
   if (!session) {
-    console.log(studyPlan)
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text style={{ color: theme.colors.text }}>Session not found.</Text>
@@ -87,6 +86,23 @@ const Session = ({ route, navigation }) => {
         onPress={() => console.log("Toggle completion for:", session.id)}
         color={theme.colors.primary}
       />
+      <TouchableOpacity
+        onPress={()=>navigation.navigate("Edit a Session", { sessionId: session.id })}
+      >
+        <View
+          style={{
+            backgroundColor: theme.colors.primary,
+            height: 50,
+            borderRadius: 12,
+          }}
+        >
+          <Text
+            style={{ fontSize: 24, alignSelf: "center", fontWeight: "600" }}
+          >
+            Edit
+          </Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };

@@ -107,16 +107,16 @@ const StudyPlanStack = () => (
       )}
     </Stack.Screen>
     <Stack.Screen name="Add a Session" options={{ headerShown: false }}>
-      {() => <AddSession />}
+      {({ navigation, route }) => <AddSession navigation={navigation} route={route} />}
     </Stack.Screen>
     <Stack.Screen name="Edit a Session" options={{ headerShown: false }}>
-      {() => <EditSession />}
+      {({ navigation, route }) => <EditSession navigation={navigation} route={route} />}
     </Stack.Screen>
     <Stack.Screen name="Add a Plan" options={{ headerShown: false }}>
-      {() => <AddStudyPlan />}
+      {({ navigation, route }) => <AddStudyPlan navigation={navigation} route={route} />}
     </Stack.Screen>
     <Stack.Screen name="Edit a Plan" options={{ headerShown: false }}>
-      {() => <EditSession />}
+      {({ navigation, route }) => <EditStudyPlan navigation={navigation} route={route} />}
     </Stack.Screen>
   </Stack.Navigator>
 );

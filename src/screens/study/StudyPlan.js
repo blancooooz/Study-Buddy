@@ -28,7 +28,9 @@ const StudyPlan = ({ route, navigation }) => {
 
   const renderSession = ({ item }) => (
     <TouchableOpacity
-      onPress={() => navigation.navigate("Session", { studyPlanId: id, sessionId: item.id })}
+      onPress={() =>
+        navigation.navigate("Session", { studyPlanId: id, sessionId: item.id })
+      }
       style={[styles.sessionContainer, { backgroundColor: theme.colors.card }]}
     >
       <Text style={{ color: theme.colors.text, fontSize: 16 }}>
@@ -85,6 +87,40 @@ const StudyPlan = ({ route, navigation }) => {
         ))}
       </View>
 
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Edit a Plan", { planId: id })}
+      >
+        <View
+          style={{
+            backgroundColor: theme.colors.primary,
+            height: 50,
+            borderRadius: 12,
+          }}
+        >
+          <Text
+            style={{ fontSize: 24, alignSelf: "center", fontWeight: "600" }}
+          >
+            Edit
+          </Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Add a Session", { planId: id })}
+      >
+        <View
+          style={{
+            backgroundColor: theme.colors.primary,
+            height: 50,
+            borderRadius: 12,
+          }}
+        >
+          <Text
+            style={{ fontSize: 24, alignSelf: "center", fontWeight: "600" }}
+          >
+            Add session
+          </Text>
+        </View>
+      </TouchableOpacity>
       <Text style={[styles.sessionHeader, { color: theme.colors.text }]}>
         Sessions
       </Text>
