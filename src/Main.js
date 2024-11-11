@@ -122,7 +122,11 @@ const StudyPlanStack = () => (
     </Stack.Screen>
     <Stack.Screen
       name="Study Plan"
-      options={{ header: () => <CustomHeader title={"Study Plan"} /> }}
+      options={({ route }) => ({
+        header: () => (
+          <CustomHeader title="Study Plan" routeParam={route.params?.id} />
+        ),
+      })}
     >
       {({ navigation, route }) => (
         <StudyPlan navigation={navigation} route={route} />
@@ -350,13 +354,30 @@ const HomeHeader = ({ screen }) => {
     </View>
   );
 };
-const CustomHeader = ({ title }) => {
+const CustomHeader = ({ title, routeParam }) => {
   const navigation = useNavigation();
   const theme = useTheme();
   const renderExtraElements = (title) => {
-    switch (title /* add custom things here */) {
+    switch (title) {
+      case "Study Plan":
+        return (
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("Edit a Plan", { planId: routeParam })
+            }
+            style={{
+              width: 32,
+              height: 32,
+              marginRight: 16, position:'absolute',
+              right:0
+            }}
+          >
+            <Icons.Ionicons name="options" size={36} color={colors.gray[500]} />
+          </TouchableOpacity>
+        );
     }
   };
+
   return (
     <View
       style={{

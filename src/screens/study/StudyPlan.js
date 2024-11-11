@@ -10,10 +10,9 @@ import { useTheme } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 
 const StudyPlan = ({ route, navigation }) => {
-  const { id } = route.params; // Retrieve study plan ID from navigation params
+  const { id } = route.params;
   const theme = useTheme();
 
-  // Select the specific study plan from the Redux store based on the ID
   const studyPlan = useSelector((state) =>
     state.studyPlans.find((plan) => plan.id === id)
   );
@@ -33,7 +32,7 @@ const StudyPlan = ({ route, navigation }) => {
       }
       style={[styles.sessionContainer, { backgroundColor: theme.colors.card }]}
     >
-      <Text style={{ color: theme.colors.text, fontSize: 16 }}>
+      <Text style={[styles.sessionTitle, { color: theme.colors.text }]}>
         {item.title}
       </Text>
     </TouchableOpacity>
@@ -71,7 +70,7 @@ const StudyPlan = ({ route, navigation }) => {
       </View>
 
       {studyPlan.reminder.enabled && (
-        <Text style={{ color: theme.colors.text }}>
+        <Text style={[styles.reminderText, { color: theme.colors.text }]}>
           Reminder Set for: {studyPlan.reminder.reminder_time}
         </Text>
       )}
@@ -80,57 +79,34 @@ const StudyPlan = ({ route, navigation }) => {
         {studyPlan.tags.map((tag, index) => (
           <Text
             key={index}
-            style={[styles.tag, { color: theme.colors.primary }]}
+            style={[
+              styles.tag,
+              {
+                color: theme.colors.primary,
+                borderColor: theme.colors.primary,
+              },
+            ]}
           >
             {tag}
           </Text>
         ))}
       </View>
 
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Edit a Plan", { planId: id })}
-      >
-        <View
-          style={{
-            backgroundColor: theme.colors.primary,
-            height: 50,
-            borderRadius: 12,
-          }}
-        >
-          <Text
-            style={{ fontSize: 24, alignSelf: "center", fontWeight: "600" }}
-          >
-            Edit
-          </Text>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Add a Session", { planId: id })}
-      >
-        <View
-          style={{
-            backgroundColor: theme.colors.primary,
-            height: 50,
-            borderRadius: 12,
-          }}
-        >
-          <Text
-            style={{ fontSize: 24, alignSelf: "center", fontWeight: "600" }}
-          >
-            Add session
-          </Text>
-        </View>
-      </TouchableOpacity>
       <Text style={[styles.sessionHeader, { color: theme.colors.text }]}>
         Sessions
       </Text>
-
       <FlatList
         data={studyPlan.sessions}
         renderItem={renderSession}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.sessionList}
       />
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: theme.colors.card }]}
+        onPress={() => navigation.navigate("Add a Session", { planId: id })}
+      >
+        <Text style={[{color: theme.colors.primary}, styles.buttonText]}>Add Session</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -146,15 +122,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: "bold",
+    marginBottom: 8,
   },
   description: {
     fontSize: 16,
-    marginVertical: 8,
+    marginBottom: 12,
   },
   infoContainer: {
-    marginVertical: 8,
+    marginBottom: 12,
+  },
+  reminderText: {
+    fontStyle: "italic",
+    marginBottom: 12,
   },
   tagContainer: {
     flexDirection: "row",
@@ -162,27 +143,54 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   tag: {
-    backgroundColor: "transparent",
     fontSize: 14,
-    marginRight: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 4,
+    marginRight: 8,
+    marginBottom: 8,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#ccc",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 12,
+  },
+  button: {
+    height: 50,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 5,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: "600",
+    alignSelf:'flex-start',
+    marginLeft:24
   },
   sessionHeader: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
-    marginVertical: 12,
+    marginTop: 20,
+    marginBottom: 12,
   },
   sessionList: {
     paddingBottom: 16,
   },
   sessionContainer: {
-    padding: 12,
+    padding: 16,
     marginVertical: 6,
-    borderRadius: 8,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  sessionTitle: {
+    fontSize: 16,
+    fontWeight: "500",
   },
 });
 

@@ -11,6 +11,8 @@ import { useTheme } from "@react-navigation/native";
 import { useSelector, connect } from "react-redux";
 import { addStudyPlan, addSession } from "../../redux/actions";
 import { Circle } from "react-native-progress";
+import Icon from "react-native-vector-icons/FontAwesome";
+import * as Icons from "react-native-vector-icons";
 
 const width = Dimensions.get("screen").width;
 const StudyPlan = ({ navigation }) => {
@@ -61,7 +63,7 @@ const StudyPlan = ({ navigation }) => {
 
             <TouchableOpacity onPress={() => toggleExpand(item.id)}>
               <Text style={{ color: theme.colors.primary }}>
-                {expanded[item.id] ? "Hide Sessions" : "Show Sessions"}
+                {expanded[item.id] ? "Show Less" : "Sessions"}
               </Text>
             </TouchableOpacity>
 
@@ -99,13 +101,6 @@ const StudyPlan = ({ navigation }) => {
               marginTop: 16,
             }}
           >
-            {item.dueDate ? (
-              <Text style={{ color: theme.colors.text }}>
-                Due Date: {item.dueDate}
-              </Text>
-            ) : (
-              <></>
-            )}
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("Add a Session", { planId: item.id })
@@ -118,7 +113,8 @@ const StudyPlan = ({ navigation }) => {
                 justifyContent: "center",
                 alignItems: "center",
                 borderColor: theme.colors.primary,
-                backgroundColor: theme.colors.background,
+                backgroundColor: theme.colors.card,
+                marginBottom: 12,
               }}
             >
               <Text style={{ color: theme.colors.primary }}>
@@ -149,26 +145,47 @@ const StudyPlan = ({ navigation }) => {
     <View
       style={{
         flex: 1,
-        justifyContent: "center",
         alignItems: "center",
         backgroundColor: theme.colors.background,
       }}
     >
       {studyPlans.length === 0 ? (
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Add a Plan")}
-          style={{
-            padding: 16,
-            backgroundColor: theme.colors.primary,
-            borderRadius: 8,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ color: theme.colors.text, fontSize: 18 }}>
-            Tap here to add your first study plan
+        <>
+          <Text
+            style={{
+              color: theme.colors.text,
+              fontSize: 18,
+              alignSelf: "flex-start",
+              margin: 12,
+              fontWeight: "500",
+            }}
+          >
+            Add your first study plan
           </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Add a Plan")}
+            style={{}}
+          >
+            <View
+              style={{
+                width: width * 0.95,
+                borderColor: theme.colors.secondary,
+                borderWidth: 2,
+                height: width * 0.45,
+                borderRadius: 16,
+                borderStyle: "dashed",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Icons.Feather
+                name="plus"
+                size={24}
+                color={"#FAFAFA"}
+              ></Icons.Feather>
+            </View>
+          </TouchableOpacity>
+        </>
       ) : (
         <FlatList
           data={studyPlans}
