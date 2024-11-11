@@ -134,7 +134,11 @@ const StudyPlanStack = () => (
     </Stack.Screen>
     <Stack.Screen
       name="Session"
-      options={{ header: () => <CustomHeader title={"Session"} /> }}
+      options={({ route }) => ({
+        header: () => (
+          <CustomHeader title="Session" routeParam={route.params?.sessionId} />
+        ),
+      })}
     >
       {({ navigation, route }) => (
         <Session navigation={navigation} route={route} />
@@ -354,7 +358,7 @@ const HomeHeader = ({ screen }) => {
     </View>
   );
 };
-const CustomHeader = ({ title, routeParam }) => {
+const CustomHeader = ({ title, routeParam, secondRouteParam }) => {
   const navigation = useNavigation();
   const theme = useTheme();
   const renderExtraElements = (title) => {
@@ -368,8 +372,28 @@ const CustomHeader = ({ title, routeParam }) => {
             style={{
               width: 32,
               height: 32,
-              marginRight: 16, position:'absolute',
-              right:0
+              marginRight: 16,
+              position: "absolute",
+              right: 0,
+            }}
+          >
+            <Icons.Ionicons name="options" size={36} color={colors.gray[500]} />
+          </TouchableOpacity>
+        );
+      case "Session":
+        return (
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("Edit a Session", {
+                sessionId: routeParam,
+              })
+            }
+            style={{
+              width: 32,
+              height: 32,
+              marginRight: 16,
+              position: "absolute",
+              right: 0,
             }}
           >
             <Icons.Ionicons name="options" size={36} color={colors.gray[500]} />

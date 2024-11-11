@@ -87,7 +87,7 @@ const Session = ({ route, navigation }) => {
         color={theme.colors.primary}
       />
       <TouchableOpacity
-        onPress={()=>navigation.navigate("Edit a Session", { sessionId: session.id })}
+        onPress={()=>navigation.navigate("Edit a Session", { sessionId: sessionId })}
       >
         <View
           style={{
