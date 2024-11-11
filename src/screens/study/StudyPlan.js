@@ -1,40 +1,22 @@
-import React from "react";
-import { View, Text, Button } from "react-native";
-import { useTheme } from "@react-navigation/native"; // Use theme for light/dark mode
-
-const StudyPlan = ({ navigation }) => {
-  const theme = useTheme();
-
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: theme.colors.background,
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 24,
-          fontWeight: "bold",
-          color: theme.colors.text,
-          marginBottom: 20,
-        }}
-      >
-        Study Plan
-      </Text>
-      <Text
-        style={{
-          fontSize: 18,
-          color: theme.colors.text,
-          marginBottom: 30,
-        }}
-      >
-        Coming Soon!
-      </Text>
-    </View>
-  );
-};
-
-export default StudyPlan;
+/* const studyPlan = {
+   title: string, // study plan title, like "History Chapter 2 Study Plan"
+   description: string, // overview of the study plan, goals, etc.
+   createdAt: string, // date of creation
+   updatedAt: string, // date of the last update
+   sessions: array, // array of session objects
+   tags: array, // tags like "reading", "review", "quiz prep"
+   id: string, // unique identifier
+   completed: bool, // marks the completion status of the study plan
+   subject: { name: string, color: string }, // subject info, similar to tasks
+   collaborative: bool, // if the study plan is collaborative
+   users: array, // list of users if collaborative
+   reminder: {
+       enabled: bool,
+       reminder_time: string,
+   },
+   urgent: bool, // flag for urgent study plans
+}; */
+const StudyPlan = () => {
+    return <></>;
+  };
+  export default StudyPlan;

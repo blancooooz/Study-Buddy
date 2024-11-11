@@ -12,6 +12,8 @@ import {
   arrayUnion,
 } from "firebase/firestore";
 import { signOut } from "firebase/auth";
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid"; // import uuid library
 
 // Define action types as constants to avoid typos and manage action types easily
 export const FETCH_USER = "FETCH_USER"; // For fetching the current Firebase authenticated user
@@ -25,6 +27,14 @@ export const DELETE_TASK = "DELETE_TASK";
 export const EDIT_TASK = "EDIT_TASK";
 export const COMPLETE_TASK = "COMPLETE_TASK";
 export const LOG_OUT = "LOG_OUT";
+export const GET_STUDY_PLANS = "SET_STUDY_PLANS";
+export const CHANGE_STUDY_PLANS = "CHANGE_STUDY_PLANS";
+export const ADD_STUDY_PLAN = "ADD_STUDY_PLAN";
+export const EDIT_STUDY_PLAN = "EDIT_STUDY_PLAN";
+export const DELETE_STUDY_PLAN = "DELETE_STUDY_PLAN";
+export const ADD_SESSION = "ADD_SESSION";
+export const EDIT_SESSION = "EDIT_SESSION";
+export const DELETE_SESSION = "DELETE_SESSION";
 {
   /* 
 export const ADD_TASK = "ADD_TASK";
@@ -230,7 +240,7 @@ export const get_all_tasks = () => {
   // Pull all tasks from the database
   return async (dispatch) => {
     try {
-      const uid = firebaseAuth.currentUser.uid ; // Get the current user's id
+      const uid = firebaseAuth.currentUser.uid; // Get the current user's id
       const taskRef = doc(db, "tasks", uid); // Grab task document reference from the database
 
       const taskSnapshot = await getDoc(taskRef); // Fetch the document snapshot
@@ -251,8 +261,164 @@ export const get_all_tasks = () => {
     }
   };
 };
-export const complete_task = ( taskId) => {
-  return async (dispatch,getState) => {
+// Helper to get a specific study plan document reference
+const getStudyPlanRef = (userId) => doc(db, "studyPlans", userId);
+
+// Fetch all study plans, creating an empty document if it doesn’t exist
+export const get_all_studyPlans = () => async (dispatch) => {
+  try {
+    const uid = firebaseAuth.currentUser.uid;
+    const studyRef = getStudyPlanRef(uid);
+    const studyRefSnapshot = await getDoc(studyRef);
+
+    if (studyRefSnapshot.exists()) {
+      const studyData = studyRefSnapshot.data();
+      dispatch({ type: GET_STUDY_PLANS, payload: studyData.studyPlans || [] });
+    } else {
+      await setDoc(studyRef, { studyPlans: [] });
+      dispatch({ type: GET_STUDY_PLANS, payload: [] });
+    }
+  } catch (error) {
+    console.error("Error fetching study plans:", error);
+  }
+};
+
+// Add a study plan
+export const addStudyPlan = (studyPlan) => async (dispatch, getState) => {
+  try {
+    const state = getState();
+    const studyPlans = state.studyPlans || [];
+    const userId = firebaseAuth.currentUser.uid;
+    const newStudyPlan = {
+      ...studyPlan,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    const studyPlanRef = getStudyPlanRef(userId);
+    await updateDoc(studyPlanRef, { studyPlans: arrayUnion(newStudyPlan) });
+
+    dispatch({ type: ADD_STUDY_PLAN, payload: [...studyPlans, newStudyPlan] });
+  } catch (error) {
+    console.error("Error adding study plan:", error);
+  }
+};
+
+// Edit a study plan
+export const editStudyPlan = (studyPlanId, updatedPlan) => async (dispatch, getState) => {
+  try {
+    const userId = firebaseAuth.currentUser.uid;
+    const state = getState();
+    const currentPlans = state.studyPlans;
+    const updatedPlans = currentPlans.map((plan) =>
+      plan.id === studyPlanId ? { ...plan, ...updatedPlan, updatedAt: new Date().toISOString() } : plan
+    );
+
+    const studyPlanRef = getStudyPlanRef(userId);
+    await updateDoc(studyPlanRef, { studyPlans: updatedPlans });
+
+    dispatch({ type: EDIT_STUDY_PLAN, payload: { studyPlanId, updatedPlan } });
+  } catch (error) {
+    console.error("Error editing study plan:", error);
+  }
+};
+
+// Delete a study plan
+export const deleteStudyPlan = (studyPlanId) => async (dispatch, getState) => {
+  try {
+    const userId = firebaseAuth.currentUser.uid;
+    const state = getState();
+    const updatedPlans = state.studyPlans.filter((plan) => plan.id !== studyPlanId);
+
+    const studyPlanRef = getStudyPlanRef(userId);
+    await updateDoc(studyPlanRef, { studyPlans: updatedPlans });
+
+    dispatch({ type: DELETE_STUDY_PLAN, payload: studyPlanId });
+  } catch (error) {
+    console.error("Error deleting study plan:", error);
+  }
+};
+
+// Add a session to a study plan
+export const addSession = (studyPlanId, session) => async (dispatch, getState) => {
+  try {
+    const userId = firebaseAuth.currentUser.uid;
+    const state = getState();
+    const studyPlans = state.studyPlans;
+    const newSession = {
+      ...session,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    const updatedPlans = studyPlans.map((plan) =>
+      plan.id === studyPlanId
+        ? { ...plan, sessions: [...plan.sessions, newSession] }
+        : plan
+    );
+
+    const studyPlanRef = getStudyPlanRef(userId);
+    await updateDoc(studyPlanRef, { studyPlans: updatedPlans });
+
+    dispatch({ type: ADD_SESSION, payload: { studyPlanId, session: newSession } });
+  } catch (error) {
+    console.error("Error adding session:", error);
+  }
+};
+
+// Edit a session in a study plan
+export const editSession = (studyPlanId, sessionId, updatedSession) => async (dispatch, getState) => {
+  try {
+    const userId = firebaseAuth.currentUser.uid;
+    const state = getState();
+    const studyPlans = state.studyPlans;
+
+    const updatedPlans = studyPlans.map((plan) =>
+      plan.id === studyPlanId
+        ? {
+            ...plan,
+            sessions: plan.sessions.map((session) =>
+              session.id === sessionId
+                ? { ...session, ...updatedSession, updatedAt: new Date().toISOString() }
+                : session
+            ),
+          }
+        : plan
+    );
+
+    const studyPlanRef = getStudyPlanRef(userId);
+    await updateDoc(studyPlanRef, { studyPlans: updatedPlans });
+
+    dispatch({ type: EDIT_SESSION, payload: { studyPlanId, updatedSessions: updatedPlans } });
+  } catch (error) {
+    console.error("Error editing session:", error);
+  }
+};
+
+// Delete a session from a study plan
+export const deleteSession = (studyPlanId, sessionId) => async (dispatch, getState) => {
+  try {
+    const userId = firebaseAuth.currentUser.uid;
+    const state = getState();
+    const studyPlans = state.studyPlans;
+
+    const updatedPlans = studyPlans.map((plan) =>
+      plan.id === studyPlanId
+        ? { ...plan, sessions: plan.sessions.filter((session) => session.id !== sessionId) }
+        : plan
+    );
+
+    const studyPlanRef = getStudyPlanRef(userId);
+    await updateDoc(studyPlanRef, { studyPlans: updatedPlans });
+
+    dispatch({ type: DELETE_SESSION, payload: { studyPlanId, updatedSessions: updatedPlans } });
+  } catch (error) {
+    console.error("Error deleting session:", error);
+  }
+};
+
+export const complete_task = (taskId) => {
+  return async (dispatch, getState) => {
     try {
       const uid = firebaseAuth.currentUser.uid;
       const taskRef = doc(db, "tasks", uid);

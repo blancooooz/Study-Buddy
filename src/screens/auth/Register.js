@@ -49,6 +49,10 @@ const Register = () => {
       await setDoc(doc(db,"tasks", `${uid}`),{
         tasks: []
       })
+      await setDoc(doc(db,"studyPlans", `${uid}`),{
+        studyPlans: []
+      })
+      
     } catch (e) {
       console.log(e); // Log any errors when adding document to Firestore
     }

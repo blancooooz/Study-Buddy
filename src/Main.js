@@ -17,7 +17,7 @@ import {
   DrawerItem,
 } from "@react-navigation/drawer"; // For drawer navigation
 import { connect, useDispatch, useSelector } from "react-redux"; // Redux hooks to dispatch actions and select state
-import { fetchUserData, logOut } from "./redux/actions"; // Redux action to fetch user data
+import { fetchUserData, get_all_studyPlans, logOut } from "./redux/actions"; // Redux action to fetch user data
 import { get_all_tasks } from "./redux/actions";
 import { firebaseAuth } from "./utils/DataHandler"; // Firebase authentication utilities
 import { signOut } from "firebase/auth"; // Firebase signOut method
@@ -28,12 +28,18 @@ import * as Icons from "react-native-vector-icons";
 import Daily from "./screens/daily/Daily";
 import Tasks from "./screens/tasks/Tasks";
 import Calendar from "./screens/calendar/Calender";
-import StudyPlan from "./screens/study/StudyPlan";
+import StudyPlans from "./screens/study/StudyPlans";
 import Settings from "./screens/account/Settings";
 import Preferences from "./screens/account/Preferences";
 import Username from "./screens/account/Username";
 import ChangePassword from "./screens/account/ChangePassword";
 import AddTask from "./screens/tasks/AddTask";
+import AddSession from "./screens/study/sessions/AddSession";
+import EditStudyPlan from "./screens/study/EditStudyPlan";
+import AddStudyPlan from "./screens/study/AddStudyPlan";
+import EditSession from "./screens/study/sessions/EditSession";
+import Session from "./screens/study/sessions/Session";
+import StudyPlan from "./screens/study/StudyPlan";
 import { colors } from "./theme/colors";
 import { current } from "@reduxjs/toolkit";
 // Navigators for tabs, stacks, and drawers
@@ -47,10 +53,10 @@ const Drawer = createDrawerNavigator(); // Drawer Navigator
 const DailyStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Daily" options={{ headerShown: false }}>
-      {({navigation}) => <Daily navigation={navigation}/>}
+      {({ navigation }) => <Daily navigation={navigation} />}
     </Stack.Screen>
     <Stack.Screen name="AddTask" options={{ headerShown: false }}>
-      {({navigation}) => <AddTask navigation={navigation}/>}
+      {({ navigation }) => <AddTask navigation={navigation} />}
     </Stack.Screen>
   </Stack.Navigator>
 );
@@ -87,8 +93,26 @@ const CalendarStack = () => (
  */
 const StudyPlanStack = () => (
   <Stack.Navigator>
+    <Stack.Screen name="Study" options={{ headerShown: false }}>
+      {({navigation}) => <StudyPlans  navigation={navigation}/>}
+    </Stack.Screen>
     <Stack.Screen name="Study Plan" options={{ headerShown: false }}>
       {() => <StudyPlan />}
+    </Stack.Screen>
+    <Stack.Screen name="Session" options={{ headerShown: false }}>
+      {() => <Session />}
+    </Stack.Screen>
+    <Stack.Screen name="Add a Session" options={{ headerShown: false }}>
+      {() => <AddSession />}
+    </Stack.Screen>
+    <Stack.Screen name="Edit a Session" options={{ headerShown: false }}>
+      {() => <EditSession />}
+    </Stack.Screen>
+    <Stack.Screen name="Add a Plan" options={{ headerShown: false }}>
+      {() => <AddStudyPlan />}
+    </Stack.Screen>
+    <Stack.Screen name="Edit a Plan" options={{ headerShown: false }}>
+      {() => <EditSession />}
     </Stack.Screen>
   </Stack.Navigator>
 );
@@ -333,14 +357,13 @@ const BottomTabNavigator = ({ setCurrentTabScreen }) => (
 const Main = ({ isDarkTheme, toggleTheme }) => {
   const dispatch = useDispatch(); // Redux's dispatch function
   const userData = useSelector((state) => state.userData); // Get user data from Redux store
-  const tasks = useSelector((state) => state.tasks); // Get tasks from Redux store
   const [currentTabScreen, setCurrentTabScreen] = useState("DailyStack");
   // Fetch user data when the component mounts if not already present
   useEffect(() => {
     if (!userData) {
       dispatch(fetchUserData()); // Fetch user data from Firestore and store in Redux
-
       dispatch(get_all_tasks()); // Fetch tasks from Firestore and store in Redux
+      dispatch(get_all_studyPlans());
     }
   }, []);
 
