@@ -10,7 +10,9 @@ const Session = ({ route, navigation }) => {
   // Access studyPlans from the state
   const studyPlans = useSelector((state) => state.studyPlans || []);
   const studyPlan = studyPlans.find((plan) => plan.id === studyPlanId);
-  const session = studyPlan ? studyPlan.sessions.find((s) => s.id === sessionId) : null;
+  const session = studyPlan
+    ? studyPlan.sessions.find((s) => s.id === sessionId)
+    : null;
 
   useEffect(() => {
     if (session) {
@@ -41,8 +43,12 @@ const Session = ({ route, navigation }) => {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.colors.background, padding: 16 }}>
-      <Text style={{ color: theme.colors.text, fontSize: 24, fontWeight: "bold" }}>
+    <View
+      style={{ flex: 1, backgroundColor: theme.colors.background, padding: 16 }}
+    >
+      <Text
+        style={{ color: theme.colors.text, fontSize: 24, fontWeight: "bold" }}
+      >
         {session.title}
       </Text>
       <Text style={{ color: theme.colors.text, marginVertical: 8 }}>
@@ -53,7 +59,9 @@ const Session = ({ route, navigation }) => {
       </Text>
 
       <View style={{ marginVertical: 16 }}>
-        <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>Tags:</Text>
+        <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>
+          Tags:
+        </Text>
         {session.tags.map((tag) => (
           <Text key={tag} style={{ color: theme.colors.text, marginLeft: 8 }}>
             • {tag}
@@ -62,14 +70,24 @@ const Session = ({ route, navigation }) => {
       </View>
 
       <View style={{ marginVertical: 16 }}>
-        <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>Timer:</Text>
-        <Text style={{ color: theme.colors.text }}>Duration: {session.timer.duration} mins</Text>
-        <Text style={{ color: theme.colors.text }}>Intervals: {session.timer.intervalCount}</Text>
-        <Text style={{ color: theme.colors.text }}>Completed: {session.timer.completedIntervals}</Text>
+        <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>
+          Timer:
+        </Text>
+        <Text style={{ color: theme.colors.text }}>
+          Duration: {session.timer.duration} mins
+        </Text>
+        <Text style={{ color: theme.colors.text }}>
+          Intervals: {session.timer.intervalCount}
+        </Text>
+        <Text style={{ color: theme.colors.text }}>
+          Completed: {session.timer.completedIntervals}
+        </Text>
       </View>
 
       <View style={{ marginVertical: 16 }}>
-        <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>Attachments:</Text>
+        <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>
+          Attachments:
+        </Text>
         {session.attachments.length > 0 ? (
           <FlatList
             data={session.attachments}
@@ -77,31 +95,72 @@ const Session = ({ route, navigation }) => {
             keyExtractor={(item, index) => index.toString()}
           />
         ) : (
-          <Text style={{ color: theme.colors.text }}>No attachments added.</Text>
+          <Text style={{ color: theme.colors.text }}>
+            No attachments added.
+          </Text>
         )}
       </View>
 
-      <Button
-        title={session.completed ? "Mark as Incomplete" : "Mark as Completed"}
-        onPress={() => console.log("Toggle completion for:", session.id)}
-        color={theme.colors.primary}
-      />
       <TouchableOpacity
-        onPress={()=>navigation.navigate("Edit a Session", { sessionId: sessionId })}
+        style={{
+          backgroundColor: theme.colors.primary,
+          height: 50,
+          borderRadius: 12,
+          justifyContent: "center",
+          alignItems: "center",
+          marginHorizontal: 5,
+          marginBottom: 24,
+        }}
+        onPress={() => console.log("Directs to timer")}
       >
-        <View
+        <Text
           style={{
-            backgroundColor: theme.colors.primary,
-            height: 50,
-            borderRadius: 12,
+            color: theme.colors.card,
+            fontSize: 18,
+            fontWeight: "600",
+            alignSelf: "flex-start",
+            marginLeft: 24,
           }}
         >
+          Start this Session
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          backgroundColor: theme.colors.card,
+          height: 50,
+          borderRadius: 12,
+          justifyContent: "center",
+          alignItems: "center",
+          marginHorizontal: 5,
+        }}
+        onPress={() => console.log("edit the session with completed as opposite")}
+      >
+        {!session.completed ? (
           <Text
-            style={{ fontSize: 24, alignSelf: "center", fontWeight: "600" }}
+            style={{
+              color: theme.colors.primary,
+              fontSize: 18,
+              fontWeight: "600",
+              alignSelf: "flex-start",
+              marginLeft: 24,
+            }}
           >
-            Edit
+            Mark as Complete
           </Text>
-        </View>
+        ) : (
+          <Text
+            style={{
+              color: theme.colors.primary,
+              fontSize: 18,
+              fontWeight: "600",
+              alignSelf: "flex-start",
+              marginLeft: 24,
+            }}
+          >
+            Mark as Incomplete
+          </Text>
+        )}
       </TouchableOpacity>
     </View>
   );

@@ -102,10 +102,25 @@ const StudyPlan = ({ route, navigation }) => {
         contentContainerStyle={styles.sessionList}
       />
       <TouchableOpacity
+        style={[
+          styles.button,
+          { backgroundColor: theme.colors.primary, marginBottom: 24 },
+        ]}
+        onPress={() =>
+          console.log("Complete study plan, have to check it works")
+        }
+      >
+        <Text style={[{ color: theme.colors.card }, styles.buttonText]}>
+          Complete this Plan
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
         style={[styles.button, { backgroundColor: theme.colors.card }]}
         onPress={() => navigation.navigate("Add a Session", { planId: id })}
       >
-        <Text style={[{color: theme.colors.primary}, styles.buttonText]}>Add Session</Text>
+        <Text style={[{ color: theme.colors.primary }, styles.buttonText]}>
+          Add Session
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -166,8 +181,8 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     fontWeight: "600",
-    alignSelf:'flex-start',
-    marginLeft:24
+    alignSelf: "flex-start",
+    marginLeft: 24,
   },
   sessionHeader: {
     fontSize: 20,
