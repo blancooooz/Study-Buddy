@@ -15,16 +15,7 @@ import { initializeFirestore } from "firebase/firestore"; // Import function to 
 // FIREBASE INITIALIZATION
 
 // Firebase configuration object containing project-specific keys and IDs
-const firebaseConfig = {
 
-  apiKey: "AIzaSyCq4BF6OciC4FVEZ_F10QmrmoLGkWeFXqE",
-  authDomain: "study-app-bc788.firebaseapp.com",
-  projectId: "study-app-bc788",
-  storageBucket: "study-app-bc788.appspot.com",
-  messagingSenderId: "214203925511",
-  appId: "1:214203925511:web:5b3bfc05b4ede20e99d6a2",
-  measurementId: "G-ZLQ79S8Y48"
-};
 
 // Initialize app and auth
 let app, firebaseAuth;
