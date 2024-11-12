@@ -7,6 +7,8 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
+  Modal,
+  Dimensions,
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"; // For bottom tab navigation
 import { createStackNavigator } from "@react-navigation/stack"; // For stack navigation within tabs
@@ -17,7 +19,13 @@ import {
   DrawerItem,
 } from "@react-navigation/drawer"; // For drawer navigation
 import { connect, useDispatch, useSelector } from "react-redux"; // Redux hooks to dispatch actions and select state
-import { fetchUserData, get_all_studyPlans, logOut } from "./redux/actions"; // Redux action to fetch user data
+import {
+  fetchUserData,
+  get_all_studyPlans,
+  logOut,
+  deleteSession,
+  deleteStudyPlan,
+} from "./redux/actions"; // Redux action to fetch user data
 import { get_all_tasks } from "./redux/actions";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -44,6 +52,8 @@ import { current } from "@reduxjs/toolkit";
 const Tab = createBottomTabNavigator(); // Bottom Tab Navigator
 const Stack = createStackNavigator(); // Stack Navigator
 const Drawer = createDrawerNavigator(); // Drawer Navigator
+const height = Dimensions.get("screen").height;
+const width = Dimensions.get("screen").width;
 
 /**
  * Stack Navigator for the "Daily" screen.
@@ -358,46 +368,166 @@ const HomeHeader = ({ screen }) => {
     </View>
   );
 };
-const CustomHeader = ({ title, routeParam, secondRouteParam }) => {
+const CustomHeader = ({ title, routeParam }) => {
   const navigation = useNavigation();
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const [optionsVisible, setOptionsVisible] = useState(false);
+  const toggleOptions = () => {
+    setOptionsVisible(!optionsVisible);
+  };
+
+  const handleEdit = () => {
+    setOptionsVisible(false);
+    if (title === "Study Plan") {
+      navigation.navigate("Edit a Plan", { planId: routeParam });
+    } else if (title === "Session") {
+      navigation.navigate("Edit a Session", { sessionId: routeParam });
+    }
+  };
+
+  const handleDelete = () => {
+    setOptionsVisible(false);
+    // Call the delete method for the study plan or session based on title
+    if (title === "Study Plan") {
+      dispatch(deleteStudyPlan(routeParam));
+      navigation.goBack();
+    } else if (title === "Session") {
+      dispatch(deleteSession(routeParam));
+      navigation.goBack();
+    }
+  };
   const renderExtraElements = (title) => {
     switch (title) {
       case "Study Plan":
         return (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("Edit a Plan", { planId: routeParam })
-            }
-            style={{
-              width: 32,
-              height: 32,
-              marginRight: 16,
-              position: "absolute",
-              right: 0,
-            }}
-          >
-            <Icons.Ionicons name="options" size={36} color={colors.gray[500]} />
-          </TouchableOpacity>
+          <>
+            {optionsVisible && (
+              <Modal
+                transparent={true}
+                animationType="fade"
+                visible={optionsVisible}
+                onRequestClose={() => setOptionsVisible(false)}
+              >
+                <TouchableOpacity
+                  style={{backgroundColor:theme.colors.transparent, flex:1}}
+                  onPress={() => setOptionsVisible(false)}
+                >
+                  <View
+                    style={{
+                      backgroundColor: theme.colors.card,
+                      width: 150,
+                      borderRadius: 8,
+                      paddingVertical: 8,
+                      paddingHorizontal: 10,
+                      alignItems: "center",
+                      position: "absolute",
+                      top: height / 9,
+                      right: width / 24,
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={handleEdit}
+                      style={styles.optionButton}
+                    >
+                      <Text style={{ color: theme.colors.text }}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={handleDelete}
+                      style={styles.optionButton}
+                    >
+                      <Text style={{ color: "red" }}>Delete</Text>
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              </Modal>
+            )}
+            <TouchableOpacity
+              onPress={() => toggleOptions()}
+              style={{
+                width: 32,
+                height: 32,
+                marginRight: 16,
+                position: "absolute",
+                right: 0,
+              }}
+            >
+              <Icons.Ionicons
+                name="options"
+                size={36}
+                color={
+                  optionsVisible
+                    ? theme.colors.secondary
+                    : colors.gray[500]
+                }
+              />
+            </TouchableOpacity>
+          </>
         );
       case "Session":
         return (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("Edit a Session", {
-                sessionId: routeParam,
-              })
-            }
-            style={{
-              width: 32,
-              height: 32,
-              marginRight: 16,
-              position: "absolute",
-              right: 0,
-            }}
-          >
-            <Icons.Ionicons name="options" size={36} color={colors.gray[500]} />
-          </TouchableOpacity>
+          <>
+            {optionsVisible && (
+              <Modal
+                transparent={true}
+                animationType="fade"
+                visible={optionsVisible}
+                onRequestClose={() => setOptionsVisible(false)}
+              >
+                <TouchableOpacity
+                  style={{backgroundColor:theme.colors.transparent, flex:1}}
+                  onPress={() => setOptionsVisible(false)}
+                >
+                  <View
+                    style={{
+                      backgroundColor: theme.colors.card,
+                      width: 150,
+                      borderRadius: 8,
+                      paddingVertical: 8,
+                      paddingHorizontal: 10,
+                      alignItems: "center",
+                      position: "absolute",
+                      top: height / 9,
+                      right: width / 24,
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={handleEdit}
+                      style={styles.optionButton}
+                    >
+                      <Text style={{ color: theme.colors.text }}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={handleDelete}
+                      style={styles.optionButton}
+                    >
+                      <Text style={{ color: "red" }}>Delete</Text>
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              </Modal>
+            )}
+            <TouchableOpacity
+              onPress={() => toggleOptions()}
+              style={{
+                width: 32,
+                height: 32,
+                marginRight: 16,
+                position: "absolute",
+                right: 0,
+              }}
+            >
+              <Icons.Ionicons
+                name="options"
+                size={36}
+                color={
+                  optionsVisible
+                    ? theme.colors.secondary
+                    : colors.gray[500]
+                }
+              />
+            </TouchableOpacity>
+          </>
         );
     }
   };
@@ -568,6 +698,37 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#fff", // Customize your header title color
+  },
+  headerContainer: {
+    marginTop: 64,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+    padding: 10,
+  },
+  optionsIcon: {
+    width: 32,
+    height: 32,
+    marginRight: 16,
+    position: "absolute",
+    right: 0,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0)",
+  },
+  optionsContainer: {
+    width: 150,
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    alignItems: "center",
+  },
+  optionButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
 });
 
