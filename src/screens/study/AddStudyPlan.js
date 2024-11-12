@@ -156,7 +156,7 @@ const AddStudyPlan = ({ navigation }) => {
         />
       </View>
 
-      {/* Add Users Section (conditionally rendered if collaborative is enabled) */}
+      {/* Conditionally show the Add User section if Collaborative is enabled */}
       {studyPlan.collaborative && (
         <>
           <TextInput
