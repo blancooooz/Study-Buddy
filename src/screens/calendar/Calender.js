@@ -1,98 +1,138 @@
-import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, FlatList, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
-import { Calendar as RNCalendar } from 'react-native-calendars';
+import React, { useState, useEffect } from "react";
+import { View, Text, FlatList, TextInput, Button, TouchableOpacity, Alert, Modal, StyleSheet } from "react-native";
+import { Calendar as RNCalendar } from "react-native-calendars";
+import { useSelector, useDispatch } from "react-redux";
+import { add_task, edit_task, delete_task } from "../../redux/actions";
 
 const Calendar = () => {
-  const [selectedDate, setSelectedDate] = useState('');
-  const [newTask, setNewTask] = useState('');
-  const [tasks, setTasks] = useState([
-    { date: '2024-10-21', description: 'Team meeting at 10 AM' },
-    { date: '2024-10-21', description: 'Lunch with Sarah at 1 PM' },
-    { date: '2024-10-22', description: 'Project deadline' },
-  ]);
+  const dispatch = useDispatch();
+  const tasks = useSelector((state) => state.tasks || []);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
+  const [taskTitle, setTaskTitle] = useState("");
 
-  const addTask = () => {
-    if (newTask && selectedDate) {
-      setTasks([...tasks, { date: selectedDate, description: newTask }]);
-      setNewTask('');
+  // Update filtered tasks based on the selected date
+  useEffect(() => {
+    if (selectedDate) {
+      const tasksForDate = tasks.filter((task) => task.date === selectedDate);
+      setFilteredTasks(tasksForDate);
+    }
+  }, [selectedDate, tasks]);
+
+  // Mark tasks on the calendar
+  const getMarkedDates = () => {
+    const markedDates = {};
+    tasks.forEach((task) => {
+      if (task.date) {
+        markedDates[task.date] = { marked: true, dotColor: "blue" };
+      }
+    });
+    return markedDates;
+  };
+
+  // Handle adding a new task
+  const handleAddTask = () => {
+    if (taskTitle && selectedDate) {
+      const newTask = {
+        id: Date.now().toString(),
+        title: taskTitle,
+        date: selectedDate,
+        completed: false,
+      };
+      dispatch(add_task(newTask));
+      setTaskTitle("");
+      setShowModal(false);
+    } else {
+      Alert.alert("Error", "Please enter a task title and select a date.");
     }
   };
 
-  const removeTask = (taskToRemove) => {
-    setTasks(tasks.filter((task) => task !== taskToRemove));
+  // Handle editing a task
+  const handleEditTask = (task) => {
+    setEditingTask(task);
+    setTaskTitle(task.title);
+    setShowModal(true);
   };
 
-  const filteredTasks = tasks.filter((task) => task.date === selectedDate);
+  const saveEditedTask = () => {
+    if (editingTask) {
+      const updatedTask = { ...editingTask, title: taskTitle };
+      dispatch(edit_task(editingTask.id, updatedTask, tasks));
+      setEditingTask(null);
+      setTaskTitle("");
+      setShowModal(false);
+    }
+  };
+
+  // Handle deleting a task
+  const handleDeleteTask = (taskId) => {
+    dispatch(delete_task(taskId, tasks));
+    Alert.alert("Task Deleted", "The task has been deleted successfully.");
+  };
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Calendar</Text>
-      </View>
-
-      {/* Calendar component */}
       <RNCalendar
         onDayPress={(day) => setSelectedDate(day.dateString)}
         markedDates={{
+          ...getMarkedDates(),
           [selectedDate]: {
             selected: true,
-            disableTouchEvent: true,
-            selectedDotColor: 'blue',
+            selectedColor: "blue",
           },
         }}
         theme={{
-          selectedDayBackgroundColor: '#00adf5',
-          selectedDayTextColor: '#ffffff',
-          todayTextColor: '#00adf5',
-          dayTextColor: '#2d4150',
-          textDisabledColor: '#d9e1e8',
+          selectedDayBackgroundColor: "#00adf5",
+          selectedDayTextColor: "#ffffff",
+          todayTextColor: "#00adf5",
+          dayTextColor: "#2d4150",
+          textDisabledColor: "#d9e1e8",
         }}
-        enableSwipeMonths={true}
       />
 
-      {/* Selected Date */}
-      <View style={styles.selectedDateContainer}>
-        {selectedDate ? <Text style={styles.selectedDateText}>{`Selected Date: ${selectedDate}`}</Text> : null}
-      </View>
-
-      {/* Input for adding new task */}
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter a new task"
-          value={newTask}
-          onChangeText={(text) => setNewTask(text)}
-        />
-        <Button title="Add Task" onPress={addTask} disabled={!selectedDate} />
-      </View>
-
-      {/* Agenda section */}
-      <ImageBackground
-        source={{ uri: 'https://www.example.com/background-image.jpg' }}
-        style={styles.agendaBackground}
-        resizeMode="cover"
-      >
-        <View style={styles.agendaContainer}>
-          <Text style={styles.agendaHeader}>Agenda for {selectedDate || 'No Date Selected'}:</Text>
-          {filteredTasks.length > 0 ? (
-            <FlatList
-              data={filteredTasks}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <View style={styles.taskItem}>
-                  <Text style={styles.agendaItem}>{`- ${item.description}`}</Text>
-                  <TouchableOpacity onPress={() => removeTask(item)}>
-                    <Text style={styles.removeText}>Remove</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            />
-          ) : (
-            <Text style={styles.noEventsText}>No tasks for this date.</Text>
+      <View style={styles.taskList}>
+        <Text style={styles.headerText}>Tasks for {selectedDate || "No Date Selected"}</Text>
+        <FlatList
+          data={filteredTasks}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.taskItem}>
+              <Text>{item.title}</Text>
+              <View style={styles.taskActions}>
+                <Button title="Edit" onPress={() => handleEditTask(item)} />
+                <Button title="Delete" onPress={() => handleDeleteTask(item.id)} color="red" />
+              </View>
+            </View>
           )}
+          ListEmptyComponent={<Text>No tasks for this date.</Text>}
+        />
+      </View>
+
+      <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>
+        <Text style={styles.addButtonText}>Add Task</Text>
+      </TouchableOpacity>
+
+      {/* Modal for adding/editing task */}
+      <Modal visible={showModal} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <TextInput
+              placeholder="Task Title"
+              value={taskTitle}
+              onChangeText={(text) => setTaskTitle(text)}
+              style={styles.input}
+            />
+            {editingTask ? (
+              <Button title="Save Changes" onPress={saveEditedTask} />
+            ) : (
+              <Button title="Add Task" onPress={handleAddTask} />
+            )}
+            <Button title="Cancel" onPress={() => setShowModal(false)} color="red" />
+          </View>
         </View>
-      </ImageBackground>
+      </Modal>
     </View>
   );
 };
@@ -102,63 +142,52 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  headerContainer: {
-    alignItems: 'center',
-    marginBottom: 16,
+  taskList: {
+    flex: 1,
+    marginTop: 16,
   },
   headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  selectedDateContainer: {
-    marginVertical: 16,
-    alignItems: 'center',
-  },
-  selectedDateText: {
     fontSize: 18,
-    color: 'blue',
+    fontWeight: "bold",
   },
-  inputContainer: {
-    marginBottom: 16,
+  taskItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+  taskActions: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  addButton: {
+    backgroundColor: "#00adf5",
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  addButtonText: {
+    color: "#ffffff",
+    fontWeight: "bold",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#ffffff",
+    padding: 20,
+    borderRadius: 10,
+    marginHorizontal: 20,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 8,
-    borderRadius: 5,
-    marginBottom: 8,
-  },
-  agendaBackground: {
-    flex: 1,
-    padding: 16,
-    borderRadius: 10,
-  },
-  agendaContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    padding: 16,
-    borderRadius: 10,
-  },
-  agendaHeader: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    borderColor: "#ccc",
+    padding: 10,
     marginBottom: 10,
-  },
-  taskItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 5,
-  },
-  agendaItem: {
-    fontSize: 16,
-  },
-  removeText: {
-    color: 'red',
-    fontSize: 16,
-  },
-  noEventsText: {
-    fontSize: 16,
-    fontStyle: 'italic',
   },
 });
 
