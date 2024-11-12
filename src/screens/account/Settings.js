@@ -1,6 +1,8 @@
-import { View, Text, Button } from "react-native";
+import { useTheme } from "@react-navigation/native";
+import { View, Text, Button, TouchableOpacity } from "react-native";
 
-const Settings = ({navigation }) => {
+const Settings = ({ navigation }) => {
+  const theme = useTheme();
   return (
     <View>
       <Button
