@@ -102,14 +102,14 @@ const Daily = () => {
         {Object.keys(tasksByHour).length > 0 ? (
           Object.keys(tasksByHour).map((hour) => (
             <View key={hour} style={styles.hourBlock}>
-              <Text style={[styles.hourText, { color: theme.colors.text }]}>
+              <Text key={hour} style={[styles.hourText, { color: theme.colors.text }]}>
                 {hour < 12 ? `${hour} AM` : `${hour - 12} PM`}
               </Text>
               {tasksByHour[hour].map((task) => (
                 <Text key={task.id} style={{ color: theme.colors.text }}>
                   - {task.title}
                 </Text>
-              ))}
+              ))} 
             </View>
           ))
         ) : (
