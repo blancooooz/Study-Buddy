@@ -111,32 +111,7 @@ const AddTask = ({ navigation }) => {
 
   return (
     <View>
-      <View
-        style={{
-          marginBottom: 16,
-          marginLeft: 8,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icons.Feather
-            name="chevron-left"
-            size={40}
-            color={colors.gray[100]}
-          />
-        </TouchableOpacity>
-        <Text
-          style={{
-            color: colors.gray[100],
-            fontSize: 24,
-            fontFamily: "SFProRoundedSemibold",
-          }}
-        >
-          Create a new task
-        </Text>
-      </View>
-      <ScrollView style={{ padding: 20 }}>
+      <ScrollView style={{ paddingHorizontal: 20 }}>
         <Text
           style={{
             fontFamily: "SFProRoundedMedium",
