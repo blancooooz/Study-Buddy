@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, TextInput, Button, TouchableOpacity, Alert, Modal, StyleSheet } from "react-native";
-import { Calendar as RNCalendar } from "react-native-calendars";
+import React, { useState, useEffect, useMemo } from "react";
+import { View, Text, TextInput, Alert, Modal, StyleSheet, TouchableOpacity, SafeAreaView } from "react-native";
+import { Agenda } from "react-native-calendars";
 import { useSelector, useDispatch } from "react-redux";
 import { add_task, edit_task, delete_task } from "../../redux/actions";
 
@@ -8,31 +8,42 @@ const Calendar = () => {
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.tasks || []);
   const [selectedDate, setSelectedDate] = useState("");
-  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [items, setItems] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [taskTitle, setTaskTitle] = useState("");
 
-  // Update filtered tasks based on the selected date
-  useEffect(() => {
-    if (selectedDate) {
-      const tasksForDate = tasks.filter((task) => task.date === selectedDate);
-      setFilteredTasks(tasksForDate);
-    }
-  }, [selectedDate, tasks]);
-
-  // Mark tasks on the calendar
-  const getMarkedDates = () => {
-    const markedDates = {};
-    tasks.forEach((task) => {
-      if (task.date) {
-        markedDates[task.date] = { marked: true, dotColor: "blue" };
+  // Memoize the formatted tasks to prevent unnecessary state updates
+  const formattedItems = useMemo(() => {
+    return tasks.reduce((acc, task) => {
+      const taskDate = task.date || "";
+      if (taskDate) {
+        if (!acc[taskDate]) {
+          acc[taskDate] = [];
+        }
+        acc[taskDate].push({
+          id: task.id,
+          title: task.title,
+          completed: task.completed,
+        });
       }
-    });
-    return markedDates;
+      return acc;
+    }, {});
+  }, [tasks]);
+
+  // Only update items state if there is a change detected
+  useEffect(() => {
+    if (JSON.stringify(formattedItems) !== JSON.stringify(items)) {
+      setItems(formattedItems);
+    }
+  }, [formattedItems, items]);
+
+  // Handle day press and update the selected date
+  const handleDayPress = (day) => {
+    setSelectedDate(day.dateString);
   };
 
-  // Handle adding a new task
+  // Handle task addition
   const handleAddTask = () => {
     if (taskTitle && selectedDate) {
       const newTask = {
@@ -49,7 +60,7 @@ const Calendar = () => {
     }
   };
 
-  // Handle editing a task
+  // Handle task editing
   const handleEditTask = (task) => {
     setEditingTask(task);
     setTaskTitle(task.title);
@@ -66,49 +77,46 @@ const Calendar = () => {
     }
   };
 
-  // Handle deleting a task
+  // Handle task deletion
   const handleDeleteTask = (taskId) => {
     dispatch(delete_task(taskId, tasks));
     Alert.alert("Task Deleted", "The task has been deleted successfully.");
+    setShowModal(false);
   };
 
+  // Render each item in the agenda
+  const renderItem = (item) => (
+    <TouchableOpacity
+      style={styles.taskItem}
+      onPress={() => handleEditTask(item)}
+      onLongPress={() => handleDeleteTask(item.id)}
+    >
+      <Text>{item.title}</Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={styles.container}>
-      <RNCalendar
-        onDayPress={(day) => setSelectedDate(day.dateString)}
-        markedDates={{
-          ...getMarkedDates(),
-          [selectedDate]: {
-            selected: true,
-            selectedColor: "blue",
-          },
-        }}
+    <SafeAreaView style={styles.container}>
+      <Agenda
+        style={styles.agenda}
+        items={items}
+        selected={new Date().toISOString().split("T")[0]}
+        renderItem={renderItem}
+        onDayPress={handleDayPress}
         theme={{
           selectedDayBackgroundColor: "#00adf5",
           selectedDayTextColor: "#ffffff",
           todayTextColor: "#00adf5",
-          dayTextColor: "#2d4150",
-          textDisabledColor: "#d9e1e8",
+          agendaDayTextColor: "#2d4150",
+          agendaDayNumColor: "#00adf5",
+          agendaKnobColor: "#00adf5",
         }}
+        renderEmptyData={() => (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No tasks for this date.</Text>
+          </View>
+        )}
       />
-
-      <View style={styles.taskList}>
-        <Text style={styles.headerText}>Tasks for {selectedDate || "No Date Selected"}</Text>
-        <FlatList
-          data={filteredTasks}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.taskItem}>
-              <Text>{item.title}</Text>
-              <View style={styles.taskActions}>
-                <Button title="Edit" onPress={() => handleEditTask(item)} />
-                <Button title="Delete" onPress={() => handleDeleteTask(item.id)} color="red" />
-              </View>
-            </View>
-          )}
-          ListEmptyComponent={<Text>No tasks for this date.</Text>}
-        />
-      </View>
 
       <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>
         <Text style={styles.addButtonText}>Add Task</Text>
@@ -124,48 +132,55 @@ const Calendar = () => {
               onChangeText={(text) => setTaskTitle(text)}
               style={styles.input}
             />
-            {editingTask ? (
-              <Button title="Save Changes" onPress={saveEditedTask} />
-            ) : (
-              <Button title="Add Task" onPress={handleAddTask} />
-            )}
-            <Button title="Cancel" onPress={() => setShowModal(false)} color="red" />
+            <View style={styles.buttonRow}>
+              {editingTask ? (
+                <>
+                  <TouchableOpacity style={styles.saveButton} onPress={saveEditedTask}>
+                    <Text style={styles.buttonText}>Save</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteTask(editingTask.id)}>
+                    <Text style={styles.buttonText}>Delete</Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <TouchableOpacity style={styles.saveButton} onPress={handleAddTask}>
+                  <Text style={styles.buttonText}>Add Task</Text>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity style={styles.cancelButton} onPress={() => setShowModal(false)}>
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    paddingTop: 20,
   },
-  taskList: {
-    flex: 1,
-    marginTop: 16,
-  },
-  headerText: {
-    fontSize: 18,
-    fontWeight: "bold",
+  agenda: {
+    marginTop: 10,
   },
   taskItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-  },
-  taskActions: {
-    flexDirection: "row",
-    gap: 8,
+    backgroundColor: "#f9f9f9",
+    padding: 16,
+    marginVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ccc",
   },
   addButton: {
     backgroundColor: "#00adf5",
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 50,
+    position: "absolute",
+    bottom: 30,
+    right: 30,
     alignItems: "center",
   },
   addButtonText: {
@@ -188,6 +203,43 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     padding: 10,
     marginBottom: 10,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  saveButton: {
+    backgroundColor: "#00adf5",
+    padding: 10,
+    borderRadius: 8,
+    flex: 1,
+    marginRight: 5,
+  },
+  deleteButton: {
+    backgroundColor: "red",
+    padding: 10,
+    borderRadius: 8,
+    flex: 1,
+    marginLeft: 5,
+  },
+  cancelButton: {
+    backgroundColor: "#ccc",
+    padding: 10,
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: "#ffffff",
+    fontWeight: "bold",
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyText: {
+    color: "#999",
+    fontSize: 16,
   },
 });
 
