@@ -34,6 +34,7 @@ import Preferences from "./screens/account/Preferences";
 import Username from "./screens/account/Username";
 import ChangePassword from "./screens/account/ChangePassword";
 import AddTask from "./screens/tasks/AddTask";
+import PomodoroScreen from "./screens/timer/Pomodoro";
 import { colors } from "./theme/colors";
 import { current } from "@reduxjs/toolkit";
 // Navigators for tabs, stacks, and drawers
@@ -47,7 +48,10 @@ const Drawer = createDrawerNavigator(); // Drawer Navigator
 const DailyStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Daily" options={{ headerShown: false }}>
-      {() => <Daily />}
+    {({ navigation }) => <Daily navigation={navigation} />}
+    </Stack.Screen>
+    <Stack.Screen name="Pomodoro">
+    {({ navigation }) => <PomodoroScreen navigation={navigation} />}
     </Stack.Screen>
   </Stack.Navigator>
 );

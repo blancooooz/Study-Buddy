@@ -9,38 +9,25 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 import TaskList from "./TaskList";
-const Daily = () => {
+
+const Daily = ({ navigation }) => {
   const theme = useTheme();
   const styles = createStyles(theme);
-  // Try to get the user's name from the Redux store
-  let username = "";
-  let name = "";
-  let tasks = null;
-  let events = null;
-  try {
-    name = useSelector((state) => state.userData.name);
-  } catch (e) {
-    console.log("No name available", e);
-  }
-  try {
-    username = useSelector((state) => state.userData.Username);
-  } catch (e) {
-    console.log("No username available", e);
-  }
-  try {
-    tasks = useSelector((state) => state.tasks);
-  } catch (e) {
-    console.log("No tasks:", e);
-  }
-  try {
-    events = useSelector((state) => state.events);
-  } catch (e) {
-    console.log("No events:", e);
-  }
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+
+  // Try to get the user's name and other state data from the Redux store
+  const username = useSelector((state) => state.userData.Username || "");
+  const name = useSelector((state) => state.userData.name || "");
+  const tasks = useSelector((state) => state.tasks || null);
+  const events = useSelector((state) => state.events || null);
 
   const HourlyCalendar = () => {
     const hours = Array.from({ length: 24 }, (_, i) => i);
-  
     return (
       <ScrollView style={{ padding: 16 }}>
         {hours.map((hour) => (
@@ -53,7 +40,7 @@ const Daily = () => {
               borderColor: "#ddd",
             }}
           >
-            <Text style={{ fontSize: 16, color:theme.colors.text }}>
+            <Text style={{ fontSize: 16, color: theme.colors.text }}>
               {hour === 0
                 ? "12 AM"
                 : hour < 12
@@ -101,6 +88,7 @@ const Daily = () => {
               margin: 4,
               borderRadius: 12,
             }}
+            onPress={() => navigation.navigate("Pomodoro")}  // Wrap navigation call in an anonymous function
           >
             <Text
               style={{
@@ -117,7 +105,7 @@ const Daily = () => {
           <View
             style={{
               flex: 1,
-              backgroundColor: theme.colors.tertriary,
+              backgroundColor: theme.colors.tertiary,
               margin: 4,
               borderRadius: 12,
             }}
@@ -138,7 +126,7 @@ const Daily = () => {
         <View
           style={{
             flex: 1,
-            backgroundColor: theme.colors.quatriary,
+            backgroundColor: theme.colors.quaternary,
             margin: 4,
             borderRadius: 12,
             justifyContent: "flex-start",
@@ -153,11 +141,12 @@ const Daily = () => {
               color: theme.colors.text,
             }}
           >
-            Daily Calender
+            Daily Calendar
           </Text>
-        {HourlyCalendar()}
+          {HourlyCalendar()}
         </View>
       </View>
+
       {/* Section for tasks and events */}
       <Text
         style={{
@@ -174,9 +163,9 @@ const Daily = () => {
         {/* Placeholder for tasks */}
         <View
           style={{
-            marginBottom: 12, // Space between sections
+            marginBottom: 12,
             padding: 15,
-            backgroundColor: theme.colors.card, // White background for sections
+            backgroundColor: theme.colors.card,
             borderRadius: 18,
           }}
         >
@@ -191,8 +180,7 @@ const Daily = () => {
             Your Tasks for Today
           </Text>
           {tasks != null ? (
-<TaskList></TaskList>
-            
+            <TaskList />
           ) : (
             <Text style={{ fontSize: 16, color: theme.colors.text }}>
               No tasks yet!
@@ -203,9 +191,9 @@ const Daily = () => {
         {/* Placeholder for events */}
         <View
           style={{
-            marginBottom: 12, // Space between sections
+            marginBottom: 12,
             padding: 15,
-            backgroundColor: theme.colors.card, // White background for sections
+            backgroundColor: theme.colors.card,
             borderRadius: 18,
           }}
         >
@@ -214,7 +202,7 @@ const Daily = () => {
               fontSize: 18,
               fontWeight: "bold",
               marginBottom: 10,
-              color: theme.colors.text, // Color for section title (customize as needed)
+              color: theme.colors.text,
             }}
           >
             Your Events for Today
@@ -222,12 +210,12 @@ const Daily = () => {
           <Text style={{ fontSize: 16, color: theme.colors.text }}>
             No events scheduled!
           </Text>
-          {/* You can map your events here */}
         </View>
       </ScrollView>
     </View>
   );
 };
+
 const createStyles = (theme) =>
   StyleSheet.create({
     welcome_text: {

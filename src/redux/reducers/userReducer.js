@@ -11,6 +11,12 @@ import {
   EDIT_TASK,
   COMPLETE_TASK,
   LOG_OUT,
+  START_TIMER,
+  PAUSE_TIMER,
+  RESET_TIMER,
+  UPDATE_SESSION_COUNT,
+  SAVE_SESSION_DATA,
+  SET_SESSION_HISTORY,
   //ADD_TASK,
   //FETCH_USER_TASKS,
 } from "../actions";
@@ -24,6 +30,13 @@ const initialState = {
   tags: [], // Array to hold the user's tags
   events: [], // Array to hold the user's events
   Username: [], // Username stored for the user (from Firestore)
+  sessionTime: 1500, //Default 25 minutes
+  breakTime: 300, // Default 5 minutes
+  currentSessionCount: 0, // stores session count
+  currentTime: 1500, // stores time currently left in session
+  isPaused: true, 
+  isSessionActive: false,
+  sessionHistory: [],
 };
 
 /**
@@ -68,23 +81,68 @@ export const userReducer = (state = initialState, action) => {
     case UPDATE_USERNAME:
       // Return the current state with the updated `Username` field set to the action's payload (new username)
       return { ...state, Username: action.payload };
+
+    // Action type to handle editing a task
     case EDIT_TASK:
+      // Return the current state with the updated task
       return { ...state, tasks: [...tasks, action.payload] };
+
     case ADD_TASKS:
       return {
         ...state,
         tasks: action.payload,
       };
+
     case DELETE_TASK:
       return {
         ...state,
         tasks: action.payload,
       };
+
     case COMPLETE_TASK:
       return {
         ...state,
         tasks: action.payload,
       };
+
+    case START_TIMER:
+      return { ...state, isPaused: false};
+
+    case PAUSE_TIMER:
+      return { ...state, isPaused: true };
+
+    case RESET_TIMER:
+      return {
+        ...state,
+        currentSessionCount: 0,
+        currentTime: state.sessionTime,
+        isPaused: true,
+        isSessionActive: true,
+      };
+
+    case SET_SESSION_HISTORY:
+      return{
+        ...state,
+        sessionHistory: action.payload,
+      };
+
+      
+    case UPDATE_SESSION_COUNT:
+      return{
+        ...state,
+        currentSessionCount: state.currentSessionCount + 1,
+        sessionHistory: [...state.sessionHistory, action.payload],
+        isSessionActive: !state.isSessionActive,
+        currentTime: state.isSessionActive ? state.breakTime : state.sessionTime,
+      };
+
+    case SAVE_SESSION_DATA:
+      return{
+        ...state,
+        sessionHistory: [...(state.sessionHistory || []), action.payload],
+      };
+
+
     case LOG_OUT:
       return {
         ...state,
@@ -94,6 +152,13 @@ export const userReducer = (state = initialState, action) => {
         tags: [], // Array to hold the user's tags
         events: [], // Array to hold the user's events
         Username: [], // Username stored for the user (from Firestore)
+        sessionTime: 1500, //Default 25 minutes
+        breakTime: 300, // Default 5 minutes
+        currentSessionCount: 0, // stores session count
+        currentTime: 1500, // stores time currently left in session
+        isPaused: true, 
+        isSessionActive: false,
+        sessionHistory: [],
       };
     // Default case: if the action type doesn't match any case, return the state as is
     default:
