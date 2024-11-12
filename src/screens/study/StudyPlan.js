@@ -1,3 +1,6 @@
+{/* Display DueDate, Somehow integrate tasks based on subject, maybe 
+  display statistics like total time spent, start time, current day, days remaining
+  then further on implement AI */}
 import React from "react";
 import {
   View,
