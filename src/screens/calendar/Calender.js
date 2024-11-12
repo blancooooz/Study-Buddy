@@ -38,6 +38,11 @@ const Calendar = () => {
   return (
     <View style={styles.container}>
       {/* Header */}
+      <View style={[{}, styles.headerContainer]}>
+        <Text style={[{ color: theme.colors.text }, styles.headerText]}>
+          Calendar
+        </Text>
+      </View>
 
       {/* Calendar component */}
       <RNCalendar

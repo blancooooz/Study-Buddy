@@ -13,6 +13,8 @@ import { editStudyPlan } from "../../redux/actions";
 import { useTheme } from "@react-navigation/native";
 import { colors } from "../../theme/colors";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { get_all_studyPlans } from "../../redux/actions";
+
 const EditStudyPlan = ({ navigation, route }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -76,22 +78,20 @@ const addUser = () => {
 
   return (
     <ScrollView style={{ padding: 20, backgroundColor: theme.colors.background }}>
-      <Text style={{ fontSize: 24, marginBottom: 20, color:theme.colors.text }}>Edit Study Plan</Text>
+      <Text style={{ fontSize: 24, marginBottom: 20 }}>Edit Study Plan</Text>
 
       {/* Title Input */}
       <TextInput
-        style={[inputStyle,{color:theme.colors.text}]}
+        style={inputStyle}
         placeholder="Title"
-        placeholderTextColor={colors.gray[600]}
         value={studyPlan.title}
         onChangeText={(text) => handleChange("title", text)}
       />
 
       {/* Description Input */}
       <TextInput
-        style={[inputStyle,{color:theme.colors.text}]}
+        style={inputStyle}
         placeholder="Description"
-        placeholderTextColor={colors.gray[600]}
         value={studyPlan.description}
         onChangeText={(text) => handleChange("description", text)}
         multiline
@@ -99,18 +99,16 @@ const addUser = () => {
 
       {/* Tags Input */}
       <TextInput
-        style={[inputStyle,{color:theme.colors.text}]}
+        style={inputStyle}
         placeholder="Tags (comma separated)"
-        placeholderTextColor={colors.gray[600]}
         value={studyPlan.tags.join(", ")}
         onChangeText={(text) => handleChange("tags", text.split(", "))}
       />
 
       {/* Subject Name Input */}
       <TextInput
-        style={[inputStyle,{color:theme.colors.text}]}
+        style={inputStyle}
         placeholder="Subject Name"
-        placeholderTextColor={colors.gray[600]}
         value={studyPlan.subject.name}
         onChangeText={(text) =>
           handleChange("subject", { ...studyPlan.subject, name: text })
@@ -119,7 +117,7 @@ const addUser = () => {
 
       {/* Urgent Switch */}
       <View style={switchContainer}>
-        <Text style={{color:theme.colors.text}}>Urgent:</Text>
+        <Text>Urgent:</Text>
         <Switch
           value={studyPlan.urgent}
           onValueChange={(value) => handleCheckboxChange("urgent", value)}
@@ -128,7 +126,7 @@ const addUser = () => {
 
       {/* Collaborative Switch */}
       <View style={switchContainer}>
-        <Text style={{color:theme.colors.text}}>Collaborative:</Text>
+        <Text>Collaborative:</Text>
         <Switch
           value={studyPlan.collaborative}
           onValueChange={(value) => handleChange("collaborative", value)}
@@ -164,7 +162,7 @@ const addUser = () => {
 
       {/* Reminder Switch */}
 <View style={switchContainer}>
-  <Text style={{color:theme.colors.text}}>Reminder:</Text>
+  <Text>Reminder:</Text>
   <Switch
     value={studyPlan.reminder.enabled}
     onValueChange={(value) =>
@@ -239,6 +237,7 @@ const inputStyle = {
   padding: 12,
   borderRadius: 10,
   marginBottom: 20,
+  color: "#000",
 };
 
 const switchContainer = {
