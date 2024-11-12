@@ -70,7 +70,7 @@ const DailyStack = () => (
     </Stack.Screen>
     <Stack.Screen
       name="AddTask"
-      options={{ header: () => <CustomHeader title={"AddTask"} /> }}
+      options={{ header: () => <CustomHeader title={"Create a new task"} /> }}
     >
       {({ navigation }) => <AddTask navigation={navigation} />}
     </Stack.Screen>
@@ -93,7 +93,7 @@ const TasksStack = () => (
 
     <Stack.Screen
       name="AddTask"
-      options={{ header: () => <CustomHeader title={"AddTask"} /> }}
+      options={{ header: () => <CustomHeader title={"Create a new task"} /> }}
     >
       {({ navigation }) => <AddTask navigation={navigation} />}
     </Stack.Screen>

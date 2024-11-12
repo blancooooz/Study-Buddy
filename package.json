@@ -18,6 +18,7 @@
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/stack": "^6.4.1",
     "@reduxjs/toolkit": "^2.2.7",
+    "@types/react": "~18.2.79",
     "babel-preset-expo": "^11.0.14",
     "cohere-ai": "^7.14.0",
     "date-fns": "^4.1.0",

@@ -15,8 +15,7 @@ import { connect } from "react-redux";
 import { useTheme } from "@react-navigation/native";
 import { colors } from "../../theme/colors";
 import * as Icons from "react-native-vector-icons";
-import 'react-native-get-random-values'
-import { v4 as uuidv4 } from "uuid"; // import uuid library
+import { generateText } from "../../utils/AIUtils";
 //import DateTimePickerModal from "react-native-modal-datetime-picker";
 const AddTask = ({ navigation }) => {
   const theme = useTheme();
@@ -48,6 +47,10 @@ const AddTask = ({ navigation }) => {
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(true);
 
+  const getPriority = () => {
+    const priority = generateText(task);
+    console.log("Priority from AI:",priority);
+  }
   const format_time = (date_string) => {
     const date = new Date(date_string);
 
@@ -87,6 +90,7 @@ const AddTask = ({ navigation }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(add_task(task));
+    getPriority();
     navigation.goBack();
   };
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -119,22 +123,7 @@ const AddTask = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icons.Feather
-            name="chevron-left"
-            size={40}
-            color={colors.gray[100]}
-          />
-        </TouchableOpacity>
-        <Text
-          style={{
-            color: colors.gray[100],
-            fontSize: 24,
-            fontFamily: "SFProRoundedSemibold",
-          }}
-        >
-          Create a new task
-        </Text>
+        
       </View>
       <ScrollView style={{ padding: 20 }}>
         <Text
