@@ -7,9 +7,11 @@ import {
   StyleSheet,
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleStudyPlanCompletion } from "../../redux/actions";
 
 const StudyPlan = ({ route, navigation }) => {
+  const dispatch = useDispatch();
   const { id } = route.params;
   const theme = useTheme();
 
@@ -101,27 +103,48 @@ const StudyPlan = ({ route, navigation }) => {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.sessionList}
       />
-      <TouchableOpacity
-        style={[
-          styles.button,
-          { backgroundColor: theme.colors.primary, marginBottom: 24 },
-        ]}
-        onPress={() =>
-          console.log("Complete study plan, have to check it works")
-        }
-      >
-        <Text style={[{ color: theme.colors.card }, styles.buttonText]}>
-          Complete this Plan
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.button, { backgroundColor: theme.colors.card }]}
-        onPress={() => navigation.navigate("Add a Session", { planId: id })}
-      >
-        <Text style={[{ color: theme.colors.primary }, styles.buttonText]}>
-          Add Session
-        </Text>
-      </TouchableOpacity>
+      {studyPlan.completed ? (
+        <>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              { backgroundColor: theme.colors.primary, marginBottom: 24 },
+            ]}
+            onPress={() => {
+              dispatch(toggleStudyPlanCompletion(id));
+            }}
+          >
+            <Text style={[{ color: theme.colors.card }, styles.buttonText]}>
+              Reopen this Plan
+            </Text>
+          </TouchableOpacity>
+        </>
+      ) : (
+        <>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              { backgroundColor: theme.colors.primary, marginBottom: 24 },
+            ]}
+            onPress={() => {
+              dispatch(toggleStudyPlanCompletion(id));
+              navigation.goBack();
+            }}
+          >
+            <Text style={[{ color: theme.colors.card }, styles.buttonText]}>
+              Complete this Plan
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: theme.colors.card }]}
+            onPress={() => navigation.navigate("Add a Session", { planId: id })}
+          >
+            <Text style={[{ color: theme.colors.primary }, styles.buttonText]}>
+              Add Session
+            </Text>
+          </TouchableOpacity>
+        </>
+      )}
     </View>
   );
 };

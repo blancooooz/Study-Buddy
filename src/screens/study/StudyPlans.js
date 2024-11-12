@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  Button,
   TouchableOpacity,
   FlatList,
   Dimensions,
@@ -11,10 +10,10 @@ import { useTheme } from "@react-navigation/native";
 import { useSelector, connect } from "react-redux";
 import { addStudyPlan, addSession } from "../../redux/actions";
 import { Circle } from "react-native-progress";
-import Icon from "react-native-vector-icons/FontAwesome";
 import * as Icons from "react-native-vector-icons";
 
 const width = Dimensions.get("screen").width;
+
 const StudyPlan = ({ navigation }) => {
   const theme = useTheme();
   const studyPlans = useSelector((state) => state.studyPlans || []);
@@ -27,22 +26,10 @@ const StudyPlan = ({ navigation }) => {
     }));
   };
 
-  const progressCircle = () => {};
-
   const renderStudyPlan = ({ item }) => {
-    console.log(item)
-    let sessionsCompleted = 0;
-    try {
-      sessionsCompleted = item.sessions.filter(
-        (session) => session.completed
-      ).length;
-    } catch (e) {}
-    let totalSessions = 0;
-    try {
-      totalSessions = item.sessions.length;
-    } catch (e) {}
-    const progress =
-      totalSessions > 0 ? (sessionsCompleted / totalSessions) * 100 : 0;
+    const sessionsCompleted = item.sessions.filter((session) => session.completed).length;
+    const totalSessions = item.sessions.length;
+    const progress = totalSessions > 0 ? (sessionsCompleted / totalSessions) : 0;
 
     return (
       <TouchableOpacity
@@ -88,13 +75,11 @@ const StudyPlan = ({ navigation }) => {
                       width: width / 3,
                       height: width / 10,
                       borderRadius: 6,
+                      marginBottom: 4,
                     }}
                     key={session.id}
                   >
-                    <Text
-                      key={session.id}
-                      style={{ color: theme.colors.text, marginLeft: 8 }}
-                    >
+                    <Text style={{ color: theme.colors.text, marginLeft: 8 }}>
                       {session.title}
                     </Text>
                   </TouchableOpacity>
@@ -103,15 +88,9 @@ const StudyPlan = ({ navigation }) => {
             )}
           </View>
 
-          <View
-            style={{
-              marginTop: 16,
-            }}
-          >
+          <View style={{ marginTop: 16 }}>
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("Add a Session", { planId: item.id })
-              }
+              onPress={() => navigation.navigate("Add a Session", { planId: item.id })}
               style={{
                 height: 70,
                 width: 70,
@@ -124,9 +103,7 @@ const StudyPlan = ({ navigation }) => {
                 marginBottom: 12,
               }}
             >
-              <Text style={{ color: theme.colors.primary }}>
-                Start a Session
-              </Text>
+              <Text style={{ color: theme.colors.primary }}>Start a Session</Text>
             </TouchableOpacity>
             <Circle
               size={70}
@@ -148,18 +125,14 @@ const StudyPlan = ({ navigation }) => {
     );
   };
 
+  const activePlans = studyPlans.filter((plan) => !plan.completed);
+  const completedPlans = studyPlans.filter((plan) => plan.completed);
+
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        backgroundColor: theme.colors.background,
-      }}
-    >
+    <View style={{ flex: 1, alignItems: "center", backgroundColor: theme.colors.background }}>
       {studyPlans.length === 0 ? (
         <>
-          <Text
-            style={{
+          <Text style={{
               color: theme.colors.text,
               fontSize: 18,
               alignSelf: "flex-start",
@@ -169,10 +142,7 @@ const StudyPlan = ({ navigation }) => {
           >
             Add your first study plan
           </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Add a Plan")}
-            style={{}}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("Add a Plan")}>
             <View
               style={{
                 width: width * 0.95,
@@ -185,20 +155,34 @@ const StudyPlan = ({ navigation }) => {
                 alignItems: "center",
               }}
             >
-              <Icons.Feather
-                name="plus"
-                size={24}
-                color={"#FAFAFA"}
-              ></Icons.Feather>
+              <Icons.Feather name="plus" size={24} color={"#FAFAFA"} />
             </View>
           </TouchableOpacity>
         </>
       ) : (
         <FlatList
-          data={studyPlans}
+          data={activePlans}
           renderItem={renderStudyPlan}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingBottom: 16 }}
+          ListHeaderComponent={() => (
+            <Text style={{ color: theme.colors.text, fontSize: 18, fontWeight: "bold", marginTop: 10 }}>
+              Active
+            </Text>
+          )}
+          ListFooterComponent={() => (
+            <>
+              <Text style={{ color: theme.colors.text, fontSize: 18, fontWeight: "bold", marginTop: 20 }}>
+                Completed
+              </Text>
+              <FlatList
+                data={completedPlans}
+                renderItem={renderStudyPlan}
+                keyExtractor={(item) => item.id}
+                contentContainerStyle={{ paddingBottom: 16 }}
+              />
+            </>
+          )}
         />
       )}
     </View>

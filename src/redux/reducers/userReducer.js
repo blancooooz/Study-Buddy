@@ -18,6 +18,8 @@ import {
   ADD_STUDY_PLAN,
   EDIT_STUDY_PLAN,
   DELETE_STUDY_PLAN,
+  TOGGLE_SESSION_COMPLETION,
+  TOGGLE_STUDY_PLAN_COMPLETION
 } from "../actions";
 
 // Initial state for the reducer
@@ -144,6 +146,35 @@ export const userReducer = (state = initialState, action) => {
                 ...plan,
                 sessions: plan.sessions.filter(
                   (session) => session.id !== action.payload.sessionId
+                ),
+              }
+            : plan
+        ),
+      };
+
+    // Toggle completion status for a study plan
+    case TOGGLE_STUDY_PLAN_COMPLETION:
+      return {
+        ...state,
+        studyPlans: state.studyPlans.map((plan) =>
+          plan.id === action.payload.studyPlanId
+            ? { ...plan, completed: !plan.completed }
+            : plan
+        ),
+      };
+
+    // Toggle completion status for a session within a study plan
+    case TOGGLE_SESSION_COMPLETION:
+      return {
+        ...state,
+        studyPlans: state.studyPlans.map((plan) =>
+          plan.id === action.payload.studyPlanId
+            ? {
+                ...plan,
+                sessions: plan.sessions.map((session) =>
+                  session.id === action.payload.sessionId
+                    ? { ...session, completed: !session.completed }
+                    : session
                 ),
               }
             : plan

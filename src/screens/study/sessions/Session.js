@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { View, Text, FlatList, Button, TouchableOpacity } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleSessionCompletion } from "../../../redux/actions";
 
 const Session = ({ route, navigation }) => {
+  const dispatch = useDispatch();
   const { studyPlanId, sessionId } = route.params;
   const theme = useTheme();
 
@@ -27,7 +29,6 @@ const Session = ({ route, navigation }) => {
       </View>
     );
   }
-
   const renderAttachment = ({ item }) => (
     <TouchableOpacity
       onPress={() => console.log("Open attachment:", item)}
@@ -134,7 +135,7 @@ const Session = ({ route, navigation }) => {
           alignItems: "center",
           marginHorizontal: 5,
         }}
-        onPress={() => console.log("edit the session with completed as opposite")}
+        onPress={() => dispatch(toggleSessionCompletion(studyPlanId,sessionId))}
       >
         {!session.completed ? (
           <Text
