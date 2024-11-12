@@ -30,10 +30,17 @@ const StudyPlan = ({ navigation }) => {
   const progressCircle = () => {};
 
   const renderStudyPlan = ({ item }) => {
-    const sessionsCompleted = item.sessions.filter(
-      (session) => session.completed
-    ).length;
-    const totalSessions = item.sessions.length;
+    console.log(item)
+    let sessionsCompleted = 0;
+    try {
+      sessionsCompleted = item.sessions.filter(
+        (session) => session.completed
+      ).length;
+    } catch (e) {}
+    let totalSessions = 0;
+    try {
+      totalSessions = item.sessions.length;
+    } catch (e) {}
     const progress =
       totalSessions > 0 ? (sessionsCompleted / totalSessions) * 100 : 0;
 

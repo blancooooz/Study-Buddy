@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, Text, ScrollView, TouchableOpacity, Switch } from "react-native";
+import {
+  View,
+  TextInput,
+  Button,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Switch,
+} from "react-native";
 import { useDispatch } from "react-redux";
 import { addStudyPlan } from "../../redux/actions";
 import { useTheme } from "@react-navigation/native";
@@ -48,7 +56,10 @@ const AddStudyPlan = ({ navigation }) => {
   const addSession = () => {
     setStudyPlan((prevPlan) => ({
       ...prevPlan,
-      sessions: [...prevPlan.sessions, { ...newSession, id: uuidv4(), completed: false }],
+      sessions: [
+        ...prevPlan.sessions,
+        { ...newSession, id: uuidv4(), completed: false },
+      ],
     }));
     setNewSession({ title: "", description: "" });
   };
@@ -75,100 +86,143 @@ const AddStudyPlan = ({ navigation }) => {
   };
 
   return (
-    <ScrollView style={{ padding: 20, backgroundColor: theme.colors.background }}>
-      {/* Header Section */}
-      <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 20,
-  marginTop: 0, }}>
-  <TouchableOpacity onPress={() => navigation.goBack()} style={{ position: 'absolute', left: 0 }}>
-    <Feather name="chevron-left" size={30} color={colors.gray[500]} />
-  </TouchableOpacity>
-  <Text style={{ fontSize: 24, color: colors.gray[500] }}>Add Study Plan</Text>
-</View>
-
-
+    <ScrollView
+      style={{ padding: 20, backgroundColor: theme.colors.background }}
+    >
 
       {/* Title Input */}
-      <TextInput style={inputStyle} placeholder="Title" placeholderTextColor={colors.gray[600]} value={studyPlan.title} onChangeText={(text) => handleChange("title", text)} />
+      <TextInput
+        style={inputStyle}
+        placeholder="Title"
+        placeholderTextColor={colors.gray[600]}
+        value={studyPlan.title}
+        onChangeText={(text) => handleChange("title", text)}
+      />
 
       {/* Description Input */}
-      <TextInput style={inputStyle} placeholder="Description" placeholderTextColor={colors.gray[600]} value={studyPlan.description} onChangeText={(text) => handleChange("description", text)} multiline />
+      <TextInput
+        style={inputStyle}
+        placeholder="Description"
+        placeholderTextColor={colors.gray[600]}
+        value={studyPlan.description}
+        onChangeText={(text) => handleChange("description", text)}
+        multiline
+      />
 
       {/* Tags Input */}
-      <TextInput style={inputStyle} placeholder="Tags (comma separated)" placeholderTextColor={colors.gray[600]} value={studyPlan.tags.join(", ")} onChangeText={(text) => handleChange("tags", text.split(", "))} />
+      <TextInput
+        style={inputStyle}
+        placeholder="Tags (comma separated)"
+        placeholderTextColor={colors.gray[600]}
+        value={studyPlan.tags.join(", ")}
+        onChangeText={(text) => handleChange("tags", text.split(", "))}
+      />
 
       {/* Subject Input */}
-      <TextInput style={inputStyle} placeholder="Subject Name" value={studyPlan.subject.name} onChangeText={(text) => handleChange("subject", { ...studyPlan.subject, name: text })} />
-      <TextInput style={inputStyle} placeholder="Subject Color" value={studyPlan.subject.color} onChangeText={(text) => handleChange("subject", { ...studyPlan.subject, color: text })} />
+      <TextInput
+        style={inputStyle}
+        placeholder="Subject Name"
+        value={studyPlan.subject.name}
+        placeholderTextColor={colors.gray[600]}
+        onChangeText={(text) =>
+          handleChange("subject", { ...studyPlan.subject, name: text })
+        }
+      />
+      <TextInput
+        style={inputStyle}
+        placeholder="Subject Color"
+        value={studyPlan.subject.color}
+        placeholderTextColor={colors.gray[600]}
+        onChangeText={(text) =>
+          handleChange("subject", { ...studyPlan.subject, color: text })
+        }
+      />
 
       {/* Urgent Switch */}
       <View style={switchContainer}>
         <Text style={switchLabel}>Urgent:</Text>
-        <Switch value={studyPlan.urgent} onValueChange={(value) => handleChange("urgent", value)} />
+        <Switch
+          value={studyPlan.urgent}
+          onValueChange={(value) => handleChange("urgent", value)}
+        />
       </View>
 
       {/* Collaborative Switch */}
       <View style={switchContainer}>
         <Text style={switchLabel}>Collaborative:</Text>
-        <Switch value={studyPlan.collaborative} onValueChange={(value) => handleChange("collaborative", value)} />
+        <Switch
+          value={studyPlan.collaborative}
+          onValueChange={(value) => handleChange("collaborative", value)}
+        />
       </View>
 
-  {/* Add Users Section (conditionally rendered if collaborative is enabled) */}
-{studyPlan.collaborative && (
-  <>
-    <TextInput
-      style={inputStyle}
-      placeholder="Add User"
-      placeholderTextColor={colors.gray[600]}
-      value={newUser}
-      onChangeText={(text) => setNewUser(text)}
-    />
-    <Button title="Add User" onPress={addUser} />
-  </>
-)}
+      {/* Add Users Section (conditionally rendered if collaborative is enabled) */}
+      {studyPlan.collaborative && (
+        <>
+          <TextInput
+            style={inputStyle}
+            placeholder="Add User"
+            placeholderTextColor={colors.gray[600]}
+            value={newUser}
+            onChangeText={(text) => setNewUser(text)}
+          />
+          <Button title="Add User" onPress={addUser} />
+        </>
+      )}
 
       {/* Reminder Switch */}
       <View style={switchContainer}>
         <Text style={switchLabel}>Reminder:</Text>
-        <Switch value={studyPlan.reminder.enabled} onValueChange={(value) => handleChange("reminder", { ...studyPlan.reminder, enabled: value })} />
+        <Switch
+          value={studyPlan.reminder.enabled}
+          onValueChange={(value) =>
+            handleChange("reminder", { ...studyPlan.reminder, enabled: value })
+          }
+        />
       </View>
 
       {/* Reminder Time Picker */}
-{studyPlan.reminder.enabled && (
-  <View style={reminderContainer}>
-    <Button title="Set Reminder Time" onPress={() => setShowDatePicker(true)} />
-    {showDatePicker && (
-      <DateTimePicker
-        value={new Date()}
-        mode="datetime"
-        display="default"
-        onChange={(event, date) => {
-          setShowDatePicker(false);
-          handleChange("reminder", { ...studyPlan.reminder, reminder_time: date.toString() });
-        }}
-      />
-    )}
-    <View style={dateTimeDisplay}>
-      <Text style={dateText}>
-        {new Date(studyPlan.reminder.reminder_time).toLocaleDateString()}
-      </Text>
-      <Text style={timeText}>
-        {new Date(studyPlan.reminder.reminder_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-      </Text>
-    </View>
-  </View>
-)}
+      {studyPlan.reminder.enabled && (
+        <View style={reminderContainer}>
+          <Button
+            title="Set Reminder Time"
+            onPress={() => setShowDatePicker(true)}
+          />
+          {showDatePicker && (
+            <DateTimePicker
+              value={new Date()}
+              mode="datetime"
+              display="default"
+              onChange={(event, date) => {
+                setShowDatePicker(false);
+                handleChange("reminder", {
+                  ...studyPlan.reminder,
+                  reminder_time: date.toString(),
+                });
+              }}
+            />
+          )}
+          <View style={dateTimeDisplay}>
+            <Text style={dateText}>
+              {new Date(studyPlan.reminder.reminder_time).toLocaleDateString()}
+            </Text>
+            <Text style={timeText}>
+              {new Date(studyPlan.reminder.reminder_time).toLocaleTimeString(
+                [],
+                { hour: "2-digit", minute: "2-digit" }
+              )}
+            </Text>
+          </View>
+        </View>
+      )}
 
-
-
-      {/* Add Session */}
-      <TextInput style={inputStyle} placeholder="Session Title" value={newSession.title} onChangeText={(text) => handleSessionChange("title", text)} />
-      <TextInput style={inputStyle} placeholder="Session Description" value={newSession.description} onChangeText={(text) => handleSessionChange("description", text)} />
-      <Button title="Add Session" onPress={addSession} />
 
       {/* Submit Button */}
       <TouchableOpacity onPress={handleSubmit}>
         <View style={buttonStyle}>
-          <Text style={{ color: colors.background, fontSize: 18 }}>Create Study Plan</Text>
+          <Text style={{ color: colors.background, fontSize: 18 }}>
+            Create Study Plan
+          </Text>
         </View>
       </TouchableOpacity>
     </ScrollView>
@@ -209,15 +263,15 @@ const buttonStyle = {
 const reminderContainer = {
   marginTop: 10,
   marginBottom: 20,
-  alignItems: 'center',
-  justifyContent: 'center',
+  alignItems: "center",
+  justifyContent: "center",
 };
 
 const dateTimeDisplay = {
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-around',
-  width: '80%',
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-around",
+  width: "80%",
   marginTop: 10,
   backgroundColor: colors.gray[200],
   padding: 10,
@@ -236,9 +290,6 @@ const timeText = {
 };
 
 export default AddStudyPlan;
-
-
-
 
 /*  const AddStudyPlan = ({navigation, route}) => {
   console.log("add a plan")
