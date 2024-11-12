@@ -86,7 +86,7 @@ export const userReducer = (state = initialState, action) => {
 
     // Study Plan Actions
     case ADD_STUDY_PLAN:
-      return { ...state, studyPlans: [...state.studyPlans, action.payload] };
+      return { ...state, studyPlans: action.payload };
 
     case EDIT_STUDY_PLAN:
       return {

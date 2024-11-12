@@ -17,6 +17,7 @@ const width = Dimensions.get("screen").width;
 const StudyPlan = ({ navigation }) => {
   const theme = useTheme();
   const studyPlans = useSelector((state) => state.studyPlans || []);
+  console.log(studyPlans)
   const [expanded, setExpanded] = useState({});
 
   const toggleExpand = (studyPlanId) => {
@@ -52,7 +53,7 @@ const StudyPlan = ({ navigation }) => {
                 fontWeight: "bold",
               }}
             >
-              {item.title}
+              {item.subject.name}: {item.title}
             </Text>
 
             <TouchableOpacity onPress={() => toggleExpand(item.id)}>
