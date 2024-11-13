@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { addStudyPlan } from "../../redux/actions";
 import { useTheme } from "@react-navigation/native";
 import { colors } from "../../theme/colors";
-import { v4 as uuidv4 } from "uuid";
+
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Feather from "react-native-vector-icons/Feather";
 
@@ -156,7 +156,7 @@ const AddStudyPlan = ({ navigation }) => {
         />
       </View>
 
-      {/* Conditionally show the Add User section if Collaborative is enabled */}
+      {/* Add Users Section (conditionally rendered if collaborative is enabled) */}
       {studyPlan.collaborative && (
         <>
           <TextInput

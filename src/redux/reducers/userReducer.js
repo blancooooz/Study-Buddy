@@ -26,7 +26,7 @@ import {
   UPDATE_POINTS,
   DELETE_STUDY_PLAN,
   TOGGLE_SESSION_COMPLETION,
-  TOGGLE_STUDY_PLAN_COMPLETION,
+  TOGGLE_STUDY_PLAN_COMPLETION
 } from "../actions";
 
 // Initial state for the reducer

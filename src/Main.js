@@ -40,6 +40,7 @@ import Preferences from "./screens/account/Preferences";
 import Username from "./screens/account/Username";
 import ChangePassword from "./screens/account/ChangePassword";
 import AddTask from "./screens/tasks/AddTask";
+import EditTask from "./screens/tasks/EditTask";
 import AddSession from "./screens/study/sessions/AddSession";
 import EditStudyPlan from "./screens/study/EditStudyPlan";
 import AddStudyPlan from "./screens/study/AddStudyPlan";
@@ -110,6 +111,12 @@ const TasksStack = () => (
       options={{ header: () => <CustomHeader title={"AddTask"} /> }}
     >
       {({ navigation }) => <AddTask navigation={navigation} />}
+    </Stack.Screen>
+    <Stack.Screen
+      name="EditTask"
+      options={{ header: () => <CustomHeader title={"Edit task"} /> }}
+    >
+      {({ navigation }) => <EditTask navigation={navigation} />}
     </Stack.Screen>
     {/* Add other screens related to Tasks here */}
   </Stack.Navigator>
@@ -297,52 +304,68 @@ const HomeHeader = ({ screen }) => {
   const renderExtraElements = (screenName) => {
     switch (screenName) {
       case "Daily":
-        return (
-          <View>
-            <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
-              <View
-                style={{
-                  width: 32,
-                  height: 32,
-                  backgroundColor: colors.gray[400],
-                  borderRadius: 24,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginRight: 16,
-                }}
-              >
-                <Icons.Feather
-                  name="plus"
-                  size={24}
-                  color={"#FAFAFA"}
-                ></Icons.Feather>
-              </View>
-            </TouchableOpacity>
-          </View>
+        return ( <>
+          <Text
+            style={{
+              color: theme.colors.text,
+              fontSize: 20,
+              fontWeight: "500",
+            }}
+          >
+            Daily
+          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
+            <View
+              style={{
+                width: 32,
+                height: 32,
+                backgroundColor: colors.gray[400],
+                borderRadius: 24,
+                justifyContent: "center",
+                alignItems: "center",
+                marginRight: 16,
+              }}
+            >
+              <Icons.Feather
+                name="plus"
+                size={24}
+                color={"#FAFAFA"}
+              ></Icons.Feather>
+            </View>
+          </TouchableOpacity>
+        </>
         );
       case "Tasks":
-        return (
-          <View>
-            <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
-              <View
-                style={{
-                  width: 32,
-                  height: 32,
-                  backgroundColor: colors.gray[400],
-                  borderRadius: 24,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginRight: 16,
-                }}
-              >
-                <Icons.Feather
-                  name="plus"
-                  size={24}
-                  color={"#FAFAFA"}
-                ></Icons.Feather>
-              </View>
-            </TouchableOpacity>
-          </View>
+        return ( <>
+          <Text
+            style={{
+              color: theme.colors.text,
+              fontSize: 20,
+              fontWeight: "500",
+            }}
+          >
+            Tasks
+          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
+            <View
+              style={{
+                width: 32,
+                height: 32,
+                backgroundColor: colors.gray[400],
+                borderRadius: 24,
+                justifyContent: "center",
+                alignItems: "center",
+                marginRight: 16,
+              }}
+            >
+              <Icons.Feather
+                name="plus"
+                size={24}
+                color={"#FAFAFA"}
+              ></Icons.Feather>
+            </View>
+          </TouchableOpacity>
+        </>
         );
       case "Calendar":
         return (
@@ -476,7 +499,7 @@ const CustomHeader = ({ title, routeParam }) => {
                 onRequestClose={() => setOptionsVisible(false)}
               >
                 <TouchableOpacity
-                  style={{ backgroundColor: theme.colors.transparent, flex: 1 }}
+                  style={{backgroundColor:theme.colors.transparent, flex:1}}
                   onPress={() => setOptionsVisible(false)}
                 >
                   <View
@@ -522,7 +545,9 @@ const CustomHeader = ({ title, routeParam }) => {
                 name="options"
                 size={36}
                 color={
-                  optionsVisible ? theme.colors.secondary : colors.gray[500]
+                  optionsVisible
+                    ? theme.colors.secondary
+                    : colors.gray[500]
                 }
               />
             </TouchableOpacity>
@@ -539,7 +564,7 @@ const CustomHeader = ({ title, routeParam }) => {
                 onRequestClose={() => setOptionsVisible(false)}
               >
                 <TouchableOpacity
-                  style={{ backgroundColor: theme.colors.transparent, flex: 1 }}
+                  style={{backgroundColor:theme.colors.transparent, flex:1}}
                   onPress={() => setOptionsVisible(false)}
                 >
                   <View
@@ -585,7 +610,9 @@ const CustomHeader = ({ title, routeParam }) => {
                 name="options"
                 size={36}
                 color={
-                  optionsVisible ? theme.colors.secondary : colors.gray[500]
+                  optionsVisible
+                    ? theme.colors.secondary
+                    : colors.gray[500]
                 }
               />
             </TouchableOpacity>

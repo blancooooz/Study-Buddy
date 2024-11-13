@@ -20,7 +20,9 @@
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/stack": "^6.4.1",
     "@reduxjs/toolkit": "^2.2.7",
+    "@types/react": "~18.2.79",
     "babel-preset-expo": "^11.0.14",
+    "cohere-ai": "^7.14.0",
     "date-fns": "^4.1.0",
     "expo": "~51.0.28",
     "expo-status-bar": "~1.12.1",
@@ -41,6 +43,7 @@
     "react-redux": "^9.1.2",
     "recyclerlistview": "^4.2.1",
     "redux-logger": "^3.0.6",
+    "typescript": "~5.3.3",
     "uuid": "^11.0.2"
   },
   "devDependencies": {
