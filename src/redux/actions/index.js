@@ -37,6 +37,13 @@ export const EDIT_SESSION = "EDIT_SESSION";
 export const DELETE_SESSION = "DELETE_SESSION";
 export const TOGGLE_SESSION_COMPLETION = "TOGGLE_SESSION_COMPLETION";
 export const TOGGLE_STUDY_PLAN_COMPLETION = "TOGGLE_STUDY_PLAN_COMPLETION";
+export const START_POMODORO = "START_POMODORO"; // Starts a Pomodoro session
+export const PAUSE_POMODORO = "PAUSE_POMODORO"; // Pauses the timer
+export const RESET_POMODORO = "RESET_POMODORO"; // Resets timer and session count
+export const UPDATE_SESSION_COUNT = "UPDATE_SESSION_COUNT"; // Increments session count upon completion
+export const SAVE_SESSION_DATA = "SAVE_SESSION_DATA"; // Sends session history and data to Firebase
+export const LOAD_SESSION_HISTORY = "LOAD_SESSION_HISTORY";
+export const UPDATE_POINTS = 'UPDATE_POINTS';
 {
   /* 
 export const ADD_TASK = "ADD_TASK";
@@ -547,6 +554,84 @@ export const logOut = () => {
     }
   };
 };
+// Start the timer
+export const startPomodoro = () => ({ type: START_POMODORO });
+
+// Pause the timer
+export const pausePomodoro = () => ({ type: PAUSE_POMODORO });
+
+// Reset time and session count
+export const resetPomodoro = () => ({ type: RESET_POMODORO });
+
+// Update session count on completion
+export const updateSessionCount = (sessionData) => ({
+  type: UPDATE_SESSION_COUNT,
+  payload: sessionData,
+});
+
+// Loads session data from Firebase
+export const loadSessionData = () => {
+  return async (dispatch) => {
+    try {
+      const uid = firebaseAuth.currentUser?.uid;
+      if (!uid) {
+        console.error("No authenticated user. Cannot load session history.");
+        return;
+      }
+      const userRef = doc(db, "sessions", uid);
+      const userSnapshot = await getDoc(userRef);
+
+      if (userSnapshot.exists()) {
+        const sessionData = userSnapshot.data();
+        if (sessionData && sessionData.sessionHistory) {
+          dispatch({
+            type: SAVE_SESSION_DATA,
+            payload: sessionData.sessionHistory,
+          });
+        } else {
+          console.log("No session history found.");
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+
+// Save session data to Firebase
+export const saveSessionData = (sessionData) => {
+  return async (dispatch, getState) => {
+    try {
+      const uid = firebaseAuth.currentUser.uid;
+      const state = getState();
+      const allSessions = state.sessions || [];
+      const userRef = doc(db, "sessions", userId);
+      const docSnap = await getDoc(userRef);
+      if (!docSnap.exists()) {
+        // If the doc does not exist, create it with an empty sessions array
+        await setDoc(userRef, { sessions: [] });
+      }
+
+      // Update Firestore doc with new session data
+      await updateDoc(userRef, {
+        sessions: arrayUnion(sessionData), // Update the "sessions" field in Firestore document
+      });
+
+      // Combine existing sessions with new one
+      const updatedSessions = [...allSessions, sessionData];
+
+      // Update local session list and dispatch action
+      dispatch({ type: SAVE_SESSION_DATA, payload: updatedSessions });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};
+export const updatePoints = (points) => ({
+  type: UPDATE_POINTS,
+  payload: points,
+});
+
 //adding a task to the database
 
 // You can create similar setter actions for tasks, tags, and events

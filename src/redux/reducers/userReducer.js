@@ -17,9 +17,16 @@ import {
   EDIT_SESSION,
   ADD_STUDY_PLAN,
   EDIT_STUDY_PLAN,
+  START_TIMER,
+  PAUSE_TIMER,
+  RESET_TIMER,
+  UPDATE_SESSION_COUNT,
+  SAVE_SESSION_DATA,
+  SET_SESSION_HISTORY,
+  UPDATE_POINTS,
   DELETE_STUDY_PLAN,
   TOGGLE_SESSION_COMPLETION,
-  TOGGLE_STUDY_PLAN_COMPLETION
+  TOGGLE_STUDY_PLAN_COMPLETION,
 } from "../actions";
 
 // Initial state for the reducer
@@ -31,6 +38,14 @@ const initialState = {
   events: [],
   Username: [],
   studyPlans: [],
+  sessionTime: 1500, //Default 25 minutes
+  breakTime: 300, // Default 5 minutes
+  currentSessionCount: 0, // stores session count
+  currentTime: 1500, // stores time currently left in session
+  isPaused: true,
+  isSessionActive: false,
+  sessionHistory: [],
+  points: 0,
 };
 
 // Reducer function
@@ -76,6 +91,13 @@ export const userReducer = (state = initialState, action) => {
         events: [],
         Username: [],
         studyPlans: [],
+        sessionTime: 1500, //Default 25 minutes
+        breakTime: 300, // Default 5 minutes
+        currentSessionCount: 0, // stores session count
+        currentTime: 1500, // stores time currently left in session
+        isPaused: true,
+        isSessionActive: false,
+        sessionHistory: [],
       };
 
     case GET_STUDY_PLANS:
@@ -123,8 +145,7 @@ export const userReducer = (state = initialState, action) => {
     case EDIT_SESSION:
       return {
         ...state,
-        studyPlans: action.payload.updatedPlans
-        
+        studyPlans: action.payload.updatedPlans,
       };
 
     case DELETE_SESSION:
@@ -152,6 +173,43 @@ export const userReducer = (state = initialState, action) => {
             : plan
         ),
       };
+    case START_TIMER:
+      return { ...state, isPaused: false };
+
+    case PAUSE_TIMER:
+      return { ...state, isPaused: true };
+
+    case RESET_TIMER:
+      return {
+        ...state,
+        currentSessionCount: 0,
+        currentTime: state.sessionTime,
+        isPaused: true,
+        isSessionActive: true,
+      };
+
+    case SET_SESSION_HISTORY:
+      return {
+        ...state,
+        sessionHistory: action.payload,
+      };
+
+    case UPDATE_SESSION_COUNT:
+      return {
+        ...state,
+        currentSessionCount: state.currentSessionCount + 1,
+        sessionHistory: [...state.sessionHistory, action.payload],
+        isSessionActive: !state.isSessionActive,
+        currentTime: state.isSessionActive
+          ? state.breakTime
+          : state.sessionTime,
+      };
+
+    case SAVE_SESSION_DATA:
+      return {
+        ...state,
+        sessionHistory: [...(state.sessionHistory || []), action.payload],
+      };
 
     // Toggle completion status for a session within a study plan
     case TOGGLE_SESSION_COMPLETION:
@@ -169,6 +227,12 @@ export const userReducer = (state = initialState, action) => {
               }
             : plan
         ),
+      };
+
+    case UPDATE_POINTS:
+      return {
+        ...state,
+        points: action.payload,
       };
 
     default:

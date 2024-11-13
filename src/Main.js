@@ -46,6 +46,8 @@ import AddStudyPlan from "./screens/study/AddStudyPlan";
 import EditSession from "./screens/study/sessions/EditSession";
 import Session from "./screens/study/sessions/Session";
 import StudyPlan from "./screens/study/StudyPlan";
+import PomodoroScreen from "./screens/timer/Pomodoro";
+import Gamify from "./screens/gamify/Gamify";
 import { colors } from "./theme/colors";
 import { current } from "@reduxjs/toolkit";
 // Navigators for tabs, stacks, and drawers
@@ -73,6 +75,18 @@ const DailyStack = () => (
       options={{ header: () => <CustomHeader title={"AddTask"} /> }}
     >
       {({ navigation }) => <AddTask navigation={navigation} />}
+    </Stack.Screen>
+    <Stack.Screen
+      name="Pomodoro"
+      options={{ header: () => <CustomHeader title={"Pomodoro"} /> }}
+    >
+      {({ navigation }) => <PomodoroScreen navigation={navigation} />}
+    </Stack.Screen>
+    <Stack.Screen
+      name="Gamify"
+      options={{ header: () => <CustomHeader title={"Gamify"} /> }}
+    >
+      {({ navigation }) => <Gamify navigation={navigation} />}
     </Stack.Screen>
   </Stack.Navigator>
 );
@@ -107,10 +121,10 @@ const TasksStack = () => (
 const CalendarStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Calendar" options={{ headerShown: false }}>
-      {() => (
+      {({ navigation }) => (
         <>
           <HomeHeader screen={"Calendar"} />
-          <Calendar />
+          <Calendar navigation={navigation} />
         </>
       )}
     </Stack.Screen>
@@ -191,6 +205,12 @@ const StudyPlanStack = () => (
       {({ navigation, route }) => (
         <EditStudyPlan navigation={navigation} route={route} />
       )}
+    </Stack.Screen>
+    <Stack.Screen
+      name="Pomodoro"
+      options={{ header: () => <CustomHeader title={"Pomodoro"} /> }}
+    >
+      {({ navigation }) => <PomodoroScreen navigation={navigation} />}
     </Stack.Screen>
   </Stack.Navigator>
 );
@@ -588,7 +608,7 @@ const CustomHeader = ({ title, routeParam }) => {
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Icons.Ionicons name="arrow-back" size={24} color={theme.colors.text} />
       </TouchableOpacity>
-      <Text style={styles.headerTitle}>{title}</Text>
+      <Text style={[styles.headerTitle,{color:theme.colors.text}]}>{title}</Text>
       {renderExtraElements(title)}
     </View>
   );

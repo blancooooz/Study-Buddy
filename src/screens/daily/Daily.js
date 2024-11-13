@@ -10,7 +10,8 @@ import {
 import { useSelector } from "react-redux";
 import { Circle } from "react-native-progress";
 import TaskList from "./TaskList";
-const Daily = () => {
+
+const Daily = ({ navigation }) => {
   const theme = useTheme();
   const styles = createStyles(theme);
   const [progress, setProgress] = useState(0);
@@ -196,6 +197,7 @@ const Daily = () => {
               margin: 4,
               borderRadius: 12,
             }}
+            onPress={() => navigation.navigate("Pomodoro")}  // Wrap navigation call in an anonymous function
           >
             <Text
               style={{
@@ -317,12 +319,12 @@ const Daily = () => {
           <Text style={{ fontSize: 16, color: theme.colors.text }}>
             No events scheduled!
           </Text>
-          {/* You can map your events here */}
         </View>
       </ScrollView>
     </View>
   );
 };
+
 const createStyles = (theme) =>
   StyleSheet.create({
     welcome_text: {
