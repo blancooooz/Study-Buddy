@@ -19,6 +19,7 @@ import Task from "../../components/Tasks/Task";
 import * as Icons from "react-native-vector-icons";
 import { useSelector } from "react-redux"; // Redux hook to access the store's state
 import { get_all_tasks,  complete_task} from "../../redux/actions";
+import { generateText, getRandomTasks } from "../../utils/AIUtils";
 const Tasks = ({ navigation }) => {
   const { colors } = useTheme();
   //const [tasks, setTasks] = useState([]); // State variable to store tasks
@@ -32,7 +33,11 @@ const Tasks = ({ navigation }) => {
   catch(e){
     console.log(e);
   }
-
+  const priorityQueue= (tasks)=>{
+    const priorityQueue = [...tasks];
+    priorityQueue.sort((a, b) => b.priority - a.priority);
+    return priorityQueue;
+  }
   useEffect(() => {
     const uncompleted = allTasks.filter(task => !task.completed);
     const completed = allTasks.filter(task => task.completed);
@@ -60,7 +65,7 @@ const Tasks = ({ navigation }) => {
       setUncompletedTasks([...uncompleted_tasks, updated_task]);
     }
   };
-
+  
   // const uncompleted_tasks = allTasks.filter(task => !task.completed);
   // const completed_tasks = allTasks.filter(task => task.completed);
 
@@ -70,8 +75,8 @@ const Tasks = ({ navigation }) => {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       
       <ScrollView style={{ }} showsVerticalScrollIndicator={false}>
-        {uncompleted_tasks?.map((task) => (
-          <Task key={task.id} task={task} onPress={handleCompleteTask}></Task>
+        {priorityQueue(uncompleted_tasks)?.map((task) => (
+          <Task key={task.id} task={task} onPress={handleCompleteTask} navigation={navigation}></Task>
         ))}
         {completed_tasks.length > 0 ? <Text style={{color:themecolors.gray[100],fontFamily:'SFProRoundedSemibold', fontSize:24,marginBottom:8}}>Completed</Text> : null}
         

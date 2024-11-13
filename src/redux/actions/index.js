@@ -13,7 +13,8 @@ import {
 } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid"; // import uuid library
+
+import { useSelector } from "react-redux";
 
 // Define action types as constants to avoid typos and manage action types easily
 export const FETCH_USER = "FETCH_USER"; // For fetching the current Firebase authenticated user
@@ -179,11 +180,15 @@ export const add_task = (task, task_list) => {
     }
   };
 };
-export const delete_task = (taskId, task_list) => {
+export const delete_task = (taskId,taskList) => {
   return async (dispatch) => {
+    
+    const taskListCopy = [...taskList];
+    
     try {
       const userId = firebaseAuth.currentUser.uid; // != soft equals, so '1' != 1 is false '1' !== 1 is true
-      const tasks_copy = task_list.filter((task) => task.id !== taskId); // Filter out the task to be deleted != soft equals, so '1' == 1 is true '1' === 1 is false
+      const tasks_copy = taskListCopy.filter((task) => task.id !== taskId); // Filter out the task to be deleted != soft equals, so '1' == 1 is true '1' === 1 is false
+      
       //task_list = ['task 1', 'task 2', 'task 3']
       //after the filter, you were checking for task 1 id
       //after filter: task_list = ['task 2', 'task 3']
@@ -192,8 +197,8 @@ export const delete_task = (taskId, task_list) => {
       const userRef = doc(db, "tasks", userId);
 
       // Find the task to be deleted
-      const taskToDelete = task_list.find((task) => task.id === taskId); //return the task with the id that matches the taskId
-
+      const taskToDelete = taskListCopy.find((task) => task.id === taskId); //return the task with the id that matches the taskId
+      
       if (taskToDelete) {
         // Update the Firestore document to remove the task
         await updateDoc(userRef, {
@@ -213,12 +218,16 @@ export const delete_task = (taskId, task_list) => {
   };
 };
 export const edit_task = (id, updated_task, task_list) => {
+  console.log('updated task', updated_task)
   return async (dispatch) => {
     try {
+      const tasks_copy = [...task_list];
       const userId = firebaseAuth.currentUser.uid;
-      const tasks_copy = task_list.map((task) =>
-        task.id === id ? { ...task, ...updated_task } : task
-      );
+      tasks_copy.forEach((task, index) => {
+        if (task.id === id) {
+          tasks_copy[index] = { ...task, ...updated_task };
+        }
+      });
 
       // Reference to the Firestore document for the user's task information
       const userRef = doc(db, "tasks", userId);
@@ -235,7 +244,9 @@ export const edit_task = (id, updated_task, task_list) => {
     } catch (error) {
       console.log("Error editing task: " + error);
     }
-  };
+  
+};
+
 };
 
 export const get_all_tasks = () => {

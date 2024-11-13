@@ -40,6 +40,7 @@ import Preferences from "./screens/account/Preferences";
 import Username from "./screens/account/Username";
 import ChangePassword from "./screens/account/ChangePassword";
 import AddTask from "./screens/tasks/AddTask";
+import EditTask from "./screens/tasks/EditTask";
 import AddSession from "./screens/study/sessions/AddSession";
 import EditStudyPlan from "./screens/study/EditStudyPlan";
 import AddStudyPlan from "./screens/study/AddStudyPlan";
@@ -96,6 +97,12 @@ const TasksStack = () => (
       options={{ header: () => <CustomHeader title={"Create a new task"} /> }}
     >
       {({ navigation }) => <AddTask navigation={navigation} />}
+    </Stack.Screen>
+    <Stack.Screen
+      name="EditTask"
+      options={{ header: () => <CustomHeader title={"Edit task"} /> }}
+    >
+      {({ navigation }) => <EditTask navigation={navigation} />}
     </Stack.Screen>
     {/* Add other screens related to Tasks here */}
   </Stack.Navigator>
