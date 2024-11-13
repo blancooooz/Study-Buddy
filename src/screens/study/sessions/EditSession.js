@@ -129,69 +129,74 @@ const EditSession = ({ navigation, route }) => {
     };
 
     dispatch(editSession(studyPlanId, sessionId, updatedSession));
-    Alert.alert("Success", "Session updated successfully!");
     navigation.goBack();
   };
 
   return (
     <ScrollView style={{ padding: 20, backgroundColor: theme.colors.background }}>
-      <Text style={{ fontSize: 24, marginBottom: 40, color: theme.colors.text }}>Edit Session</Text>
 
       <TextInput
         placeholder="Title"
+        placeholderTextColor={theme.colors.placeholderText}
         value={editedSession.title}
         onChangeText={(text) => handleChange("title", text)}
-        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 20 }}
+        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 20,color:theme.colors.text }}
       />
 
       <TextInput
         placeholder="Description"
+        placeholderTextColor={theme.colors.placeholderText}
         value={editedSession.description}
         onChangeText={(text) => handleChange("description", text)}
         multiline
-        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 20 }}
+        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 20,color:theme.colors.text }}
       />
 
       <TextInput
         placeholder="Notes"
+        placeholderTextColor={theme.colors.placeholderText}
         value={editedSession.notes}
         onChangeText={(text) => handleChange("notes", text)}
         multiline
-        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 20 }}
+        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 20,color:theme.colors.text }}
       />
 
       <TextInput
         placeholder="Tags (comma separated)"
+        placeholderTextColor={theme.colors.placeholderText}
         value={editedSession.tags.join(", ")}
         onChangeText={handleTagsChange}
-        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 20 }}
+        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 20,color:theme.colors.text }}
       />
 
       <TextInput
         placeholder="Duration (minutes)"
+        placeholderTextColor={theme.colors.placeholderText}
         value={editedSession.timer.duration}
         onChangeText={(text) => handleTimerChange("duration", text)}
         keyboardType="numeric"
-        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 20 }}
+        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 20,color:theme.colors.text }}
       />
 
       <TextInput
         placeholder="Intervals"
+        placeholderTextColor={theme.colors.placeholderText}
         value={editedSession.timer.intervalCount}
         onChangeText={(text) => handleTimerChange("intervalCount", text)}
         keyboardType="numeric"
-        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 20 }}
+        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 20,color:theme.colors.text }}
       />
 
       <TextInput
         placeholder="Add attachment URL"
+        placeholderTextColor={theme.colors.placeholderText}
         value={newAttachment}
         onChangeText={(text) => setNewAttachment(text)}
-        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 10 }}
+        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 10,color:theme.colors.text }}
       />
       <Button title="Add Attachment" onPress={addAttachment} />
 
-      <TouchableOpacity onPress={handleSaveSession} style={{ backgroundColor: theme.colors.primary, padding: 16, borderRadius: 8, alignItems: "center", marginTop: 60 }}>
+      <TouchableOpacity onPress={handleSaveSession} style={{ backgroundColor: theme.colors.primary, padding: 16, borderRadius: 8, alignItems: "center", marginTop: 60,color:theme.colors.text }}>
         <Text style={{ color: "#fff", fontSize: 18 }}>Save Changes</Text>
       </TouchableOpacity>
     </ScrollView>

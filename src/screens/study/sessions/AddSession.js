@@ -111,11 +111,12 @@ const AddSession = ({ navigation, route }) => {
 
   return (
     <ScrollView style={{ padding: 20, backgroundColor: theme.colors.background }}>
-      <Text style={{ fontSize: 24, marginBottom: 20}}>Add a Session</Text>
+      <Text style={{ fontSize: 24, marginBottom: 20, color:theme.colors.text}}>Add a Session</Text>
 
       {/* Title Input */}
       <TextInput
-        style={inputStyle}
+        style={[inputStyle,{color:theme.colors.text}]}
+        placeholderTextColor={theme.colors.placeholderText}
         placeholder="Title"
         value={session.title}
         onChangeText={(text) => handleChange("title", text)}
@@ -123,7 +124,8 @@ const AddSession = ({ navigation, route }) => {
 
       {/* Description Input */}
       <TextInput
-        style={inputStyle}
+        style={[inputStyle,{color:theme.colors.text}]}
+        placeholderTextColor={theme.colors.placeholderText}
         placeholder="Description"
         value={session.description}
         onChangeText={(text) => handleChange("description", text)}
@@ -132,7 +134,8 @@ const AddSession = ({ navigation, route }) => {
 
       {/* Notes Input */}
       <TextInput
-        style={inputStyle}
+        style={[inputStyle,{color:theme.colors.text}]}
+        placeholderTextColor={theme.colors.placeholderText}
         placeholder="Notes"
         value={session.notes}
         onChangeText={(text) => handleChange("notes", text)}
@@ -141,7 +144,8 @@ const AddSession = ({ navigation, route }) => {
 
       {/* Tags Input */}
       <TextInput
-        style={[inputStyle, { marginBottom: 35 }]}  // Increased margin to 30 for extra space
+        style={[inputStyle, { marginBottom: 35,color:theme.colors.text }]}  // Increased margin to 30 for extra space
+        placeholderTextColor={theme.colors.placeholderText}
         placeholder="Tags (comma separated)"
         value={session.tags.join(", ")}
         onChangeText={handleTagsChange}
@@ -151,7 +155,8 @@ const AddSession = ({ navigation, route }) => {
       {/* Timer Duration Input */}
       <Text style={labelStyle}>Session Duration:</Text>
       <TextInput
-        style={inputStyle}
+        style={[inputStyle,{color:theme.colors.text}]}
+        placeholderTextColor={theme.colors.placeholderText}
         placeholder="Enter duration in minutes"
         keyboardType="numeric"
         value={session.timer.duration.toString()}
@@ -161,7 +166,8 @@ const AddSession = ({ navigation, route }) => {
       {/* Interval Count Input */}
       <Text style={labelStyle}>Number of Intervals:</Text>
       <TextInput
-        style={[inputStyle, {marginBottom: 35}]}
+        style={[inputStyle, {marginBottom: 35,color:theme.colors.text}]}
+        placeholderTextColor={theme.colors.placeholderText}
         placeholder="Enter number of intervals"
         keyboardType="numeric"
         value={session.timer.intervalCount.toString()}
@@ -171,7 +177,8 @@ const AddSession = ({ navigation, route }) => {
        {/* Attachments Input */}
        <Text style={labelStyle}>Attachments:</Text>
       <TextInput
-        style={[inputStyle, {marginBottom: 5}]}
+        style={[inputStyle, {marginBottom: 5, color:theme.colors.text}]}
+        placeholderTextColor={theme.colors.placeholderText}
         placeholder="Enter link"
         value={newAttachment}
         onChangeText={(text) => setNewAttachment(text)}
@@ -212,8 +219,8 @@ const AddSession = ({ navigation, route }) => {
 
 
       {/* Submit Button */}
-      <TouchableOpacity onPress={handleSubmit} style={buttonStyle}>
-        <Text style={{ color: "#fff", fontSize: 18 }}>Add Session</Text>
+      <TouchableOpacity onPress={handleSubmit} style={[buttonStyle,{backgroundColor:theme.colors.primary}]}>
+        <Text style={{ color: 'black', fontSize: 18 }}>Add Session</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -226,7 +233,6 @@ const inputStyle = {
   padding: 12,
   borderRadius: 10,
   marginBottom: 20,
-  color: "#000",
   height: 40,
 };
 
@@ -237,7 +243,6 @@ const labelStyle = {
 };
 
 const buttonStyle = {
-  backgroundColor: "#6e6e6e",
   padding: 16,
   borderRadius: 10,
   alignItems: "center",

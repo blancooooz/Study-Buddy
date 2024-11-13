@@ -35,8 +35,8 @@ export const DELETE_STUDY_PLAN = "DELETE_STUDY_PLAN";
 export const ADD_SESSION = "ADD_SESSION";
 export const EDIT_SESSION = "EDIT_SESSION";
 export const DELETE_SESSION = "DELETE_SESSION";
-export const TOGGLE_SESSION_COMPLETION = "TOGGLE_SESSION_COMPLETION"
-export const TOGGLE_STUDY_PLAN_COMPLETION =  "TOGGLE_STUDY_PLAN_COMPLETION"
+export const TOGGLE_SESSION_COMPLETION = "TOGGLE_SESSION_COMPLETION";
+export const TOGGLE_STUDY_PLAN_COMPLETION = "TOGGLE_STUDY_PLAN_COMPLETION";
 {
   /* 
 export const ADD_TASK = "ADD_TASK";
@@ -438,7 +438,7 @@ export const editSession =
 
       dispatch({
         type: EDIT_SESSION,
-        payload: { studyPlanId, updatedSessions: updatedPlans },
+        payload: { studyPlanId, sessionId, updatedPlans: updatedPlans },
       });
     } catch (error) {
       console.error("Error editing session:", error);

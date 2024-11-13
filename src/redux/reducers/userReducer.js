@@ -123,18 +123,8 @@ export const userReducer = (state = initialState, action) => {
     case EDIT_SESSION:
       return {
         ...state,
-        studyPlans: state.studyPlans.map((plan) =>
-          plan.id === action.payload.studyPlanId
-            ? {
-                ...plan,
-                sessions: plan.sessions.map((session) =>
-                  session.id === action.payload.sessionId
-                    ? { ...session, ...action.payload.updatedSession }
-                    : session
-                ),
-              }
-            : plan
-        ),
+        studyPlans: action.payload.updatedPlans
+        
       };
 
     case DELETE_SESSION:
