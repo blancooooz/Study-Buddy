@@ -114,6 +114,12 @@ const CalendarStack = () => (
         </>
       )}
     </Stack.Screen>
+    <Stack.Screen
+      name="AddTask"
+      options={{ header: () => <CustomHeader title={"AddTask"} /> }}
+    >
+      {({ navigation }) => <AddTask navigation={navigation} />}
+    </Stack.Screen>
   </Stack.Navigator>
 );
 
@@ -195,13 +201,22 @@ const StudyPlanStack = () => (
 const SettingsStack = () => {
   return (
     <Stack.Navigator initialRouteName="Settings">
-      <Stack.Screen name="User Settings" options={{ headerShown: true }}>
+      <Stack.Screen
+        name="User Settings"
+        options={{ header: () => <HomeHeader title={"User Settings"} /> }}
+      >
         {({ navigation }) => <Settings navigation={navigation} />}
       </Stack.Screen>
-      <Stack.Screen name="Username" options={{ headerShown: true }}>
+      <Stack.Screen
+        name="Username"
+        options={{ header: () => <CustomHeader title={"Username"} /> }}
+      >
         {({ navigation }) => <Username navigation={navigation} />}
       </Stack.Screen>
-      <Stack.Screen name="ChangePassword" options={{ headerShown: true }}>
+      <Stack.Screen
+        name="ChangePassword"
+        options={{ header: () => <CustomHeader title={"Change Password"} /> }}
+      >
         {({ navigation }) => <ChangePassword navigation={navigation} />}
       </Stack.Screen>
     </Stack.Navigator>
@@ -221,9 +236,7 @@ const DrawerNavigator = ({
 }) => (
   <Drawer.Navigator
     initialRouteName="Home"
-    screenOptions={{
-      headerShown: false, // Hide the header for all screens
-    }}
+    screenOptions={{}}
     drawerContent={(props) => {
       return (
         <DrawerContentScrollView {...props}>
@@ -234,17 +247,23 @@ const DrawerNavigator = ({
       );
     }}
   >
-    <Drawer.Screen name="Home" options={{ title: "Home" }}>
+    <Drawer.Screen name="Home" options={{ title: "Home", headerShown: false }}>
       {() => (
         <>
           <BottomTabNavigator setCurrentTabScreen={setCurrentTabScreen} />
         </>
       )}
     </Drawer.Screen>
-    <Drawer.Screen name="Settings" options={{ title: "Settings" }}>
+    <Drawer.Screen
+      name="Settings"
+      options={{ title: "Settings", headerShown: false }}
+    >
       {() => <SettingsStack />}
     </Drawer.Screen>
-    <Drawer.Screen name="Preferences" options={{ headerShown: true }}>
+    <Drawer.Screen
+      name="Preferences"
+      options={{ header: () => <HomeHeader title={"Preferences"} /> }}
+    >
       {() => (
         <Preferences toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
       )}
@@ -307,9 +326,36 @@ const HomeHeader = ({ screen }) => {
         );
       case "Calendar":
         return (
-          <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
-            <Icons.Feather name="plus" size={24} color={colors.gray[500]} />
-          </TouchableOpacity>
+          <>
+            <Text
+              style={{
+                color: theme.colors.text,
+                fontSize: 20,
+                fontWeight: "500",
+              }}
+            >
+              Calendar
+            </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: colors.gray[400],
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.Feather
+                  name="plus"
+                  size={24}
+                  color={"#FAFAFA"}
+                ></Icons.Feather>
+              </View>
+            </TouchableOpacity>
+          </>
         );
       case "StudyPlan":
         return (
@@ -410,7 +456,7 @@ const CustomHeader = ({ title, routeParam }) => {
                 onRequestClose={() => setOptionsVisible(false)}
               >
                 <TouchableOpacity
-                  style={{backgroundColor:theme.colors.transparent, flex:1}}
+                  style={{ backgroundColor: theme.colors.transparent, flex: 1 }}
                   onPress={() => setOptionsVisible(false)}
                 >
                   <View
@@ -456,9 +502,7 @@ const CustomHeader = ({ title, routeParam }) => {
                 name="options"
                 size={36}
                 color={
-                  optionsVisible
-                    ? theme.colors.secondary
-                    : colors.gray[500]
+                  optionsVisible ? theme.colors.secondary : colors.gray[500]
                 }
               />
             </TouchableOpacity>
@@ -475,7 +519,7 @@ const CustomHeader = ({ title, routeParam }) => {
                 onRequestClose={() => setOptionsVisible(false)}
               >
                 <TouchableOpacity
-                  style={{backgroundColor:theme.colors.transparent, flex:1}}
+                  style={{ backgroundColor: theme.colors.transparent, flex: 1 }}
                   onPress={() => setOptionsVisible(false)}
                 >
                   <View
@@ -521,9 +565,7 @@ const CustomHeader = ({ title, routeParam }) => {
                 name="options"
                 size={36}
                 color={
-                  optionsVisible
-                    ? theme.colors.secondary
-                    : colors.gray[500]
+                  optionsVisible ? theme.colors.secondary : colors.gray[500]
                 }
               />
             </TouchableOpacity>
