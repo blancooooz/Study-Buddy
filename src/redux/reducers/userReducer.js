@@ -70,7 +70,7 @@ export const userReducer = (state = initialState, action) => {
       return { ...state, Username: action.payload };
 
     case EDIT_TASK:
-      return { ...state, tasks: [...state.tasks, action.payload] };
+      return { ...state, tasks: action.payload };
 
     case ADD_TASKS:
       return { ...state, tasks: action.payload };
