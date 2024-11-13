@@ -76,7 +76,6 @@ const addUser = () => {
 
   return (
     <ScrollView style={{ padding: 20, backgroundColor: theme.colors.background }}>
-      <Text style={{ fontSize: 24, marginBottom: 20, color:theme.colors.text }}>Edit Study Plan</Text>
 
       {/* Title Input */}
       <TextInput
