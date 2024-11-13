@@ -1,7 +1,7 @@
 import {CohereClientV2 } from 'cohere-ai';
 import { useSelector } from 'react-redux';
 const COHERE_API_URL = 'https://api.cohere.ai';
-const COHERE_API_KEY = 'CUENcJOyxt5uKIozJilkNDGmLrb3fzJKmzsIBF66'; // Replace with your actual API key
+const COHERE_API_KEY = ''; // Replace with your actual API key
 const cohere = new CohereClientV2({ //initializing the cohere client
     token: COHERE_API_KEY,
 })
