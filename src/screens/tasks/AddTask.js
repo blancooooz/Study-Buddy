@@ -165,7 +165,7 @@ const AddTask = ({ navigation }) => {
     }
     e.preventDefault();
     await assignPriority();
-    navigation.navigate("Tasks");
+    navigation.goBack();
   };
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);

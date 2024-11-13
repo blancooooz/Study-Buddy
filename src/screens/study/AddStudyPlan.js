@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { addStudyPlan } from "../../redux/actions";
 import { useTheme } from "@react-navigation/native";
 import { colors } from "../../theme/colors";
+import { v4 as uuidv4 } from "uuid";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Feather from "react-native-vector-icons/Feather";
