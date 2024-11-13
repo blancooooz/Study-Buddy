@@ -42,6 +42,7 @@ const Username = ({ updateUsername }) => {
         placeholderTextColor={theme.colors.text}
         value={username} // Bind the value of the input to the local `username` state
         onChangeText={(text) => setUsername(text)} // Update state when the user types
+        
         style={{
           color:theme.colors.text,
           borderWidth: 1,
@@ -49,7 +50,6 @@ const Username = ({ updateUsername }) => {
           padding: 12,
           borderRadius: 10,
           marginBottom: 40, // Increased margin for more space below the input
-          backgroundColor: theme.colors.inputBackground,
           shadowColor: theme.colors.text,
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.2,

@@ -12,6 +12,26 @@ export const filter_tasks_uncompleted = (tasks) => {
 export const filter_tasks_completed = (tasks) => {
     return tasks.filter(task => task.completed);
 }
+export const generateId = (setId) => {
+    const generateRandomId = () => {
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let result = '';
+      for (let i = 0; i < 7; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      return result;
+    };
+
+    let newId;
+    do {
+      newId = generateRandomId();
+    } while (tasks.some(task => task.id === newId));
+
+    setId((prev) => ({
+      ...prev,
+      id: newId,
+    }));
+  }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -21,6 +41,11 @@ const styles = StyleSheet.create({
 });
 
 export default HelperFunctions;
+
+
+
+
+
 
 
 
