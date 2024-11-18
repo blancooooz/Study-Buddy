@@ -9,7 +9,18 @@ export const colors = {
   primary: "#FFA500", // Orange
   secondary: "#d22f05", // dark orange
   tertriary: "#ffd966", //yellow
-  yellow: "#F9D62E",
+  yellow: {
+    100: "#ffffe5",
+    200: "#ffffb3",
+    300: "#ffff80",
+    400: "#ffff4d",
+    500: "#ffff1a",
+    600: "#e6e600",
+    700: "#b3b300",
+    800: "#808000",
+    900: "#4d4d00",
+    
+  },
   error: "#f13a59", // Error color (can remain red)
   surface: "#eeeeee",
   green: {
@@ -34,6 +45,7 @@ export const colors = {
     800: "#FF4031",
     900: "#FF0000",
   },
+  pastelyellow: "#FFFAA0",
   white: "#f7f7f7",
   burntOrange: "#CC5500",
   sunsetorange: "#ffba52",

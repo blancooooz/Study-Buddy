@@ -63,3 +63,4 @@ link.write.1.tlog
 link.secondary.tlog
 binding.exp
 node_modules
+firebaseConfig.js
