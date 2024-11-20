@@ -49,6 +49,7 @@ import Session from "./screens/study/sessions/Session";
 import StudyPlan from "./screens/study/StudyPlan";
 import PomodoroScreen from "./screens/timer/Pomodoro";
 import Gamify from "./screens/gamify/Gamify";
+import NotificationTestScreen from "./__tests__/NotificationTestScreen";
 import { colors } from "./theme/colors";
 import { current } from "@reduxjs/toolkit";
 // Navigators for tabs, stacks, and drawers
@@ -88,6 +89,12 @@ const DailyStack = () => (
       options={{ header: () => <CustomHeader title={"Gamify"} /> }}
     >
       {({ navigation }) => <Gamify navigation={navigation} />}
+    </Stack.Screen>
+    <Stack.Screen
+      name="NotificationTestScreen"
+      options={{ header: () => <CustomHeader title={"NotificationTestScreen"} /> }}
+    >
+      {({ navigation }) => <NotificationTestScreen navigation={navigation} />}
     </Stack.Screen>
   </Stack.Navigator>
 );
