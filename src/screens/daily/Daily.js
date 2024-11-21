@@ -24,7 +24,7 @@ const Daily = ({ navigation }) => {
   const [uncompleted_events, setUncompletedEvents] = useState([]); // State variable to store uncompleted tasks
   const [completed_events, setCompletedEvents] = useState([]); // State variable to store completed tasks
   const [dailyTasks, setDailyTasks] = useState([]);
-  const [isCalendarExpanded, setIsCalendarExpanded] = useState(false);
+  const [isCalendarExpanded, setIsCalendarExpanded] = useState(true);
   const lottieRef = useRef(null);
   // Try to get the user's name from the Redux store
   let username = "";
