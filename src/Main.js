@@ -7,6 +7,8 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
+  Modal,
+  Dimensions,
 } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"; // For bottom tab navigation
 import { createStackNavigator } from "@react-navigation/stack"; // For stack navigation within tabs
@@ -17,29 +19,45 @@ import {
   DrawerItem,
 } from "@react-navigation/drawer"; // For drawer navigation
 import { connect, useDispatch, useSelector } from "react-redux"; // Redux hooks to dispatch actions and select state
-import { fetchUserData, logOut } from "./redux/actions"; // Redux action to fetch user data
+import {
+  fetchUserData,
+  get_all_studyPlans,
+  logOut,
+  deleteSession,
+  deleteStudyPlan,
+} from "./redux/actions"; // Redux action to fetch user data
 import { get_all_tasks } from "./redux/actions";
-import { firebaseAuth } from "./utils/DataHandler"; // Firebase authentication utilities
-import { signOut } from "firebase/auth"; // Firebase signOut method
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useTheme } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import * as Icons from "react-native-vector-icons";
 // Importing screens for each part of the app
 import Daily from "./screens/daily/Daily";
 import Tasks from "./screens/tasks/Tasks";
 import Calendar from "./screens/calendar/Calender";
-import StudyPlan from "./screens/study/StudyPlan";
+import StudyPlans from "./screens/study/StudyPlans";
 import Settings from "./screens/account/Settings";
 import Preferences from "./screens/account/Preferences";
 import Username from "./screens/account/Username";
 import ChangePassword from "./screens/account/ChangePassword";
 import AddTask from "./screens/tasks/AddTask";
+import EditTask from "./screens/tasks/EditTask";
+import AddSession from "./screens/study/sessions/AddSession";
+import EditStudyPlan from "./screens/study/EditStudyPlan";
+import AddStudyPlan from "./screens/study/AddStudyPlan";
+import EditSession from "./screens/study/sessions/EditSession";
+import Session from "./screens/study/sessions/Session";
+import StudyPlan from "./screens/study/StudyPlan";
+import PomodoroScreen from "./screens/timer/Pomodoro";
+import Gamify from "./screens/gamify/Gamify";
+import Streaks from "./screens/gamify/Streaks";
 import { colors } from "./theme/colors";
 import { current } from "@reduxjs/toolkit";
 // Navigators for tabs, stacks, and drawers
 const Tab = createBottomTabNavigator(); // Bottom Tab Navigator
 const Stack = createStackNavigator(); // Stack Navigator
 const Drawer = createDrawerNavigator(); // Drawer Navigator
+const height = Dimensions.get("screen").height;
+const width = Dimensions.get("screen").width;
 
 /**
  * Stack Navigator for the "Daily" screen.
@@ -47,10 +65,36 @@ const Drawer = createDrawerNavigator(); // Drawer Navigator
 const DailyStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Daily" options={{ headerShown: false }}>
-      {({navigation}) => <Daily navigation={navigation}/>}
+      {({ navigation }) => (
+        <>
+          <HomeHeader screen={"Daily"} />
+          <Daily navigation={navigation} />
+        </>
+      )}
     </Stack.Screen>
-    <Stack.Screen name="AddTask" options={{ headerShown: false }}>
-      {({navigation}) => <AddTask navigation={navigation}/>}
+    <Stack.Screen
+      name="AddTask"
+      options={{ header: () => <CustomHeader title={"AddTask"} /> }}
+    >
+      {({ navigation }) => <AddTask navigation={navigation} />}
+    </Stack.Screen>
+    <Stack.Screen
+      name="Pomodoro"
+      options={{ header: () => <CustomHeader title={"Pomodoro"} /> }}
+    >
+      {({ navigation }) => <PomodoroScreen navigation={navigation} />}
+    </Stack.Screen>
+    <Stack.Screen
+      name="Gamify"
+      options={{ header: () => <CustomHeader title={"Gamify"} /> }}
+    >
+      {({ navigation }) => <Gamify navigation={navigation} />}
+    </Stack.Screen>
+    <Stack.Screen
+      name="Streaks"
+      options={{ header: () => <CustomHeader title={"Streaks"} /> }}
+    >
+      {({ navigation }) => <Streaks navigation={navigation} />}
     </Stack.Screen>
   </Stack.Navigator>
 );
@@ -61,11 +105,25 @@ const DailyStack = () => (
 const TasksStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Tasks" options={{ headerShown: false }}>
-      {({ navigation }) => <Tasks navigation={navigation} />}
+      {({ navigation }) => (
+        <>
+          <HomeHeader screen={"Tasks"} />
+          <Tasks navigation={navigation} />
+        </>
+      )}
     </Stack.Screen>
 
-    <Stack.Screen name="AddTask" options={{ headerShown: false }}>
+    <Stack.Screen
+      name="AddTask"
+      options={{ header: () => <CustomHeader title={"AddTask"} /> }}
+    >
       {({ navigation }) => <AddTask navigation={navigation} />}
+    </Stack.Screen>
+    <Stack.Screen
+      name="EditTask"
+      options={{ header: () => <CustomHeader title={"Edit task"} /> }}
+    >
+      {({ navigation }) => <EditTask navigation={navigation} />}
     </Stack.Screen>
     {/* Add other screens related to Tasks here */}
   </Stack.Navigator>
@@ -77,7 +135,18 @@ const TasksStack = () => (
 const CalendarStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Calendar" options={{ headerShown: false }}>
-      {() => <Calendar />}
+      {({ navigation }) => (
+        <>
+          <HomeHeader screen={"Calendar"} />
+          <Calendar navigation={navigation} />
+        </>
+      )}
+    </Stack.Screen>
+    <Stack.Screen
+      name="AddTask"
+      options={{ header: () => <CustomHeader title={"AddTask"} /> }}
+    >
+      {({ navigation }) => <AddTask navigation={navigation} />}
     </Stack.Screen>
   </Stack.Navigator>
 );
@@ -87,8 +156,75 @@ const CalendarStack = () => (
  */
 const StudyPlanStack = () => (
   <Stack.Navigator>
-    <Stack.Screen name="Study Plan" options={{ headerShown: false }}>
-      {() => <StudyPlan />}
+    <Stack.Screen name="Study" options={{ headerShown: false }}>
+      {({ navigation }) => (
+        <>
+          <HomeHeader screen={"StudyPlan"} />
+          <StudyPlans navigation={navigation} />
+        </>
+      )}
+    </Stack.Screen>
+    <Stack.Screen
+      name="Study Plan"
+      options={({ route }) => ({
+        header: () => (
+          <CustomHeader title="Study Plan" routeParam={route.params?.id} />
+        ),
+      })}
+    >
+      {({ navigation, route }) => (
+        <StudyPlan navigation={navigation} route={route} />
+      )}
+    </Stack.Screen>
+    <Stack.Screen
+      name="Session"
+      options={({ route }) => ({
+        header: () => (
+          <CustomHeader title="Session" routeParam={route.params?.sessionId} />
+        ),
+      })}
+    >
+      {({ navigation, route }) => (
+        <Session navigation={navigation} route={route} />
+      )}
+    </Stack.Screen>
+    <Stack.Screen
+      name="Add a Session"
+      options={{ header: () => <CustomHeader title={"Add a Session"} /> }}
+    >
+      {({ navigation, route }) => (
+        <AddSession navigation={navigation} route={route} />
+      )}
+    </Stack.Screen>
+    <Stack.Screen
+      name="Edit a Session"
+      options={{ header: () => <CustomHeader title={"Edit a Session"} /> }}
+    >
+      {({ navigation, route }) => (
+        <EditSession navigation={navigation} route={route} />
+      )}
+    </Stack.Screen>
+    <Stack.Screen
+      name="Add a Plan"
+      options={{ header: () => <CustomHeader title={"Add a Plan"} /> }}
+    >
+      {({ navigation, route }) => (
+        <AddStudyPlan navigation={navigation} route={route} />
+      )}
+    </Stack.Screen>
+    <Stack.Screen
+      name="Edit a Plan"
+      options={{ header: () => <CustomHeader title={"Edit a Plan"} /> }}
+    >
+      {({ navigation, route }) => (
+        <EditStudyPlan navigation={navigation} route={route} />
+      )}
+    </Stack.Screen>
+    <Stack.Screen
+      name="Pomodoro"
+      options={{ header: () => <CustomHeader title={"Pomodoro"} /> }}
+    >
+      {({ navigation }) => <PomodoroScreen navigation={navigation} />}
     </Stack.Screen>
   </Stack.Navigator>
 );
@@ -99,13 +235,22 @@ const StudyPlanStack = () => (
 const SettingsStack = () => {
   return (
     <Stack.Navigator initialRouteName="Settings">
-      <Stack.Screen name="User Settings" options={{ headerShown: true }}>
+      <Stack.Screen
+        name="User Settings"
+        options={{ header: () => <HomeHeader title={"User Settings"} /> }}
+      >
         {({ navigation }) => <Settings navigation={navigation} />}
       </Stack.Screen>
-      <Stack.Screen name="Username" options={{ headerShown: true }}>
+      <Stack.Screen
+        name="Username"
+        options={{ header: () => <CustomHeader title={"Username"} /> }}
+      >
         {({ navigation }) => <Username navigation={navigation} />}
       </Stack.Screen>
-      <Stack.Screen name="ChangePassword" options={{ headerShown: true }}>
+      <Stack.Screen
+        name="ChangePassword"
+        options={{ header: () => <CustomHeader title={"Change Password"} /> }}
+      >
         {({ navigation }) => <ChangePassword navigation={navigation} />}
       </Stack.Screen>
     </Stack.Navigator>
@@ -125,9 +270,7 @@ const DrawerNavigator = ({
 }) => (
   <Drawer.Navigator
     initialRouteName="Home"
-    screenOptions={{
-      headerShown: false, // Hide the header for all screens
-    }}
+    screenOptions={{}}
     drawerContent={(props) => {
       return (
         <DrawerContentScrollView {...props}>
@@ -138,31 +281,76 @@ const DrawerNavigator = ({
       );
     }}
   >
-    <Drawer.Screen name="Home" options={{ title: "Home" }}>
+    <Drawer.Screen name="Home" options={{ title: "Home", headerShown: false }}>
       {() => (
         <>
-          <CustomHeader title="Home" currentTabScreen={currentTabScreen} />
           <BottomTabNavigator setCurrentTabScreen={setCurrentTabScreen} />
         </>
       )}
     </Drawer.Screen>
-    <Drawer.Screen name="Settings" options={{ title: "Settings" }}>
+    <Drawer.Screen
+      name="Settings"
+      options={{ title: "Settings", headerShown: false }}
+    >
       {() => <SettingsStack />}
     </Drawer.Screen>
-    <Drawer.Screen name="Preferences" options={{ headerShown: true }}>
+    <Drawer.Screen
+      name="Preferences"
+      options={{ header: () => <HomeHeader title={"Preferences"} /> }}
+    >
       {() => (
         <Preferences toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
       )}
     </Drawer.Screen>
   </Drawer.Navigator>
 );
-const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
+
+const HomeHeader = ({ screen }) => {
   const navigation = useNavigation();
+  const theme = useTheme();
   const renderExtraElements = (screenName) => {
     switch (screenName) {
-      case "DailyStack":
+      case "Daily":
         return (
-          <View>
+          <>
+            <TouchableOpacity onPress={() => navigation.navigate("Streaks")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: theme.colors.fireBackground,
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.SimpleLineIcons
+                  name="fire"
+                  size={24}
+                  color={theme.colors.fire}
+                ></Icons.SimpleLineIcons>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("Gamify")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: theme.colors.badgeBackground,
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.SimpleLineIcons
+                  name="badge"
+                  size={24}
+                  color={theme.colors.badge}
+                ></Icons.SimpleLineIcons>
+              </View>
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
               <View
                 style={{
@@ -182,11 +370,20 @@ const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
                 ></Icons.Feather>
               </View>
             </TouchableOpacity>
-          </View>
+          </>
         );
-      case "TasksStack":
+      case "Tasks":
         return (
-          <View>
+          <>
+            <Text
+              style={{
+                color: theme.colors.text,
+                fontSize: 20,
+                fontWeight: "500",
+              }}
+            >
+              Tasks
+            </Text>
             <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
               <View
                 style={{
@@ -206,19 +403,73 @@ const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
                 ></Icons.Feather>
               </View>
             </TouchableOpacity>
-          </View>
+          </>
         );
-      case "CalendarStack":
+      case "Calendar":
         return (
-          <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
-            <Icons.Feather name="plus" size={24} color={colors.gray[500]} />
-          </TouchableOpacity>
+          <>
+            <Text
+              style={{
+                color: theme.colors.text,
+                fontSize: 20,
+                fontWeight: "500",
+              }}
+            >
+              Calendar
+            </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: colors.gray[400],
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.Feather
+                  name="plus"
+                  size={24}
+                  color={"#FAFAFA"}
+                ></Icons.Feather>
+              </View>
+            </TouchableOpacity>
+          </>
         );
-      case "StudyPlanStack":
+      case "StudyPlan":
         return (
-          <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
-            <Icons.Feather name="plus" size={24} color={colors.gray[500]} />
-          </TouchableOpacity>
+          <>
+            <Text
+              style={{
+                color: theme.colors.text,
+                fontSize: 20,
+                fontWeight: "500",
+              }}
+            >
+              Study Plan
+            </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Add a Plan")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: colors.gray[400],
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.Feather
+                  name="plus"
+                  size={24}
+                  color={"#FAFAFA"}
+                ></Icons.Feather>
+              </View>
+            </TouchableOpacity>
+          </>
         );
     }
   };
@@ -240,7 +491,188 @@ const CustomHeader = ({ title, currentTabScreen, setCurrentTabScreen }) => {
         </View>
       </TouchableOpacity>
       {/* <Text style={styles.headerTitle}>{title}</Text> */}
-      {renderExtraElements(currentTabScreen)}
+      {renderExtraElements(screen)}
+    </View>
+  );
+};
+const CustomHeader = ({ title, routeParam }) => {
+  const navigation = useNavigation();
+  const theme = useTheme();
+  const dispatch = useDispatch();
+  const [optionsVisible, setOptionsVisible] = useState(false);
+  const toggleOptions = () => {
+    setOptionsVisible(!optionsVisible);
+  };
+
+  const handleEdit = () => {
+    setOptionsVisible(false);
+    if (title === "Study Plan") {
+      navigation.navigate("Edit a Plan", { planId: routeParam });
+    } else if (title === "Session") {
+      navigation.navigate("Edit a Session", { sessionId: routeParam });
+    }
+  };
+
+  const handleDelete = () => {
+    setOptionsVisible(false);
+    // Call the delete method for the study plan or session based on title
+    if (title === "Study Plan") {
+      dispatch(deleteStudyPlan(routeParam));
+      navigation.goBack();
+    } else if (title === "Session") {
+      dispatch(deleteSession(routeParam));
+      navigation.goBack();
+    }
+  };
+  const renderExtraElements = (title) => {
+    switch (title) {
+      case "Study Plan":
+        return (
+          <>
+            {optionsVisible && (
+              <Modal
+                transparent={true}
+                animationType="fade"
+                visible={optionsVisible}
+                onRequestClose={() => setOptionsVisible(false)}
+              >
+                <TouchableOpacity
+                  style={{ backgroundColor: theme.colors.transparent, flex: 1 }}
+                  onPress={() => setOptionsVisible(false)}
+                >
+                  <View
+                    style={{
+                      backgroundColor: theme.colors.card,
+                      width: 150,
+                      borderRadius: 8,
+                      paddingVertical: 8,
+                      paddingHorizontal: 10,
+                      alignItems: "center",
+                      position: "absolute",
+                      top: height / 9,
+                      right: width / 24,
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={handleEdit}
+                      style={styles.optionButton}
+                    >
+                      <Text style={{ color: theme.colors.text }}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={handleDelete}
+                      style={styles.optionButton}
+                    >
+                      <Text style={{ color: "red" }}>Delete</Text>
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              </Modal>
+            )}
+            <TouchableOpacity
+              onPress={() => toggleOptions()}
+              style={{
+                width: 32,
+                height: 32,
+                marginRight: 16,
+                position: "absolute",
+                right: 0,
+              }}
+            >
+              <Icons.Ionicons
+                name="options"
+                size={36}
+                color={
+                  optionsVisible ? theme.colors.secondary : colors.gray[500]
+                }
+              />
+            </TouchableOpacity>
+          </>
+        );
+      case "Session":
+        return (
+          <>
+            {optionsVisible && (
+              <Modal
+                transparent={true}
+                animationType="fade"
+                visible={optionsVisible}
+                onRequestClose={() => setOptionsVisible(false)}
+              >
+                <TouchableOpacity
+                  style={{ backgroundColor: theme.colors.transparent, flex: 1 }}
+                  onPress={() => setOptionsVisible(false)}
+                >
+                  <View
+                    style={{
+                      backgroundColor: theme.colors.card,
+                      width: 150,
+                      borderRadius: 8,
+                      paddingVertical: 8,
+                      paddingHorizontal: 10,
+                      alignItems: "center",
+                      position: "absolute",
+                      top: height / 9,
+                      right: width / 24,
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={handleEdit}
+                      style={styles.optionButton}
+                    >
+                      <Text style={{ color: theme.colors.text }}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={handleDelete}
+                      style={styles.optionButton}
+                    >
+                      <Text style={{ color: "red" }}>Delete</Text>
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              </Modal>
+            )}
+            <TouchableOpacity
+              onPress={() => toggleOptions()}
+              style={{
+                width: 32,
+                height: 32,
+                marginRight: 16,
+                position: "absolute",
+                right: 0,
+              }}
+            >
+              <Icons.Ionicons
+                name="options"
+                size={36}
+                color={
+                  optionsVisible ? theme.colors.secondary : colors.gray[500]
+                }
+              />
+            </TouchableOpacity>
+          </>
+        );
+    }
+  };
+
+  return (
+    <View
+      style={{
+        marginTop: 64,
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: colors.transparent,
+        marginBottom: 16,
+        padding: 10,
+      }}
+    >
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Icons.Ionicons name="arrow-back" size={24} color={theme.colors.text} />
+      </TouchableOpacity>
+      <Text style={[styles.headerTitle, { color: theme.colors.text }]}>
+        {title}
+      </Text>
+      {renderExtraElements(title)}
     </View>
   );
 };
@@ -333,14 +765,13 @@ const BottomTabNavigator = ({ setCurrentTabScreen }) => (
 const Main = ({ isDarkTheme, toggleTheme }) => {
   const dispatch = useDispatch(); // Redux's dispatch function
   const userData = useSelector((state) => state.userData); // Get user data from Redux store
-  const tasks = useSelector((state) => state.tasks); // Get tasks from Redux store
   const [currentTabScreen, setCurrentTabScreen] = useState("DailyStack");
   // Fetch user data when the component mounts if not already present
   useEffect(() => {
     if (!userData) {
       dispatch(fetchUserData()); // Fetch user data from Firestore and store in Redux
-
       dispatch(get_all_tasks()); // Fetch tasks from Firestore and store in Redux
+      dispatch(get_all_studyPlans());
     }
   }, []);
 
@@ -392,6 +823,37 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#fff", // Customize your header title color
+  },
+  headerContainer: {
+    marginTop: 64,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+    padding: 10,
+  },
+  optionsIcon: {
+    width: 32,
+    height: 32,
+    marginRight: 16,
+    position: "absolute",
+    right: 0,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0)",
+  },
+  optionsContainer: {
+    width: 150,
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    alignItems: "center",
+  },
+  optionButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
 });
 

@@ -46,7 +46,7 @@ const Login = () => {
       const defaultUserData = {
         name: "",
         email: "",
-        username: "",
+        Username: "",
         image: "",
         achievements: {
           badges: [],

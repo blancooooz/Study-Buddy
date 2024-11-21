@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
   View,
   Text,
@@ -12,11 +12,28 @@ import { useTheme } from "@react-navigation/native";
 import * as Icons from "react-native-vector-icons";
 
 const TaskList = () => {
+  const format_date_time = (timestamp) => {
+    const date = new Date(timestamp); // Convert the timestamp to a Date object
+    const options = { month: 'short', day: '2-digit' }; // Options for formatting
+    return date.toLocaleDateString('en-US', options).replace(',', '');
+  };
   const theme = useTheme();
   const styles = createStyles(theme);
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.tasks); // Assuming tasks are in redux state
-
+  const [dailyTasks, setDailyTasks] = useState(tasks);
+  useEffect(() => {
+    const daily = tasks
+      .filter((task) => {
+        const taskDate = new Date(task.deadline).toDateString();
+        const currentDate = new Date().toDateString();
+        return taskDate === currentDate;
+      })
+      .sort((a, b) => new Date(a.time_due) - new Date(b.time_due));
+    
+      console.log('daily tasks', daily)
+    setDailyTasks(daily)
+  },[tasks]);
   // Format date in "Oct 30" format
   const format_date = (date_string) => {
     const date = new Date(date_string);
@@ -28,9 +45,7 @@ const TaskList = () => {
   const currentFormattedDate = format_date(new Date());
 
   // Filter tasks for today
-  const dailyTasks = tasks.filter(
-    (task) => task.deadline === currentFormattedDate
-  );
+  
 
   const handleCompleteTask = (taskId) => {
     dispatch(complete_task(taskId));
@@ -71,7 +86,7 @@ const TaskList = () => {
 
               {/* Task Details */}
               <Text style={[styles.time, { color: theme.colors.text }]}>
-                Due: {task.time_due}
+                Due: {format_date_time(task.time_due)}
               </Text>
             </View>
             <TouchableOpacity

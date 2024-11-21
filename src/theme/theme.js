@@ -13,19 +13,26 @@ export const lightTheme = {
     border: "#CCC",
     inputBackground: "#F5F5F5",
     placeholderText:'#666666',
-    selectedDayBackgroundColor: '#00adf5',
-    selectedDayTextColor: '#ffffff',
-    todayTextColor: '#00adf5',
-    dayTextColor: '#2d4150',
-    textDisabledColor: '#d9e1e8',
-    calendarBackground: "#8FABB7"
+    selectedDayBackgroundColor: "#00adf5",
+    selectedDayTextColor: "#ffffff",
+    todayTextColor: "#00adf5",
+    agendaDayTextColor: "#2d4150",
+    agendaDayNumColor: "#00adf5",
+    agendaKnobColor: "#00adf5",
+    taskSelector:"f7f7f7",
+    taskLabel:"91c7cc",
+    picker:"91c7cc",
+    fire:'#FFFAA0',
+    fireBackground:'#FF8D7B',
+    badge:'#FF8D7B',
+    badgeBackground:'#FFFAA0'
   },
 };
 
 export const darkTheme = {
   dark: true,
   colors: {
-    primary: "#2980b9",
+    primary: "#91c7cc",
     secondary: "#3a3a3a",
     tertriary: "#4b4b4b",
     quatriary: "#2f2f2f",
@@ -34,13 +41,17 @@ export const darkTheme = {
     text: "#ffffff",
     button: '#f3f6f4',
     border: "#272727",
-    inputBackground: "#2980b9",
+    inputBackground: "#2f2f2f",
     placeholderText:'#b3b3b3',
-    selectedDayBackgroundColor: '#00adf5',
-    selectedDayTextColor: '#ffffff',
-    todayTextColor: '#00adf5',
-    dayTextColor: '#ffffff',
-    textDisabledColor: '#d9e1e8',
-    calendarBackground: "#3a3a3a"
+    selectedDayBackgroundColor: "#00adf5",
+    selectedDayTextColor: "#ffffff",
+    todayTextColor: "#00adf5",
+    agendaDayTextColor: "#2d4150",
+    agendaDayNumColor: "#00adf5",
+    agendaKnobColor: "#00adf5",
+    fire:'#FAFAFA',
+    fireBackground:'#9D9D9D',
+    badge:'#FAFAFA',
+    badgeBackground:'#9D9D9D'
   },
 };

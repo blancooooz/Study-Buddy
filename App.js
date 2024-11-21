@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,  } from "react";
 import { View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
-
+import { useFonts } from "expo-font"; //for fonts
 import { onAuthStateChanged } from "firebase/auth";
 import { Provider } from "react-redux";
 import store from "./src/redux/store";
@@ -20,7 +20,19 @@ export default function App() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState(null);
   const [isDarkTheme, setIsDarkTheme] = useState(false); // Track the theme
-
+  const [fontsLoaded, fontError] = useFonts({
+    SFProDisplayMedium: require("./assets/fonts/SFPro/SF-Pro-Display-Medium.otf"),
+    SFProTextMedium: require("./assets/fonts/SFPro/SF-Pro-Text-Medium.otf"),
+    SFProTextLight: require("./assets/fonts/SFPro/SF-Pro-Display-Light.otf"),
+    SFProTextReg: require("./assets/fonts/SFPro/SF-Pro-Text-Regular.otf"),
+    SFProRoundedMedium: require("./assets/fonts/SFPro/SF-Pro-Rounded-Medium.otf"),
+    SFProRoundedSemibold: require("./assets/fonts/SFPro/SF-Pro-Rounded-Semibold.otf"),
+    SFProRoundedLight: require("./assets/fonts/SFPro/SF-Pro-Rounded-Light.otf"),
+    SFProRoundedThin: require("./assets/fonts/SFPro/SF-Pro-Rounded-Thin.otf"),
+    SFProRoundedRegular: require("./assets/fonts/SFPro/SF-Pro-Rounded-Regular.otf"),
+    Pacifico: require("./assets/fonts/Pacifico-Regular.ttf"),
+    Allura: require("./assets/fonts/Allura-Regular.ttf"),
+  });
   const toggleTheme = async () => {
     const newTheme = !isDarkTheme;
     setIsDarkTheme(newTheme);
