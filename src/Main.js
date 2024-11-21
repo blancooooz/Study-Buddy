@@ -49,7 +49,6 @@ import Session from "./screens/study/sessions/Session";
 import StudyPlan from "./screens/study/StudyPlan";
 import PomodoroScreen from "./screens/timer/Pomodoro";
 import Gamify from "./screens/gamify/Gamify";
-import Streaks from "./screens/gamify/Streaks";
 import { colors } from "./theme/colors";
 import { current } from "@reduxjs/toolkit";
 // Navigators for tabs, stacks, and drawers
@@ -89,12 +88,6 @@ const DailyStack = () => (
       options={{ header: () => <CustomHeader title={"Gamify"} /> }}
     >
       {({ navigation }) => <Gamify navigation={navigation} />}
-    </Stack.Screen>
-    <Stack.Screen
-      name="Streaks"
-      options={{ header: () => <CustomHeader title={"Streaks"} /> }}
-    >
-      {({ navigation }) => <Streaks navigation={navigation} />}
     </Stack.Screen>
   </Stack.Navigator>
 );
@@ -308,30 +301,33 @@ const DrawerNavigator = ({
 const HomeHeader = ({ screen }) => {
   const navigation = useNavigation();
   const theme = useTheme();
+  const streak = useSelector((state) => state.streak) || 0;
   const renderExtraElements = (screenName) => {
     switch (screenName) {
       case "Daily":
         return (
           <>
-            <TouchableOpacity onPress={() => navigation.navigate("Streaks")}>
-              <View
-                style={{
-                  width: 32,
-                  height: 32,
-                  backgroundColor: theme.colors.fireBackground,
-                  borderRadius: 24,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginRight: 16,
-                }}
-              >
-                <Icons.SimpleLineIcons
-                  name="fire"
-                  size={24}
-                  color={theme.colors.fire}
-                ></Icons.SimpleLineIcons>
-              </View>
-            </TouchableOpacity>
+            <View
+              style={{
+                width: 48,
+                height: 32,
+                backgroundColor: theme.colors.fireBackground,
+                borderRadius: 24,
+                justifyContent: "center",
+                alignItems: "center",
+                marginRight: 16,
+                flexDirection: "row",
+              }}
+            >
+              <Icons.SimpleLineIcons
+                name="fire"
+                size={24}
+                color={theme.colors.fire}
+              />
+              <Text style={{ fontSize: 18, marginLeft: 4, fontWeight: "bold" }}>
+                {streak}
+              </Text>
+            </View>
             <TouchableOpacity onPress={() => navigation.navigate("Gamify")}>
               <View
                 style={{

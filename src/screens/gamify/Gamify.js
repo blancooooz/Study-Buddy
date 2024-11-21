@@ -4,7 +4,6 @@ import { useTheme } from "@react-navigation/native";
 import { colors } from "../../theme/colors";
 import { useSelector, useDispatch } from "react-redux";
 import GamifyCard from "../../components/Gamify/GamifyCard";
-import { updatePoints } from "../../redux/actions";
 
 const badges = [
   {
@@ -60,13 +59,11 @@ const badges = [
 const Gamify = ({ navigation }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const points = useSelector((state) => state.gamify?.points || 0);
-  const completedTasks = useSelector(
-    (state) => state.tasks?.filter((task) => task.completed) || []
-  );
+  const points = useSelector((state) => state.points);
 
   useEffect(() => {
     // Calculate points based on completed tasks
+    console.log(points)
   }, []);
 
 
