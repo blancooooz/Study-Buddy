@@ -12,6 +12,11 @@ import { useTheme } from "@react-navigation/native";
 import * as Icons from "react-native-vector-icons";
 
 const TaskList = () => {
+  const format_date_time = (timestamp) => {
+    const date = new Date(timestamp); // Convert the timestamp to a Date object
+    const options = { month: 'short', day: '2-digit' }; // Options for formatting
+    return date.toLocaleDateString('en-US', options).replace(',', '');
+  };
   const theme = useTheme();
   const styles = createStyles(theme);
   const dispatch = useDispatch();
@@ -81,7 +86,7 @@ const TaskList = () => {
 
               {/* Task Details */}
               <Text style={[styles.time, { color: theme.colors.text }]}>
-                Due: {task.time_due}
+                Due: {format_date_time(task.time_due)}
               </Text>
             </View>
             <TouchableOpacity

@@ -301,71 +301,105 @@ const DrawerNavigator = ({
 const HomeHeader = ({ screen }) => {
   const navigation = useNavigation();
   const theme = useTheme();
+  const streak = useSelector((state) => state.streak) || 0;
   const renderExtraElements = (screenName) => {
     switch (screenName) {
       case "Daily":
-        return ( <>
-          <Text
-            style={{
-              color: theme.colors.text,
-              fontSize: 20,
-              fontWeight: "500",
-            }}
-          >
-            Daily
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
+        return (
+          <>
             <View
               style={{
-                width: 32,
+                width: 48,
                 height: 32,
-                backgroundColor: colors.gray[400],
+                backgroundColor: theme.colors.fireBackground,
                 borderRadius: 24,
                 justifyContent: "center",
                 alignItems: "center",
                 marginRight: 16,
+                flexDirection: "row",
               }}
             >
-              <Icons.Feather
-                name="plus"
+              <Icons.SimpleLineIcons
+                name="fire"
                 size={24}
-                color={"#FAFAFA"}
-              ></Icons.Feather>
+                color={theme.colors.fire}
+              />
+              <Text style={{ fontSize: 18, marginLeft: 4, fontWeight: "bold" }}>
+                {streak}
+              </Text>
             </View>
-          </TouchableOpacity>
-        </>
+            <TouchableOpacity onPress={() => navigation.navigate("Gamify")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: theme.colors.badgeBackground,
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.SimpleLineIcons
+                  name="badge"
+                  size={24}
+                  color={theme.colors.badge}
+                ></Icons.SimpleLineIcons>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: colors.gray[400],
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.Feather
+                  name="plus"
+                  size={24}
+                  color={"#FAFAFA"}
+                ></Icons.Feather>
+              </View>
+            </TouchableOpacity>
+          </>
         );
       case "Tasks":
-        return ( <>
-          <Text
-            style={{
-              color: theme.colors.text,
-              fontSize: 20,
-              fontWeight: "500",
-            }}
-          >
-            Tasks
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
-            <View
+        return (
+          <>
+            <Text
               style={{
-                width: 32,
-                height: 32,
-                backgroundColor: colors.gray[400],
-                borderRadius: 24,
-                justifyContent: "center",
-                alignItems: "center",
-                marginRight: 16,
+                color: theme.colors.text,
+                fontSize: 20,
+                fontWeight: "500",
               }}
             >
-              <Icons.Feather
-                name="plus"
-                size={24}
-                color={"#FAFAFA"}
-              ></Icons.Feather>
-            </View>
-          </TouchableOpacity>
-        </>
+              Tasks
+            </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: colors.gray[400],
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.Feather
+                  name="plus"
+                  size={24}
+                  color={"#FAFAFA"}
+                ></Icons.Feather>
+              </View>
+            </TouchableOpacity>
+          </>
         );
       case "Calendar":
         return (
@@ -499,7 +533,7 @@ const CustomHeader = ({ title, routeParam }) => {
                 onRequestClose={() => setOptionsVisible(false)}
               >
                 <TouchableOpacity
-                  style={{backgroundColor:theme.colors.transparent, flex:1}}
+                  style={{ backgroundColor: theme.colors.transparent, flex: 1 }}
                   onPress={() => setOptionsVisible(false)}
                 >
                   <View
@@ -545,9 +579,7 @@ const CustomHeader = ({ title, routeParam }) => {
                 name="options"
                 size={36}
                 color={
-                  optionsVisible
-                    ? theme.colors.secondary
-                    : colors.gray[500]
+                  optionsVisible ? theme.colors.secondary : colors.gray[500]
                 }
               />
             </TouchableOpacity>
@@ -564,7 +596,7 @@ const CustomHeader = ({ title, routeParam }) => {
                 onRequestClose={() => setOptionsVisible(false)}
               >
                 <TouchableOpacity
-                  style={{backgroundColor:theme.colors.transparent, flex:1}}
+                  style={{ backgroundColor: theme.colors.transparent, flex: 1 }}
                   onPress={() => setOptionsVisible(false)}
                 >
                   <View
@@ -610,9 +642,7 @@ const CustomHeader = ({ title, routeParam }) => {
                 name="options"
                 size={36}
                 color={
-                  optionsVisible
-                    ? theme.colors.secondary
-                    : colors.gray[500]
+                  optionsVisible ? theme.colors.secondary : colors.gray[500]
                 }
               />
             </TouchableOpacity>
@@ -635,7 +665,9 @@ const CustomHeader = ({ title, routeParam }) => {
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Icons.Ionicons name="arrow-back" size={24} color={theme.colors.text} />
       </TouchableOpacity>
-      <Text style={[styles.headerTitle,{color:theme.colors.text}]}>{title}</Text>
+      <Text style={[styles.headerTitle, { color: theme.colors.text }]}>
+        {title}
+      </Text>
       {renderExtraElements(title)}
     </View>
   );

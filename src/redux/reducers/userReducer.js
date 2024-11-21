@@ -46,6 +46,7 @@ const initialState = {
   isSessionActive: false,
   sessionHistory: [],
   points: 0,
+  streak: 0,
 };
 
 // Reducer function

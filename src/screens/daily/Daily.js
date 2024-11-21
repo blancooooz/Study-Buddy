@@ -1,17 +1,19 @@
 // src/screens/daily/Daily.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  TextComponent,
+  LayoutAnimation,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { Circle } from "react-native-progress";
 import { useTheme } from "@react-navigation/native";
 import TaskList from "./TaskList";
-import DailyAgenda from "./DailyAgenda"; // Import the new component
+import LottieView from "lottie-react-native";
 
 const Daily = ({ navigation }) => {
   const theme = useTheme();
@@ -22,6 +24,8 @@ const Daily = ({ navigation }) => {
   const [uncompleted_events, setUncompletedEvents] = useState([]); // State variable to store uncompleted tasks
   const [completed_events, setCompletedEvents] = useState([]); // State variable to store completed tasks
   const [dailyTasks, setDailyTasks] = useState([]);
+  const [isCalendarExpanded, setIsCalendarExpanded] = useState(false);
+  const lottieRef = useRef(null);
   // Try to get the user's name from the Redux store
   let username = "";
   let name = "";
@@ -39,7 +43,7 @@ const Daily = ({ navigation }) => {
   }
   try {
     tasks = useSelector((state) => state.tasks);
-    console.log('tasks in daily', tasks)
+    console.log("tasks in daily", tasks);
   } catch (e) {
     console.log("No tasks:", e);
   }
@@ -48,27 +52,17 @@ const Daily = ({ navigation }) => {
   } catch (e) {
     console.log("No events:", e);
   }
-
-  // Format date in "Oct 30" format
-  const format_date = (date_string) => {
-    const date = new Date(date_string);
-    const options = { month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
-
-  // Get today's date formatted
-  const currentFormattedDate = format_date(new Date());
-
-  // Helper function to convert "HH:MM AM/PM" format to minutes since midnight
-  const convertToMinutes = (timeString) => {
-    const [time, period] = timeString.split(" ");
-    let [hours, minutes] = time.split(":").map(Number);
-
-    // Adjust hours based on AM/PM
-    if (period === "PM" && hours !== 12) hours += 12;
-    if (period === "AM" && hours === 12) hours = 0;
-
-    return hours * 60 + minutes;
+  const toggleCalendarView = () => {
+    console.log("hit toggleCalendarView");
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setIsCalendarExpanded((prevState) => !prevState);
+    if (lottieRef.current) {
+      if (isCalendarExpanded) {
+        lottieRef.current.play();
+      } else {
+        lottieRef.current.play(30, 0);
+      }
+    }
   };
 
   // Filter and sort tasks by hour for today
@@ -80,10 +74,10 @@ const Daily = ({ navigation }) => {
         return taskDate === currentDate;
       })
       .sort((a, b) => new Date(a.time_due) - new Date(b.time_due));
-    
-      console.log('daily tasks', daily)
-    setDailyTasks(daily)
-  },[tasks]);
+
+    console.log("daily tasks", daily);
+    setDailyTasks(daily);
+  }, [tasks]);
 
   useEffect(() => {
     const uncompletedTasks = dailyTasks.filter((task) => !task.completed);
@@ -99,10 +93,87 @@ const Daily = ({ navigation }) => {
     setCompletedEvents(completedEvents);
   }, [events]);
 
-  // Group tasks by hour
-  const HourlyCalendar = () => {
+  const generateHourlyTasks = () => {
+    const tasksByHour = dailyTasks.reduce((acc, task) => {
+      if (!task.time_due || typeof task.time_due !== "number") {
+        console.error(`Invalid time_due: ${task.time_due}`);
+        return acc; // Skip tasks with invalid time_due
+      }
+
+      const taskDate = new Date(task.time_due);
+      const taskHour = taskDate.getHours(); // Get hour in 24-hour format
+
+      if (!acc[taskHour]) acc[taskHour] = [];
+      acc[taskHour].push(task);
+      return acc;
+    }, {});
+
+    // Ensure all hours are present
+    const allHours = Array.from({ length: 24 }, (_, i) => i);
+    return allHours.map((hour) => ({
+      hour,
+      tasks: tasksByHour[hour] || [],
+    }));
+  };
+  const HourlyCalendar = ({ tasks, expanded }) => {
+    const hourlyTasks = generateHourlyTasks(tasks);
+
+    // Filter only hours with tasks if not expanded
+    const filteredTasks = expanded
+      ? hourlyTasks
+      : hourlyTasks.filter(({ tasks }) => tasks.length > 0);
+
     return (
-      <View/>
+      <ScrollView>
+        {filteredTasks.map(({ hour, tasks }, index) => (
+          <View
+            key={hour}
+            style={{
+              backgroundColor:
+                index % 2 === 0
+                  ? theme.colors.secondary
+                  : theme.colors.transparent,
+              paddingVertical: 10,
+              borderBottomWidth: 1,
+              borderColor: "#ddd",
+            }}
+          >
+            <Text
+              style={{
+                color: theme.colors.text,
+                fontSize: 16,
+                fontWeight: "bold",
+                marginLeft: 4,
+              }}
+            >
+              {hour === 0
+                ? `12 AM`
+                : hour < 12
+                ? `${hour} AM`
+                : hour === 12
+                ? `12 PM`
+                : `${hour - 12} PM`}
+            </Text>
+            {tasks.length > 0 ? (
+              tasks.map((task) => (
+                <View key={task.id}>
+                  <Text
+                    style={{
+                      color: theme.colors.text,
+                      fontSize: 16,
+                      marginLeft: 12,
+                    }}
+                  >
+                    - {task.title}
+                  </Text>
+                </View>
+              ))
+            ) : (
+              <></>
+            )}
+          </View>
+        ))}
+      </ScrollView>
     );
   };
 
@@ -124,12 +195,11 @@ const Daily = ({ navigation }) => {
       console.error("Error calculating progress:", e);
     }
   }, [tasks]);
-
   const ProgressCircle = () => {
     return (
       <View style={{ alignItems: "center", marginRight: 12, marginTop: 12 }}>
         <Circle
-          size={70}
+          size={90}
           progress={progress}
           showsText={true}
           formatText={() => `${Math.round(progress * 100)}%`}
@@ -147,79 +217,56 @@ const Daily = ({ navigation }) => {
   };
 
   return (
-    <ScrollView>
-      <View
-        style={{
-          flex: 1,
-          padding: 20,
-          backgroundColor: theme.colors.background,
-          borderWidth: 0,
-        }}
-      >
-        {/* Greeting message */}
-        <View>
-          <Text style={[{ color: theme.colors.text }, styles.welcome_text]}>
-            {username
-              ? `Hi, ${username}!`
-              : `Hi, ${name.charAt(0).toUpperCase() + name.slice(1)}!`}
-          </Text>
-          <Text
-            style={{ fontSize: 20, marginBottom: 12, color: theme.colors.text }}
-          >
-            Motivational Quote
-          </Text>
-        </View>
+    <View
+      style={{
+        flex: 1,
+        padding: 20,
+        backgroundColor: theme.colors.background,
+        borderWidth: 0,
+      }}
+    >
+      {/* Greeting message */}
+      <View>
+        <Text style={[{ color: theme.colors.text }, styles.welcome_text]}>
+          {username
+            ? `Hi, ${username}!`
+            : `Hi, ${name.charAt(0).toUpperCase() + name.slice(1)}!`}
+        </Text>
+        <Text
+          style={{ fontSize: 20, marginBottom: 12, color: theme.colors.text }}
+        >
+          Motivational Quote
+        </Text>
+      </View>
 
-        {/* Section for grid view*/}
-        <View style={{ flex: 1, flexDirection: "row" }}>
-          <View style={{ flex: 1 }}>
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                backgroundColor: theme.colors.secondary,
-                margin: 4,
-                borderRadius: 12,
-              }}
-              onPress={() => navigation.navigate("Pomodoro")}  // Wrap navigation call in an anonymous function
-            >
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontWeight: "bold",
-                  marginLeft: 12,
-                  marginTop: 8,
-                  color: theme.colors.text,
-                }}
-              >
-                Start a Timer
-              </Text>
-            </TouchableOpacity>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: theme.colors.tertriary,
-                margin: 4,
-                borderRadius: 12,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontWeight: "bold",
-                  marginLeft: 12,
-                  marginTop: 8,
-                  color: theme.colors.text,
-                }}
-              >
-                Progress Bar
-              </Text>
-              {ProgressCircle()}
-            </View>
-          </View>
-          <View
+      {/* Section for grid view*/}
+      <View style={{ flex: 1, flexDirection: "row" }}>
+        <View style={{ flex: 1 }}>
+          <TouchableOpacity
             style={{
               flex: 1,
-              backgroundColor: theme.colors.quatriary,
+              backgroundColor: theme.colors.secondary,
+              margin: 4,
+              borderRadius: 12,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => navigation.navigate("Pomodoro")} // Wrap navigation call in an anonymous function
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+                color: theme.colors.text,
+              }}
+            >
+              Start a Timer
+            </Text>
+          </TouchableOpacity>
+          <View
+            style={{
+              flex: 2,
+              backgroundColor: theme.colors.tertriary,
               margin: 4,
               borderRadius: 12,
             }}
@@ -233,86 +280,128 @@ const Daily = ({ navigation }) => {
                 color: theme.colors.text,
               }}
             >
-              Daily Calendar
+              Progress Bar
             </Text>
-            <DailyAgenda navigation={navigation} /> 
+            {ProgressCircle()}
           </View>
         </View>
         <View
           style={{
             flex: 1,
-            backgroundColor: theme.colors.quatriary,
+            backgroundColor: theme.colors.quaternary,
             margin: 4,
             borderRadius: 12,
           }}
         >
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "bold",
-              marginLeft: 12,
-              marginTop: 8,
-              color: theme.colors.text,
-            }}
+          <TouchableOpacity
+            style={{ flexDirection: "row", alignItems: "center", padding: 10 }}
+            onPress={toggleCalendarView}
           >
-            Tasks and Events for the day
-          </Text>
-          <ScrollView contentContainerStyle={{ paddingBottom: 30, flex: 1 }}>
-            {/* Placeholder for tasks */}
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+                marginLeft: 12,
+                color: theme.colors.text,
+              }}
+            >
+              Daily Calendar
+            </Text>
             <View
               style={{
-                marginBottom: 12, // Space between sections
-                padding: 15,
-                backgroundColor: theme.colors.card, // White background for sections
+                backgroundColor: theme.colors.placeholderText,
+                marginLeft: 10,
                 borderRadius: 18,
               }}
             >
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "bold",
-                  marginBottom: 10,
-                  color: theme.colors.text, // Color for section title (customize as needed)
-                }}
-              >
-                Your Tasks for Today
-              </Text>
-              {dailyTasks.length != 0 ? (
-                <TaskList />
-              ) : (
-                <Text style={{ fontSize: 16, color: theme.colors.text }}>
-                  No tasks yet!
-                </Text>
-              )}
+              <LottieView
+                ref={lottieRef}
+                source={require("../../assets/dropdown_arrow.json")}
+                style={{ width: 20, height: 20 }}
+                loop={false}
+                speed={2}
+              />
             </View>
+          </TouchableOpacity>
 
-            {/* Placeholder for events */}
-            <View
-              style={{
-                marginBottom: 12, // Space between sections
-                padding: 15,
-                backgroundColor: theme.colors.card, // White background for sections
-                borderRadius: 18,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "bold",
-                  marginBottom: 10,
-                  color: theme.colors.text, // Color for section title (customize as needed)
-                }}
-              >
-                Your Events for Today
-              </Text>
-              <Text style={{ fontSize: 16, color: theme.colors.text }}>
-                No events scheduled!
-              </Text>
-            </View>
-          </ScrollView>
+          {/* Render HourlyCalendar */}
+          <HourlyCalendar tasks={dailyTasks} expanded={isCalendarExpanded} />
         </View>
       </View>
-    </ScrollView>
+      <View
+        style={{
+          flex: 1.3,
+          backgroundColor: theme.colors.card,
+          margin: 4,
+          borderRadius: 12,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "bold",
+            marginLeft: 12,
+            marginTop: 8,
+            color: theme.colors.text,
+          }}
+        >
+          Tasks and Events for the day
+        </Text>
+        <ScrollView contentContainerStyle={{ paddingBottom: 30, flex: 1 }}>
+          {/* Placeholder for tasks */}
+          <View
+            style={{
+              marginBottom: 12, // Space between sections
+              padding: 15,
+              backgroundColor: theme.colors.card, // White background for sections
+              borderRadius: 18,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "bold",
+                marginBottom: 10,
+                color: theme.colors.text, // Color for section title (customize as needed)
+              }}
+            >
+              Your Tasks for Today
+            </Text>
+            {dailyTasks.length != 0 ? (
+              <TaskList />
+            ) : (
+              <Text style={{ fontSize: 16, color: theme.colors.text }}>
+                No tasks yet!
+              </Text>
+            )}
+          </View>
+
+          {/* Placeholder for events */}
+          <View
+            style={{
+              marginBottom: 12, // Space between sections
+              padding: 15,
+              backgroundColor: theme.colors.card, // White background for sections
+              borderRadius: 18,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "bold",
+                marginBottom: 10,
+                color: theme.colors.text, // Color for section title (customize as needed)
+              }}
+            >
+              Your Events for Today
+            </Text>
+            <Text style={{ fontSize: 16, color: theme.colors.text }}>
+              No events scheduled!
+            </Text>
+          </View>
+        </ScrollView>
+      </View>
+    </View>
   );
 };
 
