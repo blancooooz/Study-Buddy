@@ -21,7 +21,8 @@ import { useSelector } from "react-redux"; // Redux hook to access the store's s
 import { get_all_tasks,  complete_task} from "../../redux/actions";
 import { generateText, getRandomTasks } from "../../utils/AIUtils";
 const Tasks = ({ navigation }) => {
-  const { colors,theme } = useTheme();
+  const { colors } = useTheme();
+  const theme=useTheme();
   //const [tasks, setTasks] = useState([]); // State variable to store tasks
   const [uncompleted_tasks, setUncompletedTasks] = useState([]); // State variable to store uncompleted tasks
   const [completed_tasks, setCompletedTasks] = useState([]); // State variable to store completed tasks
@@ -78,7 +79,7 @@ const Tasks = ({ navigation }) => {
         {priorityQueue(uncompleted_tasks)?.map((task) => (
           <Task key={task.id} task={task} onPress={handleCompleteTask} navigation={navigation}></Task>
         ))}
-        {completed_tasks.length > 0 ? <Text style={{color:themecolors.gray[100],fontFamily:'SFProRoundedSemibold', fontSize:24,marginBottom:8}}>Completed</Text> : null}
+        {completed_tasks.length > 0 ? <Text style={{color:theme.colors.text,fontFamily:'SFProRoundedSemibold', fontSize:24,marginBottom:8}}>Completed</Text> : null}
         
         {completed_tasks?.map((task) => (
           <Task key={task.id} task={task} onPress={handleCompleteTask}></Task>
