@@ -25,8 +25,16 @@ import { useTheme } from "@react-navigation/native";
 import Session from "../study/sessions/Session";
 
 const PomodoroScreen = ({ navigation, route }) => {
-  // Use toggleSessionCompletion(studPlanId, session.id) or complete_task(task.id) on the session/task when timer reaches 0
+  // Use toggleSessionCompletion(studyPlanId, session.id) or complete_task(task.id) on the 
+  // session/task when timer reaches 0
+
   // Needs to track in background OR prevent users from leaving this screen unless timer paused.
+
+  // Also, if a timer is active and a user navigates to this page, have to make sure that the current timer 
+  // is displayed. Probably a simple check with redux actions.
+
+  // Only necessary redux code needed is mayb activeTimer and/or small changes to updateSession(timer).
+
   const session = route?.params?.session || null;
   const studyPlanId = route?.params?.studyPlanId || null;
   const dispatch = useDispatch();
