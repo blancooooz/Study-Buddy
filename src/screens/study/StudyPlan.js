@@ -1,6 +1,3 @@
-{/* Display DueDate, Somehow integrate tasks based on subject, maybe 
-  display statistics like total time spent, start time, current day, days remaining
-  then further on implement AI */}
 import React from "react";
 import {
   View,
@@ -29,6 +26,14 @@ const StudyPlan = ({ route, navigation }) => {
       </View>
     );
   }
+
+  // Split sessions into completed and uncompleted
+  const completedSessions = studyPlan.sessions.filter(
+    (session) => session.completed
+  );
+  const uncompletedSessions = studyPlan.sessions.filter(
+    (session) => !session.completed
+  );
 
   const renderSession = ({ item }) => (
     <TouchableOpacity
@@ -97,31 +102,42 @@ const StudyPlan = ({ route, navigation }) => {
         ))}
       </View>
 
+      {/* Uncompleted Sessions */}
       <Text style={[styles.sessionHeader, { color: theme.colors.text }]}>
-        Sessions
+        Uncompleted Sessions
       </Text>
       <FlatList
-        data={studyPlan.sessions}
+        data={uncompletedSessions}
         renderItem={renderSession}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.sessionList}
       />
+
+      {/* Completed Sessions */}
+      <Text style={[styles.sessionHeader, { color: theme.colors.text }]}>
+        Completed Sessions
+      </Text>
+      <FlatList
+        data={completedSessions}
+        renderItem={renderSession}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.sessionList}
+      />
+
       {studyPlan.completed ? (
-        <>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              { backgroundColor: theme.colors.primary, marginBottom: 24 },
-            ]}
-            onPress={() => {
-              dispatch(toggleStudyPlanCompletion(id));
-            }}
-          >
-            <Text style={[{ color: theme.colors.card }, styles.buttonText]}>
-              Reopen this Plan
-            </Text>
-          </TouchableOpacity>
-        </>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            { backgroundColor: theme.colors.primary, marginBottom: 24 },
+          ]}
+          onPress={() => {
+            dispatch(toggleStudyPlanCompletion(id));
+          }}
+        >
+          <Text style={[{ color: theme.colors.card }, styles.buttonText]}>
+            Reopen this Plan
+          </Text>
+        </TouchableOpacity>
       ) : (
         <>
           <TouchableOpacity

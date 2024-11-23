@@ -224,7 +224,9 @@ const StudyPlanStack = () => (
       name="Pomodoro"
       options={{ header: () => <CustomHeader title={"Pomodoro"} /> }}
     >
-      {({ navigation }) => <PomodoroScreen navigation={navigation} />}
+      {({ navigation, route }) => (
+        <PomodoroScreen navigation={navigation} route={route} />
+      )}
     </Stack.Screen>
   </Stack.Navigator>
 );

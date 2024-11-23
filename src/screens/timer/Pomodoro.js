@@ -18,10 +18,17 @@ import {
   updateSessionCount,
   loadSessionData,
   saveSessionData,
+  toggleSessionCompletion,
+  complete_task
 } from "../../redux/actions";
 import { useTheme } from "@react-navigation/native";
+import Session from "../study/sessions/Session";
 
-const PomodoroScreen = ({ navigation }) => {
+const PomodoroScreen = ({ navigation, route }) => {
+  // Use toggleSessionCompletion(studPlanId, session.id) or complete_task(task.id) on the session/task when timer reaches 0
+  // Needs to track in background OR prevent users from leaving this screen unless timer paused.
+  const session = route?.params?.session || null;
+  const studyPlanId = route?.params?.studyPlanId || null;
   const dispatch = useDispatch();
 
   // Accessing Redux state for initial values
@@ -127,12 +134,134 @@ const PomodoroScreen = ({ navigation }) => {
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
   const theme = useTheme();
+
+  if (session) {
+    return (
+      <ScrollView contentContainerStyle={styles.container}>
+        <View
+          style={[
+            styles.taskSelector,
+            {
+              backgroundColor: theme.colors.inputBackground,
+              borderColor: theme.colors.primary,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.taskLabel,
+              { color: theme.colors.text, fontWeight: "bold" },
+            ]}
+          >
+            Session: {session.title}
+          </Text>
+          <Text style={[styles.taskLabel, { color: theme.colors.text }]}>
+            {session.description}
+          </Text>
+        </View>
+
+        {/*Display selected task*/}
+        <Text style={[styles.selectedTask, { color: theme.colors.text }]}>
+          Assigned Task: {selectedTask || "None"}
+        </Text>
+
+        {/* Circular Progress Bar */}
+        <ProgressCircle
+          style={styles.progressCircle}
+          size={250}
+          progress={progress}
+          thickness={8}
+          color={isBreakActive ? "rgba(248,149,83,0.8)" : theme.colors.primary}
+          showsText={true}
+          formatText={() => formatTime(currentTime)}
+          textStyle={styles.timer}
+        />
+
+        {/* Sliders to set session and break lengths*/}
+        <View style={styles.sliderContainer}>
+          <Text style={[styles.sliderLabel, { color: theme.colors.text }]}>
+            {" "}
+            Session Length: {Math.floor(pomodoroLength / 60)} min
+          </Text>
+          <Slider
+            thumbTintColor={theme.colors.primary}
+            minimumTrackTintColor={theme.colors.primary}
+            style={[styles.slider, {}]}
+            minimumValue={60} // 5 mins
+            maximumValue={3600} // 60 mins
+            step={60}
+            value={pomodoroLength}
+            onValueChange={(value) => {
+              const roundedValue = Math.round(value);
+              setpomodoroLength(roundedValue);
+              setTimeLeft(roundedValue);
+            }}
+            onSlidingComplete={(value) => {
+              const roundedValue = Math.round(value);
+              setTimeLeft(roundedValue);
+            }}
+          />
+        </View>
+
+        <View style={styles.sliderContainer}>
+          <Text style={[styles.sliderLabel, { color: theme.colors.text }]}>
+            {" "}
+            Break Length: {Math.floor(breakLength / 60)} min
+          </Text>
+          <Slider
+            thumbTintColor={theme.colors.primary}
+            minimumTrackTintColor={theme.colors.primary}
+            style={styles.slider}
+            minimumValue={60} // 1 min
+            maximumValue={1800} // 30 mins
+            step={60}
+            value={breakLength}
+            onValueChange={(value) => setBreakLength(value)}
+          />
+        </View>
+
+        {/* Button Logic */}
+        <View style={styles.buttonContainer}>
+          {isSessionActive || isBreakActive ? (
+            <>
+              <TouchableOpacity
+                style={[styles.button, styles.pauseButton]}
+                onPress={handlePause}
+              >
+                <Text style={styles.buttonText}>Pause</Text>
+              </TouchableOpacity>
+              {isPaused && (
+                <TouchableOpacity
+                  style={[styles.button, styles.resumeButton]}
+                  onPress={handleResume}
+                >
+                  <Text style={styles.buttonText}>Resume</Text>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity
+                style={[styles.button, styles.resetButton]}
+                onPress={handleReset}
+              >
+                <Text style={styles.buttonText}>Reset</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <TouchableOpacity
+              style={[styles.button, styles.startButton]}
+              onPress={isBreakActive ? handleBreakCompletion : handleStart}
+            >
+              <Text style={[styles.buttonText, { color: theme.colors.text }]}>
+                {isBreakActive ? "Start Next Session" : "Start"}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </ScrollView>
+    );
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* 
-            <Text style = {styles.title}>{isBreakActive ? 'Break Time' : 'Pomodoro Timer'}</Text>*/}
-
-      {/* Task Selection Dropdown */}
       <View
         style={[
           styles.taskSelector,
@@ -255,7 +384,7 @@ const PomodoroScreen = ({ navigation }) => {
             style={[styles.button, styles.startButton]}
             onPress={isBreakActive ? handleBreakCompletion : handleStart}
           >
-            <Text style={[styles.buttonText,{color:theme.colors.text}]}>
+            <Text style={[styles.buttonText, { color: theme.colors.text }]}>
               {isBreakActive ? "Start Next Session" : "Start"}
             </Text>
           </TouchableOpacity>

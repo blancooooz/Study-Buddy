@@ -21,7 +21,7 @@ import { useSelector } from "react-redux"; // Redux hook to access the store's s
 import { get_all_tasks,  complete_task} from "../../redux/actions";
 import { generateText, getRandomTasks } from "../../utils/AIUtils";
 const Tasks = ({ navigation }) => {
-  const { colors } = useTheme();
+  const { colors,theme } = useTheme();
   //const [tasks, setTasks] = useState([]); // State variable to store tasks
   const [uncompleted_tasks, setUncompletedTasks] = useState([]); // State variable to store uncompleted tasks
   const [completed_tasks, setCompletedTasks] = useState([]); // State variable to store completed tasks

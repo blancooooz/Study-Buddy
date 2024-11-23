@@ -170,24 +170,6 @@ const EditSession = ({ navigation, route }) => {
       />
 
       <TextInput
-        placeholder="Duration (minutes)"
-        placeholderTextColor={theme.colors.placeholderText}
-        value={editedSession.timer.duration}
-        onChangeText={(text) => handleTimerChange("duration", text)}
-        keyboardType="numeric"
-        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 20,color:theme.colors.text }}
-      />
-
-      <TextInput
-        placeholder="Intervals"
-        placeholderTextColor={theme.colors.placeholderText}
-        value={editedSession.timer.intervalCount}
-        onChangeText={(text) => handleTimerChange("intervalCount", text)}
-        keyboardType="numeric"
-        style={{ borderColor: theme.colors.border, borderWidth: 1, borderRadius: 8, padding: 10, marginBottom: 20,color:theme.colors.text }}
-      />
-
-      <TextInput
         placeholder="Add attachment URL"
         placeholderTextColor={theme.colors.placeholderText}
         value={newAttachment}

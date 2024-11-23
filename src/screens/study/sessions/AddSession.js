@@ -12,8 +12,7 @@ import { useTheme } from "@react-navigation/native";
 import { v4 as uuidv4 } from "uuid";
 import { addSession } from "../../../redux/actions";
 import { useDispatch } from "react-redux";
-import { Linking } from 'react-native';
-
+import { Linking } from "react-native";
 
 const AddSession = ({ navigation, route }) => {
   const theme = useTheme();
@@ -64,10 +63,10 @@ const AddSession = ({ navigation, route }) => {
       alert("No URL provided.");
       return;
     }
-  
+
     // Ensure the URL starts with "http://" or "https://"
     const formattedUrl = url.startsWith("http") ? url : `https://${url}`;
-  
+
     Linking.canOpenURL(formattedUrl)
       .then((supported) => {
         if (supported) {
@@ -83,20 +82,22 @@ const AddSession = ({ navigation, route }) => {
         alert("An error occurred while trying to open the link.");
       });
   };
-  
-
 
   // Function to handle adding a session
-  const handleSubmit = () => {
+  const handleSubmit = (toPomodoro) => {
     if (session.title.trim() === "") {
       alert("Please enter a title for the session");
       return;
     }
     dispatch(addSession(planId, session));
-    navigation.goBack();
+    if (toPomodoro) {
+      navigation.navigate("Pomodoro", { session: session, studyPlanId:planId });
+    } else {
+      navigation.goBack();
+    }
   };
 
-  //Function to open attachment 
+  //Function to open attachment
   const addAttachment = () => {
     if (newAttachment.trim() === "" || !newAttachment.startsWith("http")) {
       alert("Please enter a valid URL that starts with http or https.");
@@ -110,12 +111,18 @@ const AddSession = ({ navigation, route }) => {
   };
 
   return (
-    <ScrollView style={{ padding: 20, backgroundColor: theme.colors.background }}>
-      <Text style={{ fontSize: 24, marginBottom: 20, color:theme.colors.text}}>Add a Session</Text>
+    <ScrollView
+      style={{ padding: 20, backgroundColor: theme.colors.background }}
+    >
+      <Text
+        style={{ fontSize: 24, marginBottom: 20, color: theme.colors.text }}
+      >
+        Add a Session
+      </Text>
 
       {/* Title Input */}
       <TextInput
-        style={[inputStyle,{color:theme.colors.text}]}
+        style={[inputStyle, { color: theme.colors.text }]}
         placeholderTextColor={theme.colors.placeholderText}
         placeholder="Title"
         value={session.title}
@@ -124,7 +131,7 @@ const AddSession = ({ navigation, route }) => {
 
       {/* Description Input */}
       <TextInput
-        style={[inputStyle,{color:theme.colors.text}]}
+        style={[inputStyle, { color: theme.colors.text }]}
         placeholderTextColor={theme.colors.placeholderText}
         placeholder="Description"
         value={session.description}
@@ -134,7 +141,7 @@ const AddSession = ({ navigation, route }) => {
 
       {/* Notes Input */}
       <TextInput
-        style={[inputStyle,{color:theme.colors.text}]}
+        style={[inputStyle, { color: theme.colors.text }]}
         placeholderTextColor={theme.colors.placeholderText}
         placeholder="Notes"
         value={session.notes}
@@ -144,40 +151,17 @@ const AddSession = ({ navigation, route }) => {
 
       {/* Tags Input */}
       <TextInput
-        style={[inputStyle, { marginBottom: 35,color:theme.colors.text }]}  // Increased margin to 30 for extra space
+        style={[inputStyle, { marginBottom: 35, color: theme.colors.text }]} // Increased margin to 30 for extra space
         placeholderTextColor={theme.colors.placeholderText}
         placeholder="Tags (comma separated)"
         value={session.tags.join(", ")}
         onChangeText={handleTagsChange}
       />
 
-
-      {/* Timer Duration Input */}
-      <Text style={labelStyle}>Session Duration:</Text>
+      {/* Attachments Input */}
+      <Text style={labelStyle}>Attachments:</Text>
       <TextInput
-        style={[inputStyle,{color:theme.colors.text}]}
-        placeholderTextColor={theme.colors.placeholderText}
-        placeholder="Enter duration in minutes"
-        keyboardType="numeric"
-        value={session.timer.duration.toString()}
-        onChangeText={(text) => handleTimerChange("duration", text)}
-      />
-
-      {/* Interval Count Input */}
-      <Text style={labelStyle}>Number of Intervals:</Text>
-      <TextInput
-        style={[inputStyle, {marginBottom: 35,color:theme.colors.text}]}
-        placeholderTextColor={theme.colors.placeholderText}
-        placeholder="Enter number of intervals"
-        keyboardType="numeric"
-        value={session.timer.intervalCount.toString()}
-        onChangeText={(text) => handleTimerChange("intervalCount", text)}
-      />
-
-       {/* Attachments Input */}
-       <Text style={labelStyle}>Attachments:</Text>
-      <TextInput
-        style={[inputStyle, {marginBottom: 5, color:theme.colors.text}]}
+        style={[inputStyle, { marginBottom: 5, color: theme.colors.text }]}
         placeholderTextColor={theme.colors.placeholderText}
         placeholder="Enter link"
         value={newAttachment}
@@ -217,16 +201,31 @@ const AddSession = ({ navigation, route }) => {
         </View>
       )}
 
+      <TouchableOpacity
+        onPress={() => {
+          handleSubmit(true);
+        }}
+        style={[buttonStyle, { backgroundColor: theme.colors.primary }]}
+      >
+        <Text style={{ color: "black", fontSize: 18 }}>Start Session</Text>
+      </TouchableOpacity>
 
       {/* Submit Button */}
-      <TouchableOpacity onPress={handleSubmit} style={[buttonStyle,{backgroundColor:theme.colors.primary}]}>
-        <Text style={{ color: 'black', fontSize: 18 }}>Add Session</Text>
+      <TouchableOpacity
+        onPress={() => {
+          handleSubmit(false);
+        }}
+        style={[buttonStyle, { backgroundColor: theme.colors.card }]}
+      >
+        <Text style={{ color: theme.colors.primary, fontSize: 18 }}>
+          Add Session
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );
 };
 
-// Styles 
+// Styles
 const inputStyle = {
   borderWidth: 1,
   borderColor: "#ccc",
@@ -246,15 +245,10 @@ const buttonStyle = {
   padding: 16,
   borderRadius: 10,
   alignItems: "center",
-  marginTop: 40,
+  marginTop: 12,
 };
 
-
 export default AddSession;
-
-
-
-
 
 /*const AddSession = ({ navigation, route }) => {
   const {planId}=route.params

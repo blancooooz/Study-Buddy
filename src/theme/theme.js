@@ -25,7 +25,10 @@ export const lightTheme = {
     fire:'#FFFAA0',
     fireBackground:'#FF8D7B',
     badge:'#FF8D7B',
-    badgeBackground:'#FFFAA0'
+    badgeBackground:'#FFFAA0',
+    taskBackground: "#cccfff",
+    taskIcons:'#000000',
+    circleBackground:"#F5F5F5"
   },
 };
 
@@ -52,6 +55,9 @@ export const darkTheme = {
     fire:'#FAFAFA',
     fireBackground:'#9D9D9D',
     badge:'#FAFAFA',
-    badgeBackground:'#9D9D9D'
+    badgeBackground:'#9D9D9D',
+    taskBackground: "#2A2A2A",
+    taskIcons:'#9D9D9D',
+    circleBackground:"#474747"
   },
 };
