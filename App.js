@@ -1,7 +1,7 @@
-import React, { useEffect, useState,  } from "react";
-import { View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
-import { useFonts } from "expo-font"; //for fonts
+import { useFonts } from "expo-font"; // For fonts
 import { onAuthStateChanged } from "firebase/auth";
 import { Provider } from "react-redux";
 import store from "./src/redux/store";
@@ -9,6 +9,8 @@ import { lightTheme, darkTheme } from "./src/theme/theme";
 import { firebaseAuth } from "./src/utils/DataHandler";
 import { NavigationContainer, ThemeProvider } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import * as Notifications from "expo-notifications";
+
 const Stack = createStackNavigator();
 
 import Main from "./src/Main";
@@ -33,20 +35,49 @@ export default function App() {
     Pacifico: require("./assets/fonts/Pacifico-Regular.ttf"),
     Allura: require("./assets/fonts/Allura-Regular.ttf"),
   });
+
   const toggleTheme = async () => {
     const newTheme = !isDarkTheme;
     setIsDarkTheme(newTheme);
-    // Store theme preference in AsyncStorage
     await AsyncStorage.setItem("theme", newTheme ? "dark" : "light");
   };
 
-  // Function to handle Firebase user state changes
   function onUserStateChanged(user) {
     setUser(user);
     setInitializing(false);
   }
 
-  // Load the theme preference from AsyncStorage when the app starts
+  // ADD: Setup Notifications
+  const setupNotifications = async () => {
+    const { status } = await Notifications.getPermissionsAsync();
+    if (status !== "granted") {
+      const { status: newStatus } = await Notifications.requestPermissionsAsync();
+      if (newStatus !== "granted") {
+        Alert.alert("Permission Denied", "Notifications will not work without permission.");
+        return;
+      }
+    }
+
+    const token = await Notifications.getExpoPushTokenAsync();
+    console.log("Expo Push Token:", token);
+
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      }),
+    });
+
+    Notifications.addNotificationReceivedListener((notification) => {
+      console.log("Notification received in foreground:", notification);
+    });
+
+    Notifications.addNotificationResponseReceivedListener((response) => {
+      console.log("Notification interaction:", response);
+    });
+  };
+
   useEffect(() => {
     const loadThemePreference = async () => {
       const savedTheme = await AsyncStorage.getItem("theme");
@@ -55,13 +86,12 @@ export default function App() {
       }
     };
 
-    // Listen for auth state change
     const subscriber = onAuthStateChanged(firebaseAuth, onUserStateChanged);
 
-    // Load theme preference
+    setupNotifications(); // ADD: Initialize Notifications
     loadThemePreference();
 
-    return subscriber; // Clean up Firebase listener on unmount
+    return subscriber;
   }, []);
 
   if (initializing) {
@@ -75,7 +105,6 @@ export default function App() {
     );
   }
 
-  // No user logged in
   if (!user) {
     return (
       <ThemeProvider value={isDarkTheme ? darkTheme : lightTheme}>
@@ -102,16 +131,13 @@ export default function App() {
     );
   }
 
-  // User logged in
-  if (user) {
-    return (
-      <Provider store={store}>
-        <ThemeProvider value={isDarkTheme ? darkTheme : lightTheme}>
-          <NavigationContainer theme={isDarkTheme ? darkTheme : lightTheme}>
-            <Main isDarkTheme={isDarkTheme} toggleTheme={toggleTheme} />
-          </NavigationContainer>
-        </ThemeProvider>
-      </Provider>
-    );
-  }
+  return (
+    <Provider store={store}>
+      <ThemeProvider value={isDarkTheme ? darkTheme : lightTheme}>
+        <NavigationContainer theme={isDarkTheme ? darkTheme : lightTheme}>
+          <Main isDarkTheme={isDarkTheme} toggleTheme={toggleTheme} />
+        </NavigationContainer>
+      </ThemeProvider>
+    </Provider>
+  );
 }

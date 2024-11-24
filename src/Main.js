@@ -49,6 +49,7 @@ import Session from "./screens/study/sessions/Session";
 import StudyPlan from "./screens/study/StudyPlan";
 import PomodoroScreen from "./screens/timer/Pomodoro";
 import Gamify from "./screens/gamify/Gamify";
+import NotificationTestScreen from './screens/NotificationTestScreen';
 import { colors } from "./theme/colors";
 import { current } from "@reduxjs/toolkit";
 // Navigators for tabs, stacks, and drawers
@@ -119,6 +120,12 @@ const TasksStack = () => (
       {({ navigation }) => <EditTask navigation={navigation} />}
     </Stack.Screen>
     {/* Add other screens related to Tasks here */}
+     {/* Add NotificationsTestScreen */}
+     <Stack.Screen
+      name="NotificationTestScreen"
+      component={NotificationTestScreen}
+      options={{ header: () => <CustomHeader title={"Notifications"} /> }}
+    />
   </Stack.Navigator>
 );
 
@@ -249,6 +256,18 @@ const SettingsStack = () => {
     </Stack.Navigator>
   );
 };
+/**
+ * Stack Navigator Notifications
+ */
+const NotificationsStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="NotificationTestScreen"
+      component={NotificationTestScreen}
+      options={{ header: () => <CustomHeader title={"Notifications"} /> }}
+    />
+  </Stack.Navigator>
+);
 
 /**
  * Drawer Navigator that wraps around the Bottom Tab Navigator.

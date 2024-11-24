@@ -20,6 +20,8 @@ import * as Icons from "react-native-vector-icons";
 import { useSelector } from "react-redux"; // Redux hook to access the store's state
 import { get_all_tasks,  complete_task} from "../../redux/actions";
 import { generateText, getRandomTasks } from "../../utils/AIUtils";
+import NotificationTestScreen from "../NotificationTestScreen"; // Adjust the path based on your file structure
+
 const Tasks = ({ navigation }) => {
   const { colors } = useTheme();
   //const [tasks, setTasks] = useState([]); // State variable to store tasks
@@ -73,7 +75,13 @@ const Tasks = ({ navigation }) => {
   return (
     /* main screen view */
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      
+      <TouchableOpacity
+        style={styles.notificationButton}
+        onPress={() => navigation.navigate("NotificationTestScreen")}
+      >
+        <Text style={styles.notificationButtonText}>Test Notifications</Text>
+      </TouchableOpacity>
+
       <ScrollView style={{ }} showsVerticalScrollIndicator={false}>
         {priorityQueue(uncompleted_tasks)?.map((task) => (
           <Task key={task.id} task={task} onPress={handleCompleteTask} navigation={navigation}></Task>
@@ -126,6 +134,19 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
   },
+  notificationButton: {
+    backgroundColor: themecolors.primary, // Or any color from your theme
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  notificationButtonText: {
+    color: "#fff", // White text
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  
 });
 const mapDispatchToProps = (dispatch) => {
   return {
