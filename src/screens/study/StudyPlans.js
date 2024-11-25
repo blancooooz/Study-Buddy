@@ -69,7 +69,8 @@ const StudyPlan = ({ navigation }) => {
                 {item.sessions.map((session) => (
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate("Edit a Session", {
+                      navigation.navigate("Session", {
+                        studyPlanId:item.id,
                         sessionId: session.id,
                       })
                     }

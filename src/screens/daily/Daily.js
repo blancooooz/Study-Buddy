@@ -1,5 +1,5 @@
 // src/screens/daily/Daily.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,14 +9,43 @@ import {
   TextComponent,
 } from "react-native";
 import { useSelector } from "react-redux";
+import { useFocusEffect } from "@react-navigation/native"; // Import useFocusEffect
 import { Circle } from "react-native-progress";
 import { useTheme } from "@react-navigation/native";
 import TaskList from "./TaskList";
-import DailyAgenda from "./DailyAgenda"; // Import the new component
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Daily = ({ navigation }) => {
   const theme = useTheme();
   const styles = createStyles(theme);
+  // Format the currentTime to "minute:second"
+  const formatTime = (timeInSeconds) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+  const [currentTime, setTimeLeft] = useState(0);
+
+  // Load the timer state from AsyncStorage
+  const loadTimerState = async () => {
+    try {
+      const savedState = await AsyncStorage.getItem("timerState");
+      if (savedState) {
+        const { currentTime } = JSON.parse(savedState);
+        setTimeLeft(currentTime || 0);
+      }
+    } catch (error) {
+      console.error("Failed to load timer state:", error);
+    }
+  };
+
+  // Reload the timer state every time the screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      loadTimerState();
+    }, [])
+  );
+  console.log(currentTime);
   const [progress, setProgress] = useState(0);
   const [uncompleted_tasks, setUncompletedTasks] = useState([]); // State variable to store uncompleted tasks
   const [completed_tasks, setCompletedTasks] = useState([]); // State variable to store completed tasks
@@ -257,15 +286,28 @@ const Daily = ({ navigation }) => {
             }}
             onPress={() => navigation.navigate("Pomodoro")} // Wrap navigation call in an anonymous function
           >
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: "bold",
-                color: theme.colors.text,
-              }}
-            >
-              Start a Timer
-            </Text>
+            {currentTime !== 0 ? (
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  color: theme.colors.text,
+                }}
+              >
+                {" "}
+                Time Left: {formatTime(currentTime)}
+              </Text>
+            ) : (
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  color: theme.colors.text,
+                }}
+              >
+                Start a Timer
+              </Text>
+            )}
           </TouchableOpacity>
           <View
             style={{
