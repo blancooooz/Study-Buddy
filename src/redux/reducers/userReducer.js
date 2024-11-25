@@ -45,8 +45,8 @@ const initialState = {
   isPaused: true,
   isSessionActive: false,
   sessionHistory: [],
-  points: 0,
   streak: 0,
+  level:0
 };
 
 // Reducer function
@@ -230,11 +230,11 @@ export const userReducer = (state = initialState, action) => {
         ),
       };
 
-    case UPDATE_POINTS:
-      return {
-        ...state,
-        points: action.payload,
-      };
+      case UPDATE_POINTS:
+        return {
+          ...state,
+          level: action.payload,
+        };
 
     default:
       return state;

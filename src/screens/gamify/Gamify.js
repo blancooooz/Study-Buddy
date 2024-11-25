@@ -59,7 +59,7 @@ const badges = [
 const Gamify = ({ navigation }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const points = useSelector((state) => state.points);
+  const points = useSelector((state) => state.level);
 
   useEffect(() => {
     // Calculate points based on completed tasks

@@ -111,7 +111,6 @@ const AddSession = ({ navigation, route }) => {
 
   return (
     <ScrollView style={{ padding: 20, backgroundColor: theme.colors.background }}>
-      <Text style={{ fontSize: 24, marginBottom: 20, color:theme.colors.text}}>Add a Session</Text>
 
       {/* Title Input */}
       <TextInput
