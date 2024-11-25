@@ -23,14 +23,13 @@ const Preferences = ({ toggleTheme, isDarkTheme }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    marginTop:20
+    justifyContent:'center',
   },
   preferenceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent:'center',
-  },
+    marginBottom:64  },
   label: {
     fontSize: 24,
     fontWeight: 'bold',
