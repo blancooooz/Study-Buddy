@@ -1,23 +1,27 @@
 {/* Display DueDate, Somehow integrate tasks based on subject, maybe 
   display statistics like total time spent, start time, current day, days remaining
   then further on implement AI */}
-import React from "react";
+import React, {useState, useEffect} from "react";
 import {
   View,
   Text,
   FlatList,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from "react-native";
+import * as DocumentPicker from 'expo-document-picker'
+//import * as pdfjsLib from 'pdfjs-dist'
 import { useTheme } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleStudyPlanCompletion } from "../../redux/actions";
-
+import {Extractor } from 'react-native-pdf-extractor'
 const StudyPlan = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const { id } = route.params;
   const theme = useTheme();
-
+  const [file, setFile] = useState('');
+  const [extractedText, setExtractedText] = useState('');
   const studyPlan = useSelector((state) =>
     state.studyPlans.find((plan) => plan.id === id)
   );
@@ -29,7 +33,50 @@ const StudyPlan = ({ route, navigation }) => {
       </View>
     );
   }
+  useEffect(() => {
+    if (file) {
+      extractTextFromPdf(file.uri);
+    }
+  }, [file]);
+  const pickDocument = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        
+        //copyToCacheDirectory: true,
+      });
+      if(result){
+        console.log('result valid?', result)
+      if (result) {
+        setFile(result);
+        
+        extractTextFromPdf(result.assets[0].uri);
+      } else {
+        Alert.alert('No file selected');
+      }
+    }
+    } catch (error) {
+      console.error('Error picking file:', error);
+      Alert.alert('Error', 'There was an issue picking the document');
+    }
+  };
 
+  // Extract text from the selected PDF file
+  const extractTextFromPdf = async (uri) => {
+    if (typeof uri !== 'string' || uri.trim() === '') {
+      
+      return;
+    }
+    console.log('uri from pickDoc', uri);
+    try {
+      //const pdfExtractor = new Extractor(uri);
+      //const extractedText = await pdfExtractor.extractText();
+      ////console.log('extracted text', extractedText);
+      //setExtractedText(extractedText);
+    } catch (error) {
+      console.error('Error extracting PDF text:', error);
+      Alert.alert('Error', 'Could not extract text from the PDF');
+    }
+  };
   const renderSession = ({ item }) => (
     <TouchableOpacity
       onPress={() =>
@@ -42,7 +89,9 @@ const StudyPlan = ({ route, navigation }) => {
       </Text>
     </TouchableOpacity>
   );
-
+  const callback = (data) => {
+    console.log(data);
+  }
   return (
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
@@ -53,7 +102,20 @@ const StudyPlan = ({ route, navigation }) => {
       <Text style={[styles.description, { color: theme.colors.text }]}>
         {studyPlan.description}
       </Text>
-
+      <Extractor
+      onResult={callback}
+        uri={file && file?.assets[0]?.uri}
+      >
+        
+      </Extractor>
+      {file && (
+        <View>
+          <Text>Name: {file.name}</Text>
+          <Text>URI: {file.assets[0].uri}</Text>
+          <Text>Type: {file.assets[0].mimeType}</Text>
+          <Text>Size: {file.size}</Text>
+        </View>
+      )}
       <View style={styles.infoContainer}>
         <Text style={{ color: theme.colors.text }}>
           Subject:{" "}
@@ -124,6 +186,19 @@ const StudyPlan = ({ route, navigation }) => {
         </>
       ) : (
         <>
+        <TouchableOpacity
+            style={[
+              styles.button,
+              { backgroundColor: theme.colors.primary, marginBottom: 24 },
+            ]}
+            onPress={() => {
+              pickDocument();
+            }}
+          >
+            <Text style={[{ color: theme.colors.card }, styles.buttonText]}>
+              Upload Document
+            </Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.button,

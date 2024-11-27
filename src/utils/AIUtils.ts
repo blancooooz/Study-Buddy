@@ -1,139 +1,201 @@
-import {CohereClientV2 } from 'cohere-ai';
-import { useSelector } from 'react-redux';
-const COHERE_API_URL = 'https://api.cohere.ai';
-const COHERE_API_KEY = ''; // Replace with your actual API key
-const cohere = new CohereClientV2({ //initializing the cohere client
-    token: COHERE_API_KEY,
-})
-//TODO - generate a new prompt based off of getRandomTasks, make sure it all works well 
+import { CohereClientV2 } from "cohere-ai";
+import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import * as FileSystem from 'expo-file-system';
+//import pdf from "pdf-parse";
+import { Alert } from "react-native";
+
+const COHERE_API_URL = "https://api.cohere.ai";
+const COHERE_API_KEY = ""; // Replace with your actual API key
+const cohere = new CohereClientV2({
+  //initializing the cohere client
+  token: COHERE_API_KEY,
+});
+//TODO - generate a new prompt based off of getRandomTasks, make sure it all works well
 //with the generateText function. After that, clean the file up and make more functions for like generate sutyd plan , etc.
 interface Task {
-    title: string; // title of task
-    deadline: string; // deadline of task
-    description: string; // description of task
-    tags: string[]; // tags for the task like essay, problem set, discussion, etc
-    id: string; // id for task
-    recurring: boolean; // recurring Boolean variable
-    priority: number;
-    completed: boolean;
-    time_due: string;
-    createdAt: string;
-    updatedAt: string; // seconds since 1970
-    multiStep: boolean; // checks if the task is a multi step tasks (a task that has multiple parts)
-    subTasks: Task[]; // the tasks that are part of the multi step task
-    collaborative: boolean; // optional feature, just adding it here just in case, collaborative tasks with other users (friend system)
-    users: string[]; // the users with the collaborative feature
-    reminder: {
-        enabled: boolean;
-        reminder_time: string;
-    };
-    attachments: string[];
-    subject: { // classes, so like art history, math core, etc.
-        name: string; // name of subject
-        color: string; // color of subject
-    };
-    urgent: boolean; // urgent tag for urgent tasks
+  title: string; // title of task
+  deadline: string; // deadline of task
+  description: string; // description of task
+  tags: string[]; // tags for the task like essay, problem set, discussion, etc
+  id: string; // id for task
+  recurring: boolean; // recurring Boolean variable
+  priority: number;
+  completed: boolean;
+  time_due: string;
+  createdAt: string;
+  updatedAt: string; // seconds since 1970
+  multiStep: boolean; // checks if the task is a multi step tasks (a task that has multiple parts)
+  subTasks: Task[]; // the tasks that are part of the multi step task
+  collaborative: boolean; // optional feature, just adding it here just in case, collaborative tasks with other users (friend system)
+  users: string[]; // the users with the collaborative feature
+  reminder: {
+    enabled: boolean;
+    reminder_time: string;
+  };
+  attachments: string[];
+  subject: {
+    // classes, so like art history, math core, etc.
+    name: string; // name of subject
+    color: string; // color of subject
+  };
+  urgent: boolean; // urgent tag for urgent tasks
 }
 //prompt that will go into the generateText function
 
 interface GenerateTextResponse {
-    text: string;
+  text: string;
 }
-interface RootState { //need this to get the tasks from the redux store
-    tasks: Task[];
+interface RootState {
+  //need this to get the tasks from the redux store
+  tasks: Task[];
 }
 
-export const getLatestTasks = (tasks : Task[]) => {
-    
-    if (tasks.length === 0) { // if user's tasks are empty
-        console.warn('No tasks available');
-        return [];
-    }
-    if (tasks.length < 10) { //if user doesn't have enough data to run AI on
-        console.warn('You need at least 10 tasks.');
-        return [];
-    }
-    // Sort tasks by createdAt property in descending order
-    const sortedTasks = tasks.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    return sortedTasks.slice(0, 10); // Get the latest 10 tasks
+export const getLatestTasks = (tasks: Task[]) => {
+  if (tasks.length === 0) {
+    // if user's tasks are empty
+    console.warn("No tasks available");
+    return [];
+  }
+  if (tasks.length < 10) {
+    //if user doesn't have enough data to run AI on
+    console.warn("You need at least 10 tasks.");
+    return [];
+  }
+  // Sort tasks by createdAt property in descending order
+  const sortedTasks = tasks.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+  return sortedTasks.slice(0, 10); // Get the latest 10 tasks
 };
-export const getRandomTasks = (tasks : Task[],count: number) => {
-    if (count <= 0) {
-        return [];
-    }
-    if (tasks.length === 0) { // if user's tasks are empty
-        console.warn('No tasks available');
-        return [];
-    }
-    if (tasks.length < 10) { //if user doesn't have enough data to run AI on
-        console.warn('You need at least 10 tasks.');
-        return [];
-    }
-    const tasksCopy = [...tasks];
-    // Sort tasks by createdAt property in descending order
-    const sortedTasks = tasksCopy.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    const shuffled = sortedTasks.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count).map(task => ({
-        title: task.title,
-        deadline: task.deadline,
-        description: task.description
-    }));
+export const getRandomTasks = (tasks: Task[], count: number) => {
+  if (count <= 0) {
+    return [];
+  }
+  if (tasks.length === 0) {
+    // if user's tasks are empty
+    console.warn("No tasks available");
+    return [];
+  }
+  if (tasks.length < 10) {
+    //if user doesn't have enough data to run AI on
+    console.warn("You need at least 10 tasks.");
+    return [];
+  }
+  const tasksCopy = [...tasks];
+  // Sort tasks by createdAt property in descending order
+  const sortedTasks = tasksCopy.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+  const shuffled = sortedTasks.sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count).map((task) => ({
+    title: task.title,
+    deadline: task.deadline,
+    description: task.description,
+  }));
 };
 //generate 3 random tasks
 
 //this is what the response from cohere looks like, i got this from docs, we really only need the response.message.content.text
 interface ResponseFromCohere {
-    id: string;
-    message: {
-        role: string;
-        content: {
-            type: string;
-            text: string;
-        }[];
+  id: string;
+  message: {
+    role: string;
+    content: {
+      type: string;
+      text: string;
+    }[];
+  };
+  finish_reason: string;
+  meta: {
+    api_version: {
+      version: string;
+      is_experimental: boolean;
     };
-    finish_reason: string;
-    meta: {
-        api_version: {
-            version: string;
-            is_experimental: boolean;
-        };
-        warnings: string[];
-        billed_units: {
-            input_tokens: number;
-            output_tokens: number;
-        };
-        tokens: {
-            input_tokens: number;
-            output_tokens: number;
-        };
+    warnings: string[];
+    billed_units: {
+      input_tokens: number;
+      output_tokens: number;
     };
+    tokens: {
+      input_tokens: number;
+      output_tokens: number;
+    };
+  };
 }
-export async function generateText(task:Task, randomTasks: Task[]): Promise<string> {
-    const randomTasksCopy = [...randomTasks];
-    const filteredRandomTasks = randomTasksCopy.map(task => ({
-        title: task.title,
-        description: task.description,
-        priority: task.priority
-    }));
-    const formattedTasks = filteredRandomTasks.map(task => `Title: ${task.title}, Description: ${task.description}, Priority: ${task.priority}`).join('\n');
-    const prompt: string = "Generate a priority score (1-3) for a task with title:"+ task.title + " description:" +task.description + " deadline:"+task.deadline + " based on its characteristics and existing tasks. **Tasks**:" + formattedTasks +". Weigh the deadline slightly heavier than the rest. Respond with a single integer priority score (1-3)."; //add "give a short description of why you chose this" if you want a small description
-    console.log("Filtered Random Tasks", filteredRandomTasks);
-    
-    
-    console.log("Inputted prompt", prompt);
-    try {
-        const response = await cohere.chat({
-            model: 'command-r',
-            messages: [{role:'user', content: prompt }],
-            
-        });
+export async function generateText(
+  task: Task,
+  randomTasks: Task[]
+): Promise<string> {
+  const randomTasksCopy = [...randomTasks];
+  const filteredRandomTasks = randomTasksCopy.map((task) => ({
+    title: task.title,
+    description: task.description,
+    priority: task.priority,
+  }));
+  const formattedTasks = filteredRandomTasks
+    .map(
+      (task) =>
+        `Title: ${task.title}, Description: ${task.description}, Priority: ${task.priority}`
+    )
+    .join("\n");
+  const prompt: string =
+    "Generate a priority score (1-3) for a task with title:" +
+    task.title +
+    " description:" +
+    task.description +
+    " deadline:" +
+    task.deadline +
+    " based on its characteristics and existing tasks. **Tasks**:" +
+    formattedTasks +
+    ". Weigh the deadline slightly heavier than the rest. Respond with a single integer priority score (1-3)."; //add "give a short description of why you chose this" if you want a small description
+  console.log("Filtered Random Tasks", filteredRandomTasks);
 
-        return response.message.content[0].text; //since content is an array, we need to get the first element, 
-        //which is the text and type, then we do .text to get the text
-    } catch (error) {
-        console.error('Error generating text:', error);
-       
-        return ''; // Return an empty string or handle the error as needed
-    }
-}
+  console.log("Inputted prompt", prompt);
+  try {
+    const response = await cohere.chat({
+      model: "command-r",
+      messages: [{ role: "user", content: prompt }],
+    });
 
+    return response.message.content[0].text; //since content is an array, we need to get the first element,
+    //which is the text and type, then we do .text to get the text
+  } catch (error) {
+    console.error("Error generating text:", error);
+
+    return ""; // Return an empty string or handle the error as needed
+  }
+};
+  ///////// FOR STUDY PLAN /////////////
+
+  //const [extractedText, setExtractedText] = useState("");
+
+    //export async function selectFile(){
+    // try {
+    //   const file = await DocumentPicker.pick({
+    //     type: [DocumentPicker.types.pdf], //only pdf files allows
+    //   });
+    //   const selectedFile = file[0];
+
+    //   if (selectedFile.type !== "application/pdf") {
+    //     Alert.alert("Error", "Valid PDF files only.");
+    //     return;
+    //   }
+    //   const filePath: string | undefined = selectedFile.uri;
+    //   if (filePath) {
+    //     const fileData: string = await readFile(filePath, "base64");
+    //     const buffer = Buffer.from(fileData, "base64"); // convert the base64 file type to buffer
+
+    //     const data = await pdf(buffer); //wait for pdf data to be extracted
+    //     setExtractedText(data.text); //updates extracted text state variable
+    //     return data.text;
+    //   }
+    // } catch (error: unknown) {
+    //   if (DocumentPicker.isCancel(error)) {
+    //     Alert.alert("CaNCELLED", "file selection was cancelled");
+    //   } else {
+    //     const err = error as Error;
+    //     Alert.alert("Error", `An unexpected error has occured: ${err.message}`);
+    //   }
+    // }
+   // }
