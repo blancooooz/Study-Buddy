@@ -45,7 +45,9 @@ export const RESET_POMODORO = "RESET_POMODORO"; // Resets timer and session coun
 export const UPDATE_SESSION_COUNT = "UPDATE_SESSION_COUNT"; // Increments session count upon completion
 export const SAVE_SESSION_DATA = "SAVE_SESSION_DATA"; // Sends session history and data to Firebase
 export const LOAD_SESSION_HISTORY = "LOAD_SESSION_HISTORY";
-export const UPDATE_POINTS = 'UPDATE_POINTS';
+export const UPDATE_POINTS = "UPDATE_POINTS";
+export const INCREASE_POINTS = "INCREASE_POINTS"; // Increment points
+export const DECREASE_POINTS = "DECREASE_POINTS"; // Decrement points
 {
   /* 
 export const ADD_TASK = "ADD_TASK";
@@ -53,6 +55,7 @@ export const EDIT_TASK = "EDIT_TASK";
 export const FETCH_USER_TASKS = "FETCH_USER_TASKS"
 */
 }
+
 /**
  * Action creator to update the Redux store with a new username.
  *
@@ -92,12 +95,17 @@ export const updateTasksRedux = (task) => {
  */
 export const fetchUserData = () => async (dispatch) => {
   const uid = firebaseAuth.currentUser.uid; // Get the current user's UID from Firebase Authentication
-
-  // Subscribe to Firestore for real-time updates using onSnapshot
-  const userSnapshot = await onSnapshot(doc(db, "users", uid), (doc) => {
-    // Dispatch an action with the fetched user data (Firestore document data)
-    dispatch({ type: FETCH_USER_DATA, payload: doc.data() });
-  });
+  try {
+    const userRef = doc(db, "users", uid);
+    const userSnapshot = await getDoc(userRef);
+    if (userSnapshot.exists()) {
+      const userData = userSnapshot.data();
+      dispatch({ type: FETCH_USER_DATA, payload: userData });
+      dispatch({ type: UPDATE_POINTS, payload: userData.achievements.level });
+    }
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 /**
@@ -188,15 +196,14 @@ export const add_task = (task, task_list) => {
     }
   };
 };
-export const delete_task = (taskId,taskList) => {
+export const delete_task = (taskId, taskList) => {
   return async (dispatch) => {
-    
     const taskListCopy = [...taskList];
-    
+
     try {
       const userId = firebaseAuth.currentUser.uid; // != soft equals, so '1' != 1 is false '1' !== 1 is true
       const tasks_copy = taskListCopy.filter((task) => task.id !== taskId); // Filter out the task to be deleted != soft equals, so '1' == 1 is true '1' === 1 is false
-      
+
       //task_list = ['task 1', 'task 2', 'task 3']
       //after the filter, you were checking for task 1 id
       //after filter: task_list = ['task 2', 'task 3']
@@ -206,7 +213,7 @@ export const delete_task = (taskId,taskList) => {
 
       // Find the task to be deleted
       const taskToDelete = taskListCopy.find((task) => task.id === taskId); //return the task with the id that matches the taskId
-      
+
       if (taskToDelete) {
         // Update the Firestore document to remove the task
         await updateDoc(userRef, {
@@ -226,7 +233,7 @@ export const delete_task = (taskId,taskList) => {
   };
 };
 export const edit_task = (id, updated_task, task_list) => {
-  console.log('updated task', updated_task)
+  console.log("updated task", updated_task);
   return async (dispatch) => {
     try {
       const tasks_copy = [...task_list];
@@ -252,9 +259,7 @@ export const edit_task = (id, updated_task, task_list) => {
     } catch (error) {
       console.log("Error editing task: " + error);
     }
-  
-};
-
+  };
 };
 
 export const get_all_tasks = () => {
@@ -373,6 +378,14 @@ export const toggleStudyPlanCompletion =
         type: TOGGLE_STUDY_PLAN_COMPLETION,
         payload: { studyPlanId },
       });
+
+      // Update points
+      const pointChange = updatedPlans.find((plan) => plan.id === studyPlanId)
+        .completed
+        ? 50 // Points for completing a study plan
+        : -50; // Points deducted for undoing completion
+
+      dispatch(updatePoints(pointChange));
     } catch (error) {
       console.error("Error toggling study plan completion:", error);
     }
@@ -494,6 +507,15 @@ export const toggleSessionCompletion =
         type: TOGGLE_SESSION_COMPLETION,
         payload: { studyPlanId, sessionId },
       });
+
+      // Update points
+      const pointChange = updatedPlans
+        .find((plan) => plan.id === studyPlanId)
+        .sessions.find((session) => session.id === sessionId).completed
+        ? 20 // Points for completing a session
+        : -20; // Points deducted for undoing completion
+
+      dispatch(updatePoints(pointChange));
     } catch (error) {
       console.error("Error toggling session completion:", error);
     }
@@ -551,6 +573,12 @@ export const complete_task = (taskId) => {
 
       // Dispatch the updated tasks list to Redux
       dispatch({ type: COMPLETE_TASK, payload: updatedTasks });
+      const pointChange = updatedTasks.find((task) => task.id === taskId)
+        .completed
+        ? 10 // Points for completing a task
+        : -10; // Points deducted for undoing completion
+
+      dispatch(updatePoints(pointChange));
     } catch (error) {
       console.error("Error completing task:", error);
     }
@@ -639,11 +667,31 @@ export const saveSessionData = (sessionData) => {
     }
   };
 };
-export const updatePoints = (points) => ({
-  type: UPDATE_POINTS,
-  payload: points,
-});
+export const updatePoints = (change) => {
+  return async (dispatch, getState) => {
+    try {
+      const uid = firebaseAuth.currentUser.uid;
+      const userRef = doc(db, "users", uid);
+      const state = getState();
+      const currentPoints = state.level || 0;
+      const achievements = state.userData.achievements;
+      // Dispatch the updated points and level
+      const totalPoints = currentPoints + change;
 
+      // Update Firestore
+      await updateDoc(userRef, {
+        achievements: { ...achievements, level: totalPoints },
+      });
+
+      dispatch({
+        type: UPDATE_POINTS,
+        payload: totalPoints,
+      });
+    } catch (error) {
+      console.error("Error updating points:", error);
+    }
+  };
+};
 //adding a task to the database
 
 // You can create similar setter actions for tasks, tags, and events

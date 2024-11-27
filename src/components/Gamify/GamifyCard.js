@@ -29,7 +29,7 @@ const GamifyCard = ({
             Complete!
             </Text>
           </View>)}
-        {isActive && (
+        {isActive &&  (
           <View style={styles.pointsContainer}>
             <Text style={styles.points}>
               {points} / {pointsRequired} points
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 12,
     alignSelf: "flex-start",
+    marginBottom: 4
   },
   points: {
     fontSize: 12,
