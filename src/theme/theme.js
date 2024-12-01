@@ -21,7 +21,14 @@ export const lightTheme = {
     agendaKnobColor: "#00adf5",
     taskSelector:"f7f7f7",
     taskLabel:"91c7cc",
-    picker:"91c7cc"
+    picker:"91c7cc",
+    fire:'#FFFAA0',
+    fireBackground:'#FF8D7B',
+    badge:'#FF8D7B',
+    badgeBackground:'#FFFAA0',
+    taskBackground: "#cccfff",
+    taskIcons:'#000000',
+    circleBackground:"#F5F5F5"
   },
 };
 
@@ -45,5 +52,12 @@ export const darkTheme = {
     agendaDayTextColor: "#2d4150",
     agendaDayNumColor: "#00adf5",
     agendaKnobColor: "#00adf5",
+    fire:'#FAFAFA',
+    fireBackground:'#9D9D9D',
+    badge:'#FAFAFA',
+    badgeBackground:'#9D9D9D',
+    taskBackground: "#2A2A2A",
+    taskIcons:'#9D9D9D',
+    circleBackground:"#474747"
   },
 };

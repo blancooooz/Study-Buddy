@@ -70,20 +70,7 @@ const Session = ({ route, navigation }) => {
         ))}
       </View>
 
-      <View style={{ marginVertical: 16 }}>
-        <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>
-          Timer:
-        </Text>
-        <Text style={{ color: theme.colors.text }}>
-          Duration: {session.timer.duration} mins
-        </Text>
-        <Text style={{ color: theme.colors.text }}>
-          Intervals: {session.timer.intervalCount}
-        </Text>
-        <Text style={{ color: theme.colors.text }}>
-          Completed: {session.timer.completedIntervals}
-        </Text>
-      </View>
+      {session.completed ? <>{/* Timer stats */}</> : <></>}
 
       <View style={{ marginVertical: 16 }}>
         <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>
@@ -102,30 +89,39 @@ const Session = ({ route, navigation }) => {
         )}
       </View>
 
-      <TouchableOpacity
-        style={{
-          backgroundColor: theme.colors.primary,
-          height: 50,
-          borderRadius: 12,
-          justifyContent: "center",
-          alignItems: "center",
-          marginHorizontal: 5,
-          marginBottom: 24,
-        }}
-        onPress={() => console.log("Directs to timer")}
-      >
-        <Text
+      {!session.completed ? (
+        <TouchableOpacity
           style={{
-            color: theme.colors.card,
-            fontSize: 18,
-            fontWeight: "600",
-            alignSelf: "flex-start",
-            marginLeft: 24,
+            backgroundColor: theme.colors.primary,
+            height: 50,
+            borderRadius: 12,
+            justifyContent: "center",
+            alignItems: "center",
+            marginHorizontal: 5,
+            marginBottom: 24,
+          }}
+          onPress={() => {
+            navigation.navigate("Pomodoro", {
+              session: session,
+              studyPlanId: studyPlanId,
+            });
           }}
         >
-          Start this Session
-        </Text>
-      </TouchableOpacity>
+          <Text
+            style={{
+              color: theme.colors.card,
+              fontSize: 18,
+              fontWeight: "600",
+              alignSelf: "flex-start",
+              marginLeft: 24,
+            }}
+          >
+            Start this Session
+          </Text>
+        </TouchableOpacity>
+      ) : (
+        <></>
+      )}
       <TouchableOpacity
         style={{
           backgroundColor: theme.colors.card,
@@ -135,7 +131,9 @@ const Session = ({ route, navigation }) => {
           alignItems: "center",
           marginHorizontal: 5,
         }}
-        onPress={() => dispatch(toggleSessionCompletion(studyPlanId,sessionId))}
+        onPress={() =>
+          dispatch(toggleSessionCompletion(studyPlanId, sessionId))
+        }
       >
         {!session.completed ? (
           <Text

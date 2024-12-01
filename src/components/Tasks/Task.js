@@ -16,6 +16,7 @@ import { edit_task, complete_task, delete_task } from "../../redux/actions"; // 
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 const good_colors = colors;
 const Task = ({ navigation, task }) => {
+  const theme = useTheme();
   const dispatch = useDispatch();
   const isChecked = task.completed;
   const is_multi_step = task.multiStep;
@@ -59,7 +60,7 @@ const Task = ({ navigation, task }) => {
           borderRadius: 12,
         }}
       >
-        <Text style={styles.deleteButtonText}>Delete</Text>
+        <Text style={[styles.deleteButtonText,{color:theme.colors.text}]}>Delete</Text>
       </TouchableOpacity>
     );
   };
@@ -153,7 +154,7 @@ const Task = ({ navigation, task }) => {
       <Pressable onPress={()=> handleEditTask(task)} style={{ flex: 1 }}>
         <View
           style={{
-            backgroundColor: good_colors.gray[800],
+            backgroundColor: theme.colors.taskBackground,
             width: "100%",
             borderRadius: 12,
             padding: 12,
@@ -168,7 +169,7 @@ const Task = ({ navigation, task }) => {
             <View style={{ flexDirection: "row" }}>
               <Text
                 style={{
-                  color: good_colors.white,
+                  color: theme.colors.text,
                   fontSize: 18,
                   fontFamily: "SFProRoundedSemibold",
                 }}
@@ -188,9 +189,9 @@ const Task = ({ navigation, task }) => {
               <Icons.Feather
                 name="clock"
                 size={18}
-                color={good_colors.gray[400]}
+                color={theme.colors.taskIcons}
               />
-              <Text style={{ color: good_colors.gray[400], marginLeft: 4 }}>
+              <Text style={{ color: theme.colors.taskIcons, marginLeft: 4 }}>
               {formatTime(task.time_due)}
               </Text>
             </View>
@@ -205,9 +206,9 @@ const Task = ({ navigation, task }) => {
               <Icons.Feather
                 name="calendar"
                 size={18}
-                color={good_colors.gray[400]}
+                color={theme.colors.taskIcons}
               />
-              <Text style={{ color: good_colors.gray[400], marginLeft: 4 }}>
+              <Text style={{ color: theme.colors.taskIcons, marginLeft: 4 }}>
               {formatMilliseconds(task.deadline)}
               </Text>
             </View>
@@ -218,7 +219,7 @@ const Task = ({ navigation, task }) => {
               justifyContent: "center",
             }}
           >
-            <Pressable onPress={handle_complete_task}>
+            <TouchableOpacity onPress={handle_complete_task}>
               {isChecked ? (
                 <View
                   style={{
@@ -243,7 +244,7 @@ const Task = ({ navigation, task }) => {
                     height: 32,
                     width: 32,
                     borderRadius: 24,
-                    backgroundColor: good_colors.gray[400],
+                    backgroundColor: theme.colors.taskIcons,
                     marginRight: 8,
                     justifyContent: "center",
                     alignItems: "center",
@@ -251,7 +252,7 @@ const Task = ({ navigation, task }) => {
                 >
                   <View
                     style={{
-                      backgroundColor: good_colors.gray[800],
+                      backgroundColor: theme.colors.taskBackground,
                       height: 28,
                       width: 28,
                       borderRadius: 24,
@@ -259,7 +260,7 @@ const Task = ({ navigation, task }) => {
                   />
                 </View>
               )}
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </Pressable>
@@ -346,7 +347,7 @@ const ProgressCircle = ({ steps, handle_complete_task, isChecked }) => {
               height: 32,
               width: 32,
               borderRadius: 24,
-              backgroundColor: good_colors.gray[400],
+              backgroundColor: theme.color.taskIcons,
               marginRight: 8,
               justifyContent: "center",
               alignItems: "center",
@@ -354,7 +355,7 @@ const ProgressCircle = ({ steps, handle_complete_task, isChecked }) => {
           >
             <View
               style={{
-                backgroundColor: good_colors.gray[800],
+                backgroundColor: theme.color.taskBackground,
                 height: 28,
                 width: 28,
                 borderRadius: 24,
@@ -374,12 +375,12 @@ const ProgressCircle = ({ steps, handle_complete_task, isChecked }) => {
         showsText={true}
         formatText={() => `${Math.round(progress * 100)}%`}
         color={good_colors.green[500]}
-        unfilledColor={good_colors.gray[700]}
+        unfilledColor={theme.color.circleBackground}
         borderWidth={0}
         textStyle={{
           fontFamily: "SFProRoundedMedium",
           fontSize: 16,
-          color: good_colors.white,
+          color: theme.color.text,
         }}
       />
     </View>
@@ -387,7 +388,6 @@ const ProgressCircle = ({ steps, handle_complete_task, isChecked }) => {
 };
 const styles = StyleSheet.create({
   deleteButtonText: {
-    color: good_colors.white,
     fontSize: 16,
     fontWeight: "bold",
   },

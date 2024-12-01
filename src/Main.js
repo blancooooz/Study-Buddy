@@ -49,6 +49,7 @@ import Session from "./screens/study/sessions/Session";
 import StudyPlan from "./screens/study/StudyPlan";
 import PomodoroScreen from "./screens/timer/Pomodoro";
 import Gamify from "./screens/gamify/Gamify";
+import NotificationTestScreen from './screens/NotificationTestScreen';
 import { colors } from "./theme/colors";
 import { current } from "@reduxjs/toolkit";
 // Navigators for tabs, stacks, and drawers
@@ -119,6 +120,12 @@ const TasksStack = () => (
       {({ navigation }) => <EditTask navigation={navigation} />}
     </Stack.Screen>
     {/* Add other screens related to Tasks here */}
+     {/* Add NotificationsTestScreen */}
+     <Stack.Screen
+      name="NotificationTestScreen"
+      component={NotificationTestScreen}
+      options={{ header: () => <CustomHeader title={"Notifications"} /> }}
+    />
   </Stack.Navigator>
 );
 
@@ -217,7 +224,9 @@ const StudyPlanStack = () => (
       name="Pomodoro"
       options={{ header: () => <CustomHeader title={"Pomodoro"} /> }}
     >
-      {({ navigation }) => <PomodoroScreen navigation={navigation} />}
+      {({ navigation, route }) => (
+        <PomodoroScreen navigation={navigation} route={route} />
+      )}
     </Stack.Screen>
   </Stack.Navigator>
 );
@@ -249,6 +258,18 @@ const SettingsStack = () => {
     </Stack.Navigator>
   );
 };
+/**
+ * Stack Navigator Notifications
+ */
+const NotificationsStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="NotificationTestScreen"
+      component={NotificationTestScreen}
+      options={{ header: () => <CustomHeader title={"Notifications"} /> }}
+    />
+  </Stack.Navigator>
+);
 
 /**
  * Drawer Navigator that wraps around the Bottom Tab Navigator.
@@ -304,68 +325,99 @@ const HomeHeader = ({ screen }) => {
   const renderExtraElements = (screenName) => {
     switch (screenName) {
       case "Daily":
-        return ( <>
-          <Text
-            style={{
-              color: theme.colors.text,
-              fontSize: 20,
-              fontWeight: "500",
-            }}
-          >
-            Daily
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
-            <View
-              style={{
-                width: 32,
-                height: 32,
-                backgroundColor: colors.gray[400],
-                borderRadius: 24,
-                justifyContent: "center",
-                alignItems: "center",
-                marginRight: 16,
-              }}
-            >
-              <Icons.Feather
-                name="plus"
-                size={24}
-                color={"#FAFAFA"}
-              ></Icons.Feather>
-            </View>
-          </TouchableOpacity>
-        </>
+        return (
+          <>
+            <TouchableOpacity onPress={() => navigation.navigate("Streaks")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: theme.colors.fireBackground,
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.SimpleLineIcons
+                  name="fire"
+                  size={24}
+                  color={theme.colors.fire}
+                ></Icons.SimpleLineIcons>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("Gamify")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: theme.colors.badgeBackground,
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.SimpleLineIcons
+                  name="badge"
+                  size={24}
+                  color={theme.colors.badge}
+                ></Icons.SimpleLineIcons>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: colors.gray[400],
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.Feather
+                  name="plus"
+                  size={24}
+                  color={"#FAFAFA"}
+                ></Icons.Feather>
+              </View>
+            </TouchableOpacity>
+          </>
         );
       case "Tasks":
-        return ( <>
-          <Text
-            style={{
-              color: theme.colors.text,
-              fontSize: 20,
-              fontWeight: "500",
-            }}
-          >
-            Tasks
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
-            <View
+        return (
+          <>
+            <Text
               style={{
-                width: 32,
-                height: 32,
-                backgroundColor: colors.gray[400],
-                borderRadius: 24,
-                justifyContent: "center",
-                alignItems: "center",
-                marginRight: 16,
+                color: theme.colors.text,
+                fontSize: 20,
+                fontWeight: "500",
               }}
             >
-              <Icons.Feather
-                name="plus"
-                size={24}
-                color={"#FAFAFA"}
-              ></Icons.Feather>
-            </View>
-          </TouchableOpacity>
-        </>
+              Tasks
+            </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("AddTask")}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: colors.gray[400],
+                  borderRadius: 24,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: 16,
+                }}
+              >
+                <Icons.Feather
+                  name="plus"
+                  size={24}
+                  color={"#FAFAFA"}
+                ></Icons.Feather>
+              </View>
+            </TouchableOpacity>
+          </>
         );
       case "Calendar":
         return (

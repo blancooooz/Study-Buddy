@@ -11,21 +11,31 @@ import { Picker } from "@react-native-picker/picker";
 import Slider from "@react-native-community/slider";
 import { useSelector, useDispatch } from "react-redux";
 import ProgressCircle from "react-native-progress/Circle";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   startPomodoro,
   pausePomodoro,
-  resetPomodoro,
-  updateSessionCount,
-  loadSessionData,
-  saveSessionData,
+  toggleSessionCompletion,
+  complete_task,
+  editSession,
 } from "../../redux/actions";
 import { useTheme } from "@react-navigation/native";
 
-const PomodoroScreen = ({ navigation }) => {
+const PomodoroScreen = ({ navigation, route }) => {
+  const session = route?.params?.session || null;
+  const studyPlanId = route?.params?.studyPlanId || null;
+  const [completed_tasks, setUncompletedTasks] = useState([]); // State variable to store completed tasks
   const dispatch = useDispatch();
 
   // Accessing Redux state for initial values
   const tasks = useSelector((state) => state.tasks || []);
+  useEffect(() => {
+    const uncompleted = tasks.filter((task) => !task.completed);
+    setUncompletedTasks(uncompleted);
+    try {
+      setSelectedTask(uncompleted[0].title);
+    } catch {}
+  }, [tasks]);
 
   const sessionHistory = useSelector((state) => state.sessionHistory || {});
   const defaultPomodoroLength = useSelector((state) => state.sessionTime);
@@ -37,16 +47,15 @@ const PomodoroScreen = ({ navigation }) => {
   const [currentTime, setTimeLeft] = useState(defaultPomodoroLength);
   const [pomodoroLength, setpomodoroLength] = useState(defaultPomodoroLength);
   const [breakLength, setBreakLength] = useState(defaultBreakLength);
-  const [selectedTask, setSelectedTask] = useState(tasks[0].title);
+  const [selectedTask, setSelectedTask] = useState('');
 
-  // Countdown logic using useEffect
   useEffect(() => {
     let timer;
     if ((isSessionActive || isBreakActive) && !isPaused && currentTime > 0) {
       timer = setInterval(() => {
-        setTimeLeft((currentTime) => currentTime - 1);
+        setTimeLeft((time) => time - 1);
       }, 1000);
-    } else if (currentTime == 0) {
+    } else if (currentTime === 0) {
       if (isSessionActive) {
         handleSessionCompletion();
       } else if (isBreakActive) {
@@ -85,31 +94,100 @@ const PomodoroScreen = ({ navigation }) => {
     setIsPaused(false);
     setIsSessionActive(true);
     setIsBreakActive(false);
+  }; // Save the timer state to AsyncStorage
+  const saveTimerState = async () => {
+    try {
+      const state = {
+        currentTime,
+        isSessionActive,
+        isBreakActive,
+        isPaused,
+        pomodoroLength,
+        breakLength,
+      };
+      await AsyncStorage.setItem("timerState", JSON.stringify(state));
+    } catch (error) {
+      console.error("Failed to save timer state:", error);
+    }
+  };
+  // Load the timer state from AsyncStorage
+  const loadTimerState = async () => {
+    try {
+      const savedState = await AsyncStorage.getItem("timerState");
+      if (savedState) {
+        const {
+          currentTime,
+          isSessionActive,
+          isBreakActive,
+          isPaused,
+          pomodoroLength,
+          breakLength,
+        } = JSON.parse(savedState);
+        setTimeLeft(currentTime || defaultPomodoroLength);
+        setIsSessionActive(isSessionActive || false);
+        setIsBreakActive(isBreakActive || false);
+        setIsPaused(isPaused || false);
+        setpomodoroLength(pomodoroLength || defaultPomodoroLength);
+        setBreakLength(breakLength || defaultBreakLength);
+      }
+    } catch (error) {
+      console.error("Failed to load timer state:", error);
+    }
   };
 
-  // Complete session and start break
-  const handleSessionCompletion = () => {
-    const completedSession = {
-      date: new Date().toISOString(),
-      sessionCount: 1,
-      task: selectedTask ? selectedTask.name : "No task",
-    };
+  // Call loadTimerState when the component mounts
+  useEffect(() => {
+    loadTimerState();
+  }, []);
 
-    dispatch(updateSessionCount(completedSession));
-    dispatch(saveSessionData([...sessionHistory, completedSession]));
+  // Update AsyncStorage whenever timer-related states change
+  useEffect(() => {
+    saveTimerState();
+  }, [
+    currentTime,
+    isSessionActive,
+    isBreakActive,
+    isPaused,
+    pomodoroLength,
+    breakLength,
+  ]);
+
+  const handleSessionCompletion = () => {
+    if (session) {
+      // Complete the current session if it exists
+      dispatch(toggleSessionCompletion(studyPlanId, session.id));
+
+      // Update the session's timer details
+      const updatedTimer = {
+        ...session.timer,
+        completedIntervals: (session.timer.completedIntervals || 0) + 1,
+      };
+
+      const updatedSession = {
+        ...session,
+        timer: updatedTimer,
+      };
+
+      dispatch(editSession(studyPlanId, session.id, updatedSession));
+    } else {
+      // Otherwise, complete the selected task
+      const taskToComplete = tasks.find((task) => task.title === selectedTask);
+      if (taskToComplete) {
+        dispatch(complete_task(taskToComplete.id));
+      }
+    }
 
     setIsSessionActive(false);
     setIsBreakActive(true);
     setTimeLeft(Math.floor(breakLength));
+    saveTimerState();
   };
-
   // Handle break completion and start a new session
   const handleBreakCompletion = () => {
     setIsBreakActive(false);
     setIsSessionActive(true);
-    setIsPaused(false);
     setTimeLeft(Math.floor(pomodoroLength));
-    dispatch(startPomodoro());
+    saveTimerState();
   };
 
   // Reset the Pomodoro timer
@@ -118,6 +196,7 @@ const PomodoroScreen = ({ navigation }) => {
     setIsBreakActive(false);
     setIsPaused(false);
     setTimeLeft(Math.floor(pomodoroLength));
+    saveTimerState();
   };
 
   // Formatting time to minutes and seconds
@@ -127,12 +206,129 @@ const PomodoroScreen = ({ navigation }) => {
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
   const theme = useTheme();
+
+  if (session) {
+    return (
+      <ScrollView contentContainerStyle={styles.container}>
+        <View
+          style={[
+            styles.taskSelector,
+            {
+              backgroundColor: theme.colors.inputBackground,
+              borderColor: theme.colors.primary,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.taskLabel,
+              { color: theme.colors.text, fontWeight: "bold" },
+            ]}
+          >
+            Session: {session.title}
+          </Text>
+          <Text style={[styles.taskLabel, { color: theme.colors.text }]}>
+            {session.description}
+          </Text>
+        </View>
+
+        {/* Circular Progress Bar */}
+        <ProgressCircle
+          style={styles.progressCircle}
+          size={250}
+          progress={progress}
+          thickness={8}
+          color={isBreakActive ? "rgba(248,149,83,0.8)" : theme.colors.primary}
+          showsText={true}
+          formatText={() => formatTime(currentTime)}
+          textStyle={styles.timer}
+        />
+
+        {/* Sliders to set session and break lengths*/}
+        <View style={styles.sliderContainer}>
+          <Text style={[styles.sliderLabel, { color: theme.colors.text }]}>
+            {" "}
+            Session Length: {Math.floor(pomodoroLength / 60)} min
+          </Text>
+          <Slider
+            thumbTintColor={theme.colors.primary}
+            minimumTrackTintColor={theme.colors.primary}
+            style={[styles.slider, {}]}
+            minimumValue={60} // 5 mins
+            maximumValue={3600} // 60 mins
+            step={60}
+            value={pomodoroLength}
+            onValueChange={(value) => {
+              const roundedValue = Math.round(value);
+              setpomodoroLength(roundedValue);
+              setTimeLeft(roundedValue);
+            }}
+            onSlidingComplete={(value) => {
+              const roundedValue = Math.round(value);
+              setTimeLeft(roundedValue);
+            }}
+          />
+        </View>
+
+        <View style={styles.sliderContainer}>
+          <Text style={[styles.sliderLabel, { color: theme.colors.text }]}>
+            {" "}
+            Break Length: {Math.floor(breakLength / 60)} min
+          </Text>
+          <Slider
+            thumbTintColor={theme.colors.primary}
+            minimumTrackTintColor={theme.colors.primary}
+            style={styles.slider}
+            minimumValue={60} // 1 min
+            maximumValue={1800} // 30 mins
+            step={60}
+            value={breakLength}
+            onValueChange={(value) => setBreakLength(value)}
+          />
+        </View>
+
+        {/* Button Logic */}
+        <View style={styles.buttonContainer}>
+          {isSessionActive || isBreakActive ? (
+            <>
+              <TouchableOpacity
+                style={[styles.button, styles.pauseButton]}
+                onPress={handlePause}
+              >
+                <Text style={styles.buttonText}>Pause</Text>
+              </TouchableOpacity>
+              {isPaused && (
+                <TouchableOpacity
+                  style={[styles.button, styles.resumeButton]}
+                  onPress={handleResume}
+                >
+                  <Text style={styles.buttonText}>Resume</Text>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity
+                style={[styles.button, styles.resetButton]}
+                onPress={handleReset}
+              >
+                <Text style={styles.buttonText}>Reset</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <TouchableOpacity
+              style={[styles.button, styles.startButton]}
+              onPress={isBreakActive ? handleBreakCompletion : handleStart}
+            >
+              <Text style={[styles.buttonText, { color: theme.colors.text }]}>
+                {isBreakActive ? "Start Next Session" : "Start"}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </ScrollView>
+    );
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* 
-            <Text style = {styles.title}>{isBreakActive ? 'Break Time' : 'Pomodoro Timer'}</Text>*/}
-
-      {/* Task Selection Dropdown */}
       <View
         style={[
           styles.taskSelector,
@@ -154,7 +350,7 @@ const PomodoroScreen = ({ navigation }) => {
           ]}
         >
           <Picker.Item label="None" value={null} color={theme.colors.text} />
-          {tasks.map((task) => (
+          {completed_tasks.map((task) => (
             <Picker.Item
               key={task.id}
               label={task.title}
@@ -255,7 +451,7 @@ const PomodoroScreen = ({ navigation }) => {
             style={[styles.button, styles.startButton]}
             onPress={isBreakActive ? handleBreakCompletion : handleStart}
           >
-            <Text style={[styles.buttonText,{color:theme.colors.text}]}>
+            <Text style={[styles.buttonText, { color: theme.colors.text }]}>
               {isBreakActive ? "Start Next Session" : "Start"}
             </Text>
           </TouchableOpacity>

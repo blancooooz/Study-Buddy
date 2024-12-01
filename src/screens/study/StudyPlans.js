@@ -17,7 +17,7 @@ const width = Dimensions.get("screen").width;
 const StudyPlan = ({ navigation }) => {
   const theme = useTheme();
   const studyPlans = useSelector((state) => state.studyPlans || []);
-  console.log(studyPlans)
+  console.log(studyPlans);
   const [expanded, setExpanded] = useState({});
 
   const toggleExpand = (studyPlanId) => {
@@ -28,9 +28,11 @@ const StudyPlan = ({ navigation }) => {
   };
 
   const renderStudyPlan = ({ item }) => {
-    const sessionsCompleted = item.sessions.filter((session) => session.completed).length;
+    const sessionsCompleted = item.sessions.filter(
+      (session) => session.completed
+    ).length;
     const totalSessions = item.sessions.length;
-    const progress = totalSessions > 0 ? (sessionsCompleted / totalSessions) : 0;
+    const progress = totalSessions > 0 ? sessionsCompleted / totalSessions : 0;
 
     return (
       <TouchableOpacity
@@ -67,7 +69,8 @@ const StudyPlan = ({ navigation }) => {
                 {item.sessions.map((session) => (
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate("Edit a Session", {
+                      navigation.navigate("Session", {
+                        studyPlanId:item.id,
                         sessionId: session.id,
                       })
                     }
@@ -83,6 +86,15 @@ const StudyPlan = ({ navigation }) => {
                     <Text style={{ color: theme.colors.text, marginLeft: 8 }}>
                       {session.title}
                     </Text>
+                    {session.completed ? (
+                      <Text style={{ color: theme.colors.text, marginLeft: 8 }}>
+                        Completed
+                      </Text>
+                    ) : (
+                      <Text style={{ color: theme.colors.text, marginLeft: 8 }}>
+                        Not Complete
+                      </Text>
+                    )}
                   </TouchableOpacity>
                 ))}
               </View>
@@ -91,7 +103,9 @@ const StudyPlan = ({ navigation }) => {
 
           <View style={{ marginTop: 16 }}>
             <TouchableOpacity
-              onPress={() => navigation.navigate("Add a Session", { planId: item.id })}
+              onPress={() =>
+                navigation.navigate("Add a Session", { planId: item.id })
+              }
               style={{
                 height: 70,
                 width: 70,
@@ -104,7 +118,9 @@ const StudyPlan = ({ navigation }) => {
                 marginBottom: 12,
               }}
             >
-              <Text style={{ color: theme.colors.primary }}>Start a Session</Text>
+              <Text style={{ color: theme.colors.primary }}>
+                Start a Session
+              </Text>
             </TouchableOpacity>
             <Circle
               size={70}
@@ -130,10 +146,17 @@ const StudyPlan = ({ navigation }) => {
   const completedPlans = studyPlans.filter((plan) => plan.completed);
 
   return (
-    <View style={{ flex: 1, alignItems: "center", backgroundColor: theme.colors.background }}>
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        backgroundColor: theme.colors.background,
+      }}
+    >
       {studyPlans.length === 0 ? (
         <>
-          <Text style={{
+          <Text
+            style={{
               color: theme.colors.text,
               fontSize: 18,
               alignSelf: "flex-start",
@@ -167,13 +190,27 @@ const StudyPlan = ({ navigation }) => {
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingBottom: 16 }}
           ListHeaderComponent={() => (
-            <Text style={{ color: theme.colors.text, fontSize: 18, fontWeight: "bold", marginTop: 10 }}>
+            <Text
+              style={{
+                color: theme.colors.text,
+                fontSize: 18,
+                fontWeight: "bold",
+                marginTop: 10,
+              }}
+            >
               Active
             </Text>
           )}
           ListFooterComponent={() => (
             <>
-              <Text style={{ color: theme.colors.text, fontSize: 18, fontWeight: "bold", marginTop: 20 }}>
+              <Text
+                style={{
+                  color: theme.colors.text,
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  marginTop: 20,
+                }}
+              >
                 Completed
               </Text>
               <FlatList

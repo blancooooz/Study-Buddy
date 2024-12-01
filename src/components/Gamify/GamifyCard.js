@@ -1,14 +1,18 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
-import React from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { colors } from '../../theme/colors';
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import React from "react";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { colors } from "../../theme/colors";
 
-const GamifyCard = ({ badge, isUnlocked, points }) => {
+const GamifyCard = ({
+  badge,
+  isActive,
+  isCompleted,
+  points,
+  pointsRequired,
+}) => {
+  const isUnlocked = isActive || isCompleted;
   return (
-    <View style={[
-      styles.card,
-      { opacity: isUnlocked ? 1 : 0.6 }
-    ]}>
+    <View style={[styles.card, { opacity: isUnlocked ? 1 : 0.6 }]}>
       <View style={styles.iconContainer}>
         <Icon
           name={badge.icon}
@@ -19,9 +23,17 @@ const GamifyCard = ({ badge, isUnlocked, points }) => {
       <View style={styles.contentContainer}>
         <Text style={styles.title}>{badge.name}</Text>
         <Text style={styles.description}>{badge.description}</Text>
-        {isUnlocked && (
+        {isCompleted && (
           <View style={styles.pointsContainer}>
-            <Text style={styles.points}>{points} / 100 points</Text>
+            <Text style={styles.points}>
+            Complete!
+            </Text>
+          </View>)}
+        {isActive &&  (
+          <View style={styles.pointsContainer}>
+            <Text style={styles.points}>
+              {points} / {pointsRequired} points
+            </Text>
           </View>
         )}
       </View>
@@ -31,12 +43,12 @@ const GamifyCard = ({ badge, isUnlocked, points }) => {
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 16,
     backgroundColor: colors.white,
     borderRadius: 12,
     marginVertical: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -50,8 +62,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     backgroundColor: colors.gray[100],
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 12,
   },
   contentContainer: {
@@ -59,7 +71,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontFamily: 'SFProRoundedSemibold',
+    fontFamily: "SFProRoundedSemibold",
     color: colors.gray[900],
     marginBottom: 4,
   },
@@ -73,12 +85,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
+    marginBottom: 4
   },
   points: {
     fontSize: 12,
     color: colors.blue,
-    fontFamily: 'SFProRoundedMedium',
+    fontFamily: "SFProRoundedMedium",
   },
 });
 
