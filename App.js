@@ -9,7 +9,6 @@ import { lightTheme, darkTheme } from "./src/theme/theme";
 import { firebaseAuth } from "./src/utils/DataHandler";
 import { NavigationContainer, ThemeProvider } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import * as Notifications from "expo-notifications";
 
 const Stack = createStackNavigator();
 
@@ -48,6 +47,7 @@ export default function App() {
   }
 
   // ADD: Setup Notifications
+  {/*
   const setupNotifications = async () => {
     const { status } = await Notifications.getPermissionsAsync();
     if (status !== "granted") {
@@ -76,7 +76,7 @@ export default function App() {
     Notifications.addNotificationResponseReceivedListener((response) => {
       console.log("Notification interaction:", response);
     });
-  };
+  };*/}
 
   useEffect(() => {
     const loadThemePreference = async () => {
@@ -88,7 +88,7 @@ export default function App() {
 
     const subscriber = onAuthStateChanged(firebaseAuth, onUserStateChanged);
 
-    setupNotifications(); // ADD: Initialize Notifications
+    //setupNotifications(); // ADD: Initialize Notifications
     loadThemePreference();
 
     return subscriber;

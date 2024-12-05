@@ -13,7 +13,7 @@ import { Circle } from "react-native-progress";
 import * as Icons from "react-native-vector-icons";
 import { useSelector } from "react-redux";
 import { edit_task, complete_task, delete_task } from "../../redux/actions"; // Importing edit_task action
-import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
+import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 const good_colors = colors;
 const Task = ({ navigation, task }) => {
   const theme = useTheme();
@@ -29,8 +29,8 @@ const Task = ({ navigation, task }) => {
     const date = new Date(milliseconds);
     date.setHours(date.getHours() - 5); // Convert to EST
     let hours = date.getUTCHours();
-    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const minutes = date.getUTCMinutes().toString().padStart(2, "0");
+    const ampm = hours >= 12 ? "PM" : "AM";
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
     return `${hours}:${minutes} ${ampm}`;
@@ -39,12 +39,12 @@ const Task = ({ navigation, task }) => {
   const formatMilliseconds = (milliseconds) => {
     const date = new Date(milliseconds);
     date.setHours(date.getHours() - 5); // Convert to EST
-    const month = date.toLocaleString('default', { month: 'short' });
-    const day = date.getUTCDate().toString().padStart(2, '0');
+    const month = date.toLocaleString("default", { month: "short" });
+    const day = date.getUTCDate().toString().padStart(2, "0");
     return `${month} ${day}`;
   };
   const handle_delete_task = () => {
-    dispatch(delete_task(currentTask.id,taskList)); // Dispatch delete task action
+    dispatch(delete_task(currentTask.id, taskList)); // Dispatch delete task action
   };
 
   const renderRightActions = () => {
@@ -60,13 +60,15 @@ const Task = ({ navigation, task }) => {
           borderRadius: 12,
         }}
       >
-        <Text style={[styles.deleteButtonText,{color:theme.colors.text}]}>Delete</Text>
+        <Text style={[styles.deleteButtonText, { color: theme.colors.text }]}>
+          Delete
+        </Text>
       </TouchableOpacity>
     );
   };
   const handleEditTask = (task) => {
-  navigation.navigate("EditTask", { task });
-  }
+    navigation.navigate("EditTask", { task });
+  };
   const { colors } = useTheme();
 
   if (is_multi_step) {
@@ -82,9 +84,9 @@ const Task = ({ navigation, task }) => {
             flexDirection: "row",
           }}
         >
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
-            
-          </View>
+          <View
+            style={{ justifyContent: "center", alignItems: "center" }}
+          ></View>
           <View style={{}}>
             <View style={{ flexDirection: "row" }}>
               <Text
@@ -151,7 +153,7 @@ const Task = ({ navigation, task }) => {
 
   return (
     <Swipeable renderRightActions={renderRightActions} overshootRight={false}>
-      <Pressable onPress={()=> handleEditTask(task)} style={{ flex: 1 }}>
+      <Pressable onPress={() => handleEditTask(task)} style={{ flex: 1 }}>
         <View
           style={{
             backgroundColor: theme.colors.taskBackground,
@@ -162,9 +164,9 @@ const Task = ({ navigation, task }) => {
             flexDirection: "row",
           }}
         >
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
-            
-          </View>
+          <View
+            style={{ justifyContent: "center", alignItems: "center" }}
+          ></View>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: "row" }}>
               <Text
@@ -192,7 +194,7 @@ const Task = ({ navigation, task }) => {
                 color={theme.colors.taskIcons}
               />
               <Text style={{ color: theme.colors.taskIcons, marginLeft: 4 }}>
-              {formatTime(task.time_due)}
+                {formatTime(task.time_due)}
               </Text>
             </View>
             <View
@@ -209,7 +211,7 @@ const Task = ({ navigation, task }) => {
                 color={theme.colors.taskIcons}
               />
               <Text style={{ color: theme.colors.taskIcons, marginLeft: 4 }}>
-              {formatMilliseconds(task.deadline)}
+                {formatMilliseconds(task.deadline)}
               </Text>
             </View>
           </View>

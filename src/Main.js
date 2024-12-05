@@ -49,7 +49,7 @@ import Session from "./screens/study/sessions/Session";
 import StudyPlan from "./screens/study/StudyPlan";
 import PomodoroScreen from "./screens/timer/Pomodoro";
 import Gamify from "./screens/gamify/Gamify";
-import NotificationTestScreen from './screens/NotificationTestScreen';
+import NotificationTestScreen from "./screens/NotificationTestScreen";
 import { colors } from "./theme/colors";
 import { current } from "@reduxjs/toolkit";
 // Navigators for tabs, stacks, and drawers
@@ -119,9 +119,14 @@ const TasksStack = () => (
     >
       {({ navigation }) => <EditTask navigation={navigation} />}
     </Stack.Screen>
-    {/* Add other screens related to Tasks here */}
-     {/* Add NotificationsTestScreen */}
-     <Stack.Screen
+    <Stack.Screen
+      name="Task"
+      options={{ header: () => <CustomHeader title={"Task"} /> }}
+    >
+      {({ navigation }) => <Task navigation={navigation} />}
+    </Stack.Screen>
+    {/* Add NotificationsTestScreen */}
+    <Stack.Screen
       name="NotificationTestScreen"
       component={NotificationTestScreen}
       options={{ header: () => <CustomHeader title={"Notifications"} /> }}
@@ -147,6 +152,12 @@ const CalendarStack = () => (
       options={{ header: () => <CustomHeader title={"AddTask"} /> }}
     >
       {({ navigation }) => <AddTask navigation={navigation} />}
+    </Stack.Screen>
+    <Stack.Screen
+      name="EditTask"
+      options={{ header: () => <CustomHeader title={"EditTask"} /> }}
+    >
+      {({ navigation }) => <EditTask navigation={navigation} />}
     </Stack.Screen>
   </Stack.Navigator>
 );
@@ -551,7 +562,7 @@ const CustomHeader = ({ title, routeParam }) => {
                 onRequestClose={() => setOptionsVisible(false)}
               >
                 <TouchableOpacity
-                  style={{backgroundColor:theme.colors.transparent, flex:1}}
+                  style={{ backgroundColor: theme.colors.transparent, flex: 1 }}
                   onPress={() => setOptionsVisible(false)}
                 >
                   <View
@@ -597,9 +608,7 @@ const CustomHeader = ({ title, routeParam }) => {
                 name="options"
                 size={36}
                 color={
-                  optionsVisible
-                    ? theme.colors.secondary
-                    : colors.gray[500]
+                  optionsVisible ? theme.colors.secondary : colors.gray[500]
                 }
               />
             </TouchableOpacity>
@@ -616,7 +625,7 @@ const CustomHeader = ({ title, routeParam }) => {
                 onRequestClose={() => setOptionsVisible(false)}
               >
                 <TouchableOpacity
-                  style={{backgroundColor:theme.colors.transparent, flex:1}}
+                  style={{ backgroundColor: theme.colors.transparent, flex: 1 }}
                   onPress={() => setOptionsVisible(false)}
                 >
                   <View
@@ -662,9 +671,7 @@ const CustomHeader = ({ title, routeParam }) => {
                 name="options"
                 size={36}
                 color={
-                  optionsVisible
-                    ? theme.colors.secondary
-                    : colors.gray[500]
+                  optionsVisible ? theme.colors.secondary : colors.gray[500]
                 }
               />
             </TouchableOpacity>
@@ -687,7 +694,9 @@ const CustomHeader = ({ title, routeParam }) => {
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Icons.Ionicons name="arrow-back" size={24} color={theme.colors.text} />
       </TouchableOpacity>
-      <Text style={[styles.headerTitle,{color:theme.colors.text}]}>{title}</Text>
+      <Text style={[styles.headerTitle, { color: theme.colors.text }]}>
+        {title}
+      </Text>
       {renderExtraElements(title)}
     </View>
   );

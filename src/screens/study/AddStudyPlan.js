@@ -232,7 +232,6 @@ const AddStudyPlan = ({ navigation }) => {
 
 // Styles
 const inputStyle = {
-  color: "#FFFFFF",
   borderWidth: 1,
   borderColor: colors.gray[600],
   padding: 12,

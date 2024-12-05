@@ -180,7 +180,7 @@ const EditTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color: colors.white,
+            color:theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -211,7 +211,6 @@ const EditTask = ({ navigation }) => {
             minimumDate={new Date()}
             value={new Date()} 
             mode="datetime"
-            themeVariant="dark"
             style={{ marginLeft: -10, marginBottom: 8 }}
             onChange={onChange}
           />
@@ -228,7 +227,7 @@ const EditTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color: colors.white,
+            color:theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -257,7 +256,7 @@ const EditTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color: colors.white,
+            color:theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -337,7 +336,7 @@ const EditTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color: colors.white,
+            color:theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -364,7 +363,7 @@ const EditTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color: colors.white,
+            color:theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
