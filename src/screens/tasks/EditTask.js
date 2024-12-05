@@ -172,7 +172,7 @@ const EditTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -180,7 +180,7 @@ const EditTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color: colors.white,
+            color:theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -199,7 +199,7 @@ const EditTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -211,7 +211,6 @@ const EditTask = ({ navigation }) => {
             minimumDate={new Date()}
             value={new Date()} 
             mode="datetime"
-            themeVariant="dark"
             style={{ marginLeft: -10, marginBottom: 8 }}
             onChange={onChange}
           />
@@ -220,7 +219,7 @@ const EditTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -228,7 +227,7 @@ const EditTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color: colors.white,
+            color:theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -249,7 +248,7 @@ const EditTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -257,7 +256,7 @@ const EditTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color: colors.white,
+            color:theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -276,7 +275,7 @@ const EditTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -292,7 +291,7 @@ const EditTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -329,7 +328,7 @@ const EditTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -337,7 +336,7 @@ const EditTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color: colors.white,
+            color:theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -356,7 +355,7 @@ const EditTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -364,7 +363,7 @@ const EditTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color: colors.white,
+            color:theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -383,7 +382,7 @@ const EditTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -470,7 +469,7 @@ const EditTask = ({ navigation }) => {
           <Text
             style={{
               fontFamily: "SFProRoundedRegular",
-              color: colors.gray[300],
+              color: theme.colors.text,
               fontSize: 16,
               marginLeft: 8,
             }}

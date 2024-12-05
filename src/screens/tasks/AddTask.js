@@ -16,7 +16,6 @@ import { add_task } from "../../redux/actions";
 import { connect } from "react-redux";
 import { useTheme } from "@react-navigation/native";
 import { colors } from "../../theme/colors";
-import * as Icons from "react-native-vector-icons";
 import { generateText, getRandomTasks } from "../../utils/AIUtils";
 import { useSelector } from "react-redux";
 const format_date_time = (date) => {
@@ -30,7 +29,6 @@ const format_date_time = (date) => {
     hour12: true,
     timeZoneName: "short",
   };
-  console.log("date", date.toLocaleString("en-US", options));
   return date.toLocaleString("en-US", options);
 };
 const AddTask = ({ navigation }) => {
@@ -129,7 +127,6 @@ const AddTask = ({ navigation }) => {
     const date = new Date(date_string);
     const options = { month: "short", day: "numeric" };
     const formattedDate = date.toLocaleDateString("en-US", options);
-    console.log(formattedDate);
     return formattedDate;
   };
 
@@ -275,7 +272,7 @@ const AddTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -283,7 +280,7 @@ const AddTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color: colors.white,
+            color: theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -291,7 +288,7 @@ const AddTask = ({ navigation }) => {
             marginBottom: 12,
           }}
           placeholder="Title"
-          placeholderTextColor={colors.gray[600]}
+          placeholderTextColor={theme.colors.placeholderText}
           name="title"
           value={task.title}
           onChangeText={(text) =>
@@ -302,7 +299,7 @@ const AddTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -314,7 +311,6 @@ const AddTask = ({ navigation }) => {
             minimumDate={new Date()}
             value={date}
             mode="datetime"
-            themeVariant="dark"
             style={{ marginLeft: -10, marginBottom: 8 }}
             onChange={onChange}
           />
@@ -323,7 +319,7 @@ const AddTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -331,7 +327,7 @@ const AddTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color: colors.white,
+            color: theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -352,7 +348,7 @@ const AddTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -360,7 +356,7 @@ const AddTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color: colors.white,
+            color: theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -379,7 +375,7 @@ const AddTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -395,7 +391,7 @@ const AddTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -438,7 +434,7 @@ const AddTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -465,7 +461,7 @@ const AddTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -473,7 +469,7 @@ const AddTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color: colors.white,
+            color: theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -492,7 +488,7 @@ const AddTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -558,14 +554,14 @@ const AddTask = ({ navigation }) => {
           <Text
             style={{
               fontFamily: "SFProRoundedRegular",
-              color: colors.gray[300],
+              color: theme.colors.text,
               fontSize: 16,
               marginLeft: 8,
             }}
           >
             Sub tasks
           </Text>
-          <View>
+          {/*<View>
             {subTasks.map((subTask, index) => (
               <View key={index} style={{ marginBottom: 10 }}>
                 <TextInput
@@ -621,7 +617,7 @@ const AddTask = ({ navigation }) => {
               </View>
             ))}
             <Button title="+ Add Sub Task" onPress={addSubTask} />
-          </View>
+          </View>*/}
         </View>
 
         <TouchableOpacity onPress={handleSubmit}>

@@ -1,4 +1,4 @@
-import * as Notifications from "expo-notifications";
+{/*import * as Notifications from "expo-notifications";
 
 // Configure notifications behavior
 Notifications.setNotificationHandler({
@@ -39,3 +39,4 @@ export const sendImmediateNotification = async (title, body) => {
     body,
   });
 };
+*/}

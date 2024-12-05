@@ -220,7 +220,7 @@ const AddStudyPlan = ({ navigation }) => {
 
       {/* Submit Button */}
       <TouchableOpacity onPress={handleSubmit}>
-        <View style={buttonStyle}>
+        <View style={[buttonStyle,{backgroundColor:theme.colors.primary}]}>
           <Text style={{ color: colors.background, fontSize: 18 }}>
             Create Study Plan
           </Text>
@@ -232,7 +232,6 @@ const AddStudyPlan = ({ navigation }) => {
 
 // Styles
 const inputStyle = {
-  color: "#FFFFFF",
   borderWidth: 1,
   borderColor: colors.gray[600],
   padding: 12,
@@ -253,7 +252,6 @@ const switchLabel = {
 };
 
 const buttonStyle = {
-  backgroundColor: colors.gray[600],
   height: 50,
   borderRadius: 12,
   justifyContent: "center",

@@ -48,7 +48,7 @@ export const darkTheme = {
     placeholderText:'#b3b3b3',
     selectedDayBackgroundColor: "#00adf5",
     selectedDayTextColor: "#ffffff",
-    todayTextColor: "#00adf5",
+    todayTextColor: "#2f2f2f",
     agendaDayTextColor: "#2d4150",
     agendaDayNumColor: "#00adf5",
     agendaKnobColor: "#00adf5",
