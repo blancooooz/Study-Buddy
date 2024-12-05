@@ -375,7 +375,7 @@ const AddTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -391,7 +391,7 @@ const AddTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -488,7 +488,7 @@ const AddTask = ({ navigation }) => {
           style={{
             fontFamily: "SFProRoundedMedium",
             fontSize: 16,
-            color: colors.gray[300],
+            color: theme.colors.text,
             marginBottom: 8,
           }}
         >
@@ -554,7 +554,7 @@ const AddTask = ({ navigation }) => {
           <Text
             style={{
               fontFamily: "SFProRoundedRegular",
-              color: colors.gray[300],
+              color: theme.colors.text,
               fontSize: 16,
               marginLeft: 8,
             }}

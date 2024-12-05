@@ -223,7 +223,7 @@ const addUser = () => {
 
       {/* Save Button */}
       <TouchableOpacity onPress={handleSave}>
-        <View style={buttonStyle}>
+        <View style={[buttonStyle,{backgroundColor:theme.colors.primary}]}>
           <Text style={{ color: "#fff", fontSize: 18 }}>Save Changes</Text>
         </View>
       </TouchableOpacity>
@@ -248,7 +248,6 @@ const switchContainer = {
 };
 
 const buttonStyle = {
-  backgroundColor: colors.gray[600],
   padding: 16,
   borderRadius: 10,
   alignItems: "center",

@@ -24,6 +24,7 @@ import NotificationTestScreen from "../NotificationTestScreen"; // Adjust the pa
 
 const Tasks = ({ navigation }) => {
   const { colors } = useTheme();
+  const theme = useTheme();
   //const [tasks, setTasks] = useState([]); // State variable to store tasks
   const [uncompleted_tasks, setUncompletedTasks] = useState([]); // State variable to store uncompleted tasks
   const [completed_tasks, setCompletedTasks] = useState([]); // State variable to store completed tasks
@@ -97,7 +98,7 @@ const Tasks = ({ navigation }) => {
         {completed_tasks.length > 0 ? (
           <Text
             style={{
-              color: themecolors.gray[100],
+              color: theme.colors.text,
               fontFamily: "SFProRoundedSemibold",
               fontSize: 24,
               marginBottom: 8,
