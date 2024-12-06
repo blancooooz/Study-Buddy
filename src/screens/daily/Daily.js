@@ -45,7 +45,6 @@ const Daily = ({ navigation }) => {
       loadTimerState();
     }, [])
   );
-  console.log(currentTime);
   const [progress, setProgress] = useState(0);
   const [uncompleted_tasks, setUncompletedTasks] = useState([]); // State variable to store uncompleted tasks
   const [completed_tasks, setCompletedTasks] = useState([]); // State variable to store completed tasks
@@ -79,24 +78,6 @@ const Daily = ({ navigation }) => {
     console.log("No events:", e);
   }
 
-  // Format date in "Oct 30" format
-  const format_date = (date_string) => {
-    const date = new Date(date_string);
-    const options = { month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
-
-  // Helper function to convert "HH:MM AM/PM" format to minutes since midnight
-  const convertToMinutes = (timeString) => {
-    const [time, period] = timeString.split(" ");
-    let [hours, minutes] = time.split(":").map(Number);
-
-    // Adjust hours based on AM/PM
-    if (period === "PM" && hours !== 12) hours += 12;
-    if (period === "AM" && hours === 12) hours = 0;
-
-    return hours * 60 + minutes;
-  };
 
   // Filter and sort tasks by hour for today
   useEffect(() => {
@@ -113,17 +94,13 @@ const Daily = ({ navigation }) => {
   }, [tasks]);
 
   useEffect(() => {
-    const uncompletedTasks = dailyTasks.filter((task) => !task.completed);
-    const completedTasks = dailyTasks.filter((task) => task.completed);
-    setUncompletedTasks(uncompletedTasks);
-    setCompletedTasks(completedTasks);
-  }, [tasks]);
-
+    setUncompletedTasks(dailyTasks.filter((task) => !task.completed));
+    setCompletedTasks(dailyTasks.filter((task) => task.completed));
+  }, [dailyTasks]);
+  
   useEffect(() => {
-    const uncompletedEvents = events.filter((task) => !task.completed);
-    const completedEvents = events.filter((task) => task.completed);
-    setUncompletedEvents(uncompletedEvents);
-    setCompletedEvents(completedEvents);
+    setUncompletedEvents(events.filter((event) => !event.completed));
+    setCompletedEvents(events.filter((event) => event.completed));
   }, [events]);
 
   const generateHourlyTasks = () => {
@@ -210,23 +187,16 @@ const Daily = ({ navigation }) => {
   };
 
   // Calculate progress
-  useEffect(() => {
-    try {
-      const totalTasks = dailyTasks.length + events.length;
-      const completedTasks = completed_tasks.length + completed_events.length;
-      const newProgress = totalTasks > 0 ? completedTasks / totalTasks : 1;
-      console.log(totalTasks, completedTasks, newProgress);
+useEffect(() => {
+  const totalTasks = dailyTasks.length;
+  const completedCount =
+    dailyTasks.filter((task) => task.completed).length 
 
-      if (typeof newProgress === "number") {
-        setProgress(newProgress);
-        console.log("Progress set to:", newProgress);
-      } else {
-        console.log("Progress is not a number:", typeof newProgress);
-      }
-    } catch (e) {
-      console.error("Error calculating progress:", e);
-    }
-  }, [tasks]);
+  const totalItems = totalTasks ;
+  const newProgress = totalItems > 0 ? completedCount / totalItems : 1;
+
+  setProgress(newProgress); // Set progress directly from calculated value
+}, [dailyTasks]);
 
   const ProgressCircle = () => {
     return (
@@ -264,11 +234,6 @@ const Daily = ({ navigation }) => {
           {username
             ? `Hi, ${username}!`
             : `Hi, ${name.charAt(0).toUpperCase() + name.slice(1)}!`}
-        </Text>
-        <Text
-          style={{ fontSize: 20, marginBottom: 12, color: theme.colors.text }}
-        >
-          Motivational Quote
         </Text>
       </View>
 
@@ -382,16 +347,6 @@ const Daily = ({ navigation }) => {
               borderRadius: 18,
             }}
           >
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "bold",
-                marginBottom: 10,
-                color: theme.colors.text, // Color for section title (customize as needed)
-              }}
-            >
-              Your Tasks for Today
-            </Text>
             {dailyTasks.length != 0 ? (
               <TaskList />
             ) : (
@@ -401,29 +356,6 @@ const Daily = ({ navigation }) => {
             )}
           </View>
 
-          {/* Placeholder for events */}
-          <View
-            style={{
-              marginBottom: 12, // Space between sections
-              padding: 15,
-              backgroundColor: theme.colors.card, // White background for sections
-              borderRadius: 18,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "bold",
-                marginBottom: 10,
-                color: theme.colors.text, // Color for section title (customize as needed)
-              }}
-            >
-              Your Events for Today
-            </Text>
-            <Text style={{ fontSize: 16, color: theme.colors.text }}>
-              No events scheduled!
-            </Text>
-          </View>
         </ScrollView>
       </View>
     </View>
