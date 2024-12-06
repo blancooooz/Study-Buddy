@@ -235,11 +235,6 @@ useEffect(() => {
             ? `Hi, ${username}!`
             : `Hi, ${name.charAt(0).toUpperCase() + name.slice(1)}!`}
         </Text>
-        <Text
-          style={{ fontSize: 20, marginBottom: 12, color: theme.colors.text }}
-        >
-          Motivational Quote
-        </Text>
       </View>
 
       {/* Section for grid view*/}
@@ -352,16 +347,6 @@ useEffect(() => {
               borderRadius: 18,
             }}
           >
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "bold",
-                marginBottom: 10,
-                color: theme.colors.text, // Color for section title (customize as needed)
-              }}
-            >
-              Your Tasks for Today
-            </Text>
             {dailyTasks.length != 0 ? (
               <TaskList />
             ) : (
@@ -371,29 +356,6 @@ useEffect(() => {
             )}
           </View>
 
-          {/* Placeholder for events */}
-          <View
-            style={{
-              marginBottom: 12, // Space between sections
-              padding: 15,
-              backgroundColor: theme.colors.card, // White background for sections
-              borderRadius: 18,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "bold",
-                marginBottom: 10,
-                color: theme.colors.text, // Color for section title (customize as needed)
-              }}
-            >
-              Your Events for Today
-            </Text>
-            <Text style={{ fontSize: 16, color: theme.colors.text }}>
-              No events scheduled!
-            </Text>
-          </View>
         </ScrollView>
       </View>
     </View>
