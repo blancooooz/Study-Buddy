@@ -275,7 +275,7 @@ const EditTask = ({ navigation }) => {
           onChangeText={(text) =>
             handleChange({ target: { name: "tags", value: text.split(", ") } })
           }
-        />
+        />{/*
         <Text
           style={{
             fontFamily: "SFProRoundedMedium",
@@ -388,7 +388,7 @@ const EditTask = ({ navigation }) => {
           onChangeText={(text) =>
             handleChange({ target: { name: "subject.color", value: text } })
           }
-        />
+        />*/}
         <Text
           style={{
             fontFamily: "SFProRoundedMedium",
@@ -459,7 +459,7 @@ const EditTask = ({ navigation }) => {
             <Text style={{ color: colors.white }}>Urgent</Text>
           </TouchableOpacity>
         </View>
-        <View style={{ marginBottom: 20 }}></View>
+        <View style={{ marginBottom: 20 }}></View>{/*
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TouchableOpacity onPress={handleMultiStep}>
             <View
@@ -474,24 +474,6 @@ const EditTask = ({ navigation }) => {
                 alignItems: "center",
               }}
             >
-              {isMultiStep ? (
-                <View
-                  style={{
-                    height: 32,
-                    width: 32,
-                    borderRadius: 10,
-                    backgroundColor: colors.gray[300],
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Icons.Feather
-                    name="check"
-                    size={16}
-                    color={colors.gray[600]}
-                  />
-                </View>
-              ) : null}
             </View>
           </TouchableOpacity>
           <Text
@@ -504,7 +486,7 @@ const EditTask = ({ navigation }) => {
           >
             Sub tasks
           </Text>
-        </View>
+        </View>*/}
         <TouchableOpacity onPress={handleSubmit}>
           <View
             style={{

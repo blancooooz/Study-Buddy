@@ -550,7 +550,7 @@ const AddTask = ({ navigation }) => {
             <Text style={{ color: colors.white }}>Urgent</Text>
           </TouchableOpacity>
         </View>
-        <View style={{}}>
+        <View style={{}}>{/*
           <Text
             style={{
               fontFamily: "SFProRoundedRegular",
@@ -561,7 +561,7 @@ const AddTask = ({ navigation }) => {
           >
             Sub tasks
           </Text>
-          {/*<View>
+          <View>
             {subTasks.map((subTask, index) => (
               <View key={index} style={{ marginBottom: 10 }}>
                 <TextInput

@@ -90,7 +90,7 @@ const Tasks = ({ navigation }) => {
           <Task
             key={task.id}
             task={task}
-            onPress={handleCompleteTask}
+            onPress={()=>{navigation.navigate("EditTask", {task: task})}}
             navigation={navigation}
             
           ></Task>

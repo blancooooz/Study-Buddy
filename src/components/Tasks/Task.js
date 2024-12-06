@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import { edit_task, complete_task, delete_task } from "../../redux/actions"; // Importing edit_task action
 import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 const good_colors = colors;
-const Task = ({ navigation, task }) => {
+const Task = ({ onPress, task }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const isChecked = task.completed;
@@ -67,7 +67,7 @@ const Task = ({ navigation, task }) => {
     );
   };
   const handleEditTask = (task) => {
-    navigation.navigate("EditTask", { task });
+    onPress
   };
   const { colors } = useTheme();
 
@@ -153,7 +153,7 @@ const Task = ({ navigation, task }) => {
 
   return (
     <Swipeable renderRightActions={renderRightActions} overshootRight={false}>
-      <Pressable onPress={() => handleEditTask(task)} style={{ flex: 1 }}>
+      <Pressable onPress={onPress} style={{ flex: 1 }}>
         <View
           style={{
             backgroundColor: theme.colors.taskBackground,
