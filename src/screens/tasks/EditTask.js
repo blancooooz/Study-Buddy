@@ -29,17 +29,22 @@ const EditTask = ({ navigation }) => {
   const tasks = useSelector((state) => state.tasks || []);
   const [isMultiStep, setIsMultiStep] = useState(task.multi_step);
   const dispatch = useDispatch();
-  const [date, setDate] = useState(task.deadline === "" ?  'No Deadline' : task.deadline);
+  const [date, setDate] = useState(
+    task.deadline === "" ? "No Deadline" : task.deadline
+  );
   const [show, setShow] = useState(true);
   const [priority, setPriority] = useState(task.priority);
   const [isPrioritySet, setIsPrioritySet] = useState(false);
 
   const generateId = () => {
     const generateRandomId = () => {
-      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let result = '';
+      const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let result = "";
       for (let i = 0; i < 7; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
+        result += characters.charAt(
+          Math.floor(Math.random() * characters.length)
+        );
       }
       return result;
     };
@@ -47,14 +52,14 @@ const EditTask = ({ navigation }) => {
     let newId;
     do {
       newId = generateRandomId();
-    } while (tasks.some(task => task.id === newId));
+    } while (tasks.some((task) => task.id === newId));
 
     setTask((prevTask) => ({
       ...prevTask,
       id: newId,
     }));
-  }
-  
+  };
+
   const parseDateString = (dateString) => {
     console.log("Date string:", dateString);
     const date = new Date(dateString);
@@ -88,7 +93,7 @@ const EditTask = ({ navigation }) => {
     return formattedTime;
   };
   useEffect(() => {
-    console.log('currentTask', currentTask);
+    console.log("currentTask", currentTask);
     //console.log ('incoming task', task);
     // console.log("Date object from database", date)
     // console.log("Date object after format", new Date(date))
@@ -180,7 +185,7 @@ const EditTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color:theme.colors.text,
+            color: theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -209,7 +214,7 @@ const EditTask = ({ navigation }) => {
         <View style={{ alignItems: "flex-start" }}>
           <DateTimePicker
             minimumDate={new Date()}
-            value={new Date()} 
+            value={new Date()}
             mode="datetime"
             style={{ marginLeft: -10, marginBottom: 8 }}
             onChange={onChange}
@@ -227,7 +232,7 @@ const EditTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color:theme.colors.text,
+            color: theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -256,7 +261,7 @@ const EditTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color:theme.colors.text,
+            color: theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -301,7 +306,10 @@ const EditTask = ({ navigation }) => {
           value={currentTask.reminder.enabled}
           onValueChange={(value) =>
             handleChange({
-              target: { name: "reminder", value: { ...currentTask.reminder, enabled: value } },
+              target: {
+                name: "reminder",
+                value: { ...currentTask.reminder, enabled: value },
+              },
             })
           }
         />
@@ -317,7 +325,10 @@ const EditTask = ({ navigation }) => {
                 handleChange({
                   target: {
                     name: "reminder",
-                    value: { ...currentTask.reminder, reminder_time: selectedDate.toISOString() },
+                    value: {
+                      ...currentTask.reminder,
+                      reminder_time: selectedDate.toISOString(),
+                    },
                   },
                 })
               }
@@ -336,7 +347,7 @@ const EditTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color:theme.colors.text,
+            color: theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -363,7 +374,7 @@ const EditTask = ({ navigation }) => {
         </Text>
         <TextInput
           style={{
-            color:theme.colors.text,
+            color: theme.colors.text,
             borderWidth: 1,
             borderColor: colors.gray[600],
             padding: 12,
@@ -388,50 +399,67 @@ const EditTask = ({ navigation }) => {
         >
           Priority
         </Text>
-        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 20 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: 20,
+          }}
+        >
           <TouchableOpacity
             style={{
-              backgroundColor: currentTask.priority === 1 ? colors.green[400] : colors.gray[600],
+              backgroundColor:
+                currentTask.priority === 1
+                  ? colors.green[400]
+                  : colors.gray[600],
               padding: 12,
               borderRadius: 10,
               flex: 1,
               marginRight: 5,
               alignItems: "center",
             }}
-            onPress={() => handleChange({ target: { name: "priority", value: 1 } })}
+            onPress={() =>
+              handleChange({ target: { name: "priority", value: 1 } })
+            }
           >
             <Text style={{ color: colors.white }}>Normal</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
-              backgroundColor: currentTask.priority === 2 ? colors.yellow[200] : colors.gray[600],
+              backgroundColor:
+                currentTask.priority === 2
+                  ? colors.yellow[200]
+                  : colors.gray[600],
               padding: 12,
               borderRadius: 10,
               flex: 1,
               marginHorizontal: 5,
               alignItems: "center",
             }}
-            onPress={() => handleChange({ target: { name: "priority", value: 2 } })}
+            onPress={() =>
+              handleChange({ target: { name: "priority", value: 2 } })
+            }
           >
             <Text style={{ color: colors.white }}>Moderate</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
-              backgroundColor: currentTask.priority === 3 ? colors.red[300] : colors.gray[600],
+              backgroundColor:
+                currentTask.priority === 3 ? colors.red[300] : colors.gray[600],
               padding: 12,
               borderRadius: 10,
               flex: 1,
               marginLeft: 5,
               alignItems: "center",
             }}
-            onPress={() => handleChange({ target: { name: "priority", value: 3 } })}
+            onPress={() =>
+              handleChange({ target: { name: "priority", value: 3 } })
+            }
           >
             <Text style={{ color: colors.white }}>Urgent</Text>
           </TouchableOpacity>
         </View>
-        <View style={{ marginBottom: 20 }}>
-          
-        </View>
+        <View style={{ marginBottom: 20 }}></View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TouchableOpacity onPress={handleMultiStep}>
             <View
@@ -511,7 +539,8 @@ const EditTask = ({ navigation }) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    edit_task: (id, updated_task, task_list) => dispatch(edit_task(id, updated_task, task_list)),
+    edit_task: (id, updated_task, task_list) =>
+      dispatch(edit_task(id, updated_task, task_list)),
   };
 };
 

@@ -73,7 +73,7 @@ const DailyStack = () => (
     </Stack.Screen>
     <Stack.Screen
       name="AddTask"
-      options={{ header: () => <CustomHeader title={"AddTask"} /> }}
+      options={{ header: () => <CustomHeader title={"Add a Task"} /> }}
     >
       {({ navigation }) => <AddTask navigation={navigation} />}
     </Stack.Screen>
@@ -108,13 +108,19 @@ const TasksStack = () => (
 
     <Stack.Screen
       name="AddTask"
-      options={{ header: () => <CustomHeader title={"AddTask"} /> }}
+      options={{ header: () => <CustomHeader title={"Add a Task"} /> }}
     >
       {({ navigation }) => <AddTask navigation={navigation} />}
     </Stack.Screen>
     <Stack.Screen
+      name="Task"
+      options={{ header: () => <CustomHeader title={"Task"} /> }}
+    >
+      {({ navigation }) => <Task navigation={navigation} />}
+    </Stack.Screen>
+    <Stack.Screen
       name="EditTask"
-      options={{ header: () => <CustomHeader title={"Edit task"} /> }}
+      options={{ header: () => <CustomHeader title={"Edit a task"} /> }}
     >
       {({ navigation }) => <EditTask navigation={navigation} />}
     </Stack.Screen>
@@ -137,13 +143,13 @@ const CalendarStack = () => (
     </Stack.Screen>
     <Stack.Screen
       name="AddTask"
-      options={{ header: () => <CustomHeader title={"AddTask"} /> }}
+      options={{ header: () => <CustomHeader title={"Add a Task"} /> }}
     >
       {({ navigation }) => <AddTask navigation={navigation} />}
     </Stack.Screen>
     <Stack.Screen
       name="EditTask"
-      options={{ header: () => <CustomHeader title={"EditTask"} /> }}
+      options={{ header: () => <CustomHeader title={"Edit a Task"} /> }}
     >
       {({ navigation }) => <EditTask navigation={navigation} />}
     </Stack.Screen>

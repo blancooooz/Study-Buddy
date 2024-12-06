@@ -370,7 +370,7 @@ const AddTask = ({ navigation }) => {
           onChangeText={(text) =>
             handleChange({ target: { name: "tags", value: text.split(", ") } })
           }
-        />
+        />{/*
         <Text
           style={{
             fontFamily: "SFProRoundedMedium",
@@ -483,7 +483,7 @@ const AddTask = ({ navigation }) => {
           onChangeText={(text) =>
             handleChange({ target: { name: "subject.color", value: text } })
           }
-        />
+        />*/}
         <Text
           style={{
             fontFamily: "SFProRoundedMedium",
