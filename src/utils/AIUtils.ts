@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 const COHERE_API_URL = 'https://api.cohere.ai';
 const COHERE_API_KEY = ''; // Replace with your actual API key
 const cohere = new CohereClientV2({ //initializing the cohere client
-    token: COHERE_API_KEY,
+    token: 'CUENcJOyxt5uKIozJilkNDGmLrb3fzJKmzsIBF66',
 })
 //TODO - generate a new prompt based off of getRandomTasks, make sure it all works well 
 //with the generateText function. After that, clean the file up and make more functions for like generate sutyd plan , etc.

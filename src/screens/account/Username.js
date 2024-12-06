@@ -20,7 +20,7 @@ const Username = ({ updateUsername }) => {
 
   try {
     // Use the Redux `useSelector` hook to access the `Username` from the global state (userData)
-    currentUsername = useSelector((state) => state.userData?.Username || 'No username yet');
+    currentUsername = useSelector((state) => state.Username || 'No username yet');
   } catch (e) {
     console.log('No username yet'); // Error handling for cases where userData or Username is undefined
   }

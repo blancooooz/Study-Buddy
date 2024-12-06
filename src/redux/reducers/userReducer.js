@@ -99,6 +99,7 @@ export const userReducer = (state = initialState, action) => {
         isPaused: true,
         isSessionActive: false,
         sessionHistory: [],
+        level:0
       };
 
     case GET_STUDY_PLANS:

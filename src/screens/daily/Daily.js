@@ -62,7 +62,7 @@ const Daily = ({ navigation }) => {
     console.log("No name available", e);
   }
   try {
-    username = useSelector((state) => state.userData.Username);
+    username = useSelector((state) => state.Username);
   } catch (e) {
     console.log("No username available", e);
   }

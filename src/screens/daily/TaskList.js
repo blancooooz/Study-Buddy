@@ -75,13 +75,6 @@ const TaskList = () => {
                 <Text style={[styles.taskTitle, { color: theme.colors.text }]}>
                   {task.title}
                 </Text>
-                {task.priority > 0 && (
-                  <Text
-                    style={[styles.priority, { color: theme.colors.primary }]}
-                  >
-                    Priority {task.priority}
-                  </Text>
-                )}
               </View>
 
               {/* Task Details */}
