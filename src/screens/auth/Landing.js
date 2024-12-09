@@ -16,7 +16,7 @@ const Landing = ({ navigation }) => {
       {/* TouchableOpacity to navigate to the Register screen */}
       <TouchableOpacity
         style={{
-          backgroundColor: theme.colors.button,
+          backgroundColor: theme.colors.primary,
           padding: 15,
           borderRadius: 10,
           alignItems: "center",
@@ -32,7 +32,7 @@ const Landing = ({ navigation }) => {
       {/* TouchableOpacity to navigate to the Login screen */}
       <TouchableOpacity
         style={{
-          backgroundColor: theme.colors.button,
+          backgroundColor: theme.colors.primary,
           padding: 15,
           borderRadius: 10,
           alignItems: "center",

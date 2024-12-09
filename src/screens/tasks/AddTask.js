@@ -311,7 +311,7 @@ const AddTask = ({ navigation }) => {
             minimumDate={new Date()}
             value={date}
             mode="datetime"
-            style={{ marginLeft: -10, marginBottom: 8 }}
+            style={{ marginLeft: -10, marginBottom: 8,  }}
             onChange={onChange}
           />
         </View>

@@ -102,6 +102,7 @@ export const fetchUserData = () => async (dispatch) => {
       const userData = userSnapshot.data();
       dispatch({ type: FETCH_USER_DATA, payload: userData });
       dispatch({ type: UPDATE_POINTS, payload: userData.achievements.level });
+      dispatch({ type: UPDATE_USERNAME, payload: userData.Username });
     }
   } catch (e) {
     console.log(e);

@@ -150,7 +150,7 @@ const Login = () => {
             <TouchableOpacity
               onPress={onSignUp}
               style={{
-                backgroundColor: theme.colors.button,
+                backgroundColor: theme.colors.primary,
                 padding: 15,
                 borderRadius: 10,
                 alignItems: "center",

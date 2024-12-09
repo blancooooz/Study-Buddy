@@ -335,7 +335,7 @@ useEffect(() => {
             color: theme.colors.text,
           }}
         >
-          Tasks and Events for the day
+          Tasks for the day
         </Text>
         <ScrollView contentContainerStyle={{ paddingBottom: 30, flex: 1 }}>
           {/* Placeholder for tasks */}
